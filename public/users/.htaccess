@@ -1,0 +1,21 @@
+RewriteEngine On
+
+# Remove .php extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [L]
+
+
+# Fix Cross-Origin-Opener-Policy for Firebase Auth popup
+<IfModule mod_headers.c>
+    # Remove any existing COOP headers
+    Header unset Cross-Origin-Opener-Policy
+    Header unset Cross-Origin-Embedder-Policy
+    
+    # Set permissive COOP for Firebase Auth
+    Header always set Cross-Origin-Opener-Policy "unsafe-none"
+    Header always set Cross-Origin-Embedder-Policy "unsafe-none"
+    
+    # Allow cross-origin for Firebase
+    Header always set Access-Control-Allow-Origin "*"
+</IfModule>
