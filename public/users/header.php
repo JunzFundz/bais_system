@@ -36,7 +36,7 @@
 
     $client = new Client();
     $users = $client->checkUser($user_id);
-    $c = $client->viewInfo($uid);
+    $c = $client->viewInfo($user_id);
     $certificates = $client->cert();
     $req = $client->getUserRequest($user_id);
 

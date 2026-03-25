@@ -1,7 +1,4 @@
-<?php include '../header.php';
 
-
-?>
 
 <style>
     .canvas-container {
@@ -361,5 +358,3 @@
         </form>
     </div>
 </div>
-
-<?php include '../footer.php' ?>

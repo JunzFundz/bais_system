@@ -1,7 +1,3 @@
-<?php include '../header.php';
-
-
-?>
 
 <style>
     .canvas-container {
@@ -34,6 +30,9 @@
     #clear-signature:hover {
         background: #dc2626;
     }
+    body{
+        background-image: linear-gradient(to right, #ff5eb9, #ec6fd3, #d380e8, #b68ff6, #989cfe, #76abff, #54b7ff, #3ac2ff, #1ad2ff, #16e0ff, #3aeef9, #5ffbf1);
+    }
 </style>
 
 <?php $_SESSION['encryptedCertId'] = $encryptedCertId; ?>
@@ -41,7 +40,7 @@
 <input type="hidden" name="" id="cert-id" value="<?php echo $_SESSION['certId'] ?? '' ?>">
 <input type="hidden" name="" id="pi-id" value="<?php echo $_SESSION['PI_ID'] = $users['PI_ID'] ?>">
 
-<div class="min-h-screen flex items-center justify-center">
+<div class="min-h-screen flex items-center justify-center bg-amber-50/70" id="--body-cert">
     <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8">
         <!-- Step Indicator with Progress Bar -->
         <div class="flex items-center justify-between mb-8">
@@ -131,6 +130,9 @@
                                 <input value="<?=  $users['STREET'] ?? '' ?>" placeholder="Street" id="street" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div>
+                                <select name="" id="">
+
+                                </select>
                                 <input value="<?=  $users['BRGY'] ?? '' ?>" placeholder="Barangay" id="Barangay" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div>
@@ -361,5 +363,3 @@
         </form>
     </div>
 </div>
-
-<?php include '../footer.php' ?>

@@ -37,8 +37,7 @@
     <nav class="bg-white border-gray-200 dark:bg-gray-900 border-b-2">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="#" class="flex items-center justify-between">
-                <img style="height: 5rem; object-fit: contain;" class="w-auto h-14 sm:h-7" src="../assets/images/logo2.png" alt="">
-                <img style="height: 5rem; object-fit: contain;" class="ml-2 w-auto h-14 sm:h-7" src="../assets/images/logo1.png" alt="">
+                <img style="" class="w-auto h-10 sm:h-7 lg:h-14" src="assets/banner-rework.png" alt="">
             </a>
             <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                 <button id="theme-toggle" class=" mr-4 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 dark:border-dark-border dark:text-slate-400 dark:hover:bg-white/5">

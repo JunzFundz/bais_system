@@ -12,6 +12,18 @@ class AdminModel extends Dbh
         $this->mysqli = Dbh::getInstance();
     }
 
+    public function getAllBrgy()
+    {
+        $result = $this->mysqli->query("SELECT * FROM tbl_brgy ORDER BY BARANGAY ASC");
+
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
     public function getBrgy()
     {
         $result = $this->mysqli->query("SELECT BRGY_ID, BARANGAY FROM tbl_brgy ORDER BY BARANGAY ASC");
@@ -181,7 +193,7 @@ class AdminModel extends Dbh
     public function insertPost($title, $description, $files = [])
     {
         $files_json = json_encode($files); // store file paths as JSON
-        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (TITLE, DESCRIPTION, FILES, STATUS) VALUES (?, ?, ?, 1)");
+        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (TITLE, DESCRIPTION, DATE_CREATED, FILES, STATUS) VALUES (?, ?,NOW , ?, 1)");
         $stmt->bind_param("sss", $title, $description, $files_json);
         return $stmt->execute();
     }

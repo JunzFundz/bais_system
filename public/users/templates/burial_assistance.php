@@ -1,8 +1,3 @@
-<?php include '../header.php';
-
-
-?>
-
 <style>
     .canvas-container {
         position: relative;
@@ -82,31 +77,31 @@
                     <form>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
                             <div>
-                                <input value="<?=  $users['FNAME'] ?? '' ?>" id="fname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="First name" >
+                                <input value="<?= $users['FNAME'] ?? '' ?>" id="fname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="First name">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['MNAME'] ?? '' ?>" placeholder="Middle name" id="mname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['MNAME'] ?? '' ?>" placeholder="Middle name" id="mname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['LNAME'] ?? '' ?>" placeholder="Last name" id="lname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['LNAME'] ?? '' ?>" placeholder="Last name" id="lname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
                             <div>
-                                <input value="<?=  $users['CITIZEN'] ?? '' ?>" placeholder="Citizenship" id="citizen" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['CITIZEN'] ?? '' ?>" placeholder="Citizenship" id="citizen" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['SEX'] ?? '' ?>" placeholder="Sex" id="sex" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['SEX'] ?? '' ?>" placeholder="Sex" id="sex" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['CIVIL'] ?? '' ?>" placeholder="Civil Status" id="civilstatus" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['CIVIL'] ?? '' ?>" placeholder="Civil Status" id="civilstatus" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div>
-                                <input value="<?=  $users['AGE'] ?? '' ?>" placeholder="Age" id="age" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['AGE'] ?? '' ?>" placeholder="Age" id="age" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                     </form>
@@ -120,21 +115,21 @@
                     <form>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                             <div>
-                                <input value="<?=  $users['CONTACT'] ?? '' ?>" placeholder="Contact" id="contact" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
+                                <input value="<?= $users['CONTACT'] ?? '' ?>" placeholder="Contact" id="contact" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
                             </div>
                             <div>
-                                <input disabled value="<?=  $users['EMAIL'] ?? '' ?>" placeholder="Email" id="email" type="email" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input disabled value="<?= $users['EMAIL'] ?? '' ?>" placeholder="Email" id="email" type="email" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
                             <div>
-                                <input value="<?=  $users['STREET'] ?? '' ?>" placeholder="Street" id="street" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['STREET'] ?? '' ?>" placeholder="Street" id="street" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div>
-                                <input value="<?=  $users['BRGY'] ?? '' ?>" placeholder="Barangay" id="Barangay" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['BRGY'] ?? '' ?>" placeholder="Barangay" id="Barangay" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div>
-                                <input value="<?=  $users['CITY'] ?? '' ?>" placeholder="City" id="city" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <input value="<?= $users['CITY'] ?? '' ?>" placeholder="City" id="city" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                     </form>
@@ -361,5 +356,3 @@
         </form>
     </div>
 </div>
-
-<?php include '../footer.php' ?>

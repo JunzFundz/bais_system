@@ -1,4 +1,46 @@
 <div class="w-full p-5 sm:p-5 md:p-10 dark:bg-gray-900">
+
+    <?php foreach ($posts as $post): ?>
+
+        <section class="text-gray-400 bg-gray-900 body-font overflow-hidden">
+            <div class="container px-2 py-9 mx-auto">
+                <div class="lg:w-4/5 mx-auto flex flex-wrap">
+                    <?php
+                    $postImages = !empty($post['FILES']) ? array_filter($post['FILES'], function ($file) {
+                        $ext = strtolower(pathinfo(basename($file), PATHINFO_EXTENSION));
+                        return in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                    }) : [];
+                    $firstImage = !empty($postImages) ? $postImages[0] : '';
+                    ?>
+
+                    <?php if ($firstImage): ?>
+                        <a class="lg:w-1/2" href="/bais-documents/uploads/<?php echo htmlspecialchars(basename($firstImage)); ?>">
+                            <img alt="ecommerce" class="w-full lg:h-auto h-64 object-cover object-center rounded" src="/bais-documents/uploads/<?php echo htmlspecialchars(basename($firstImage)); ?>">
+                        </a>
+                    <?php else: ?>
+
+                        <h1>No image</h1>
+
+                    <?php endif; ?>
+                    <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                        <h2 class="text-sm title-font text-gray-500 tracking-widest"><?php echo htmlspecialchars($post['category'] ?? 'General'); ?></h2>
+                        <h1 class="text-white text-3xl title-font font-medium mb-1"><?php echo $post['title']; ?></h1>
+
+                        <p class="leading-relaxed"><?php echo $post['description']; ?></p>
+                        <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-800 mb-5">
+                        </div>
+                        <div class="flex">
+                            <span class="title-font font-medium text-white"><?php echo htmlspecialchars($post['date_created']) ?></span>
+                            <a class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">View post</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <?php endforeach; ?>
+
+
     <?php foreach ($posts as $post): ?>
         <article class="mb-10 rounded-xl dark:text-white dark:bg-gray-800 overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col mx-auto border border-gray-400 dark:border-gray-600">
 

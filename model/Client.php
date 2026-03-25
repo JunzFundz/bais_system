@@ -80,6 +80,18 @@ class Client extends Dbh
         error_log("==================");
     }
 
+    public function getBrgy()
+    {
+        $result = $this->mysqli->query("SELECT BRGY_ID, BARANGAY FROM tbl_brgy ORDER BY BARANGAY ASC");
+
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
     public function insertPersonalInfo($pid, $purpose, $userid, $keyId, $fname, $mname, $lname, $citizen, $sex, $civil, $age, $contact, $email, $street, $brgy, $city, $type, $photo, $signature, $letter)
     {
         date_default_timezone_set('Asia/Manila');
@@ -275,7 +287,7 @@ class Client extends Dbh
     public function getPosts(int $limit = 3, int $offset = 0): array
     {
         $stmt = $this->mysqli->prepare(
-            "SELECT id, title, description, FILES 
+            "SELECT id, title, description, date_created, FILES 
          FROM tbl_posts 
          ORDER BY id DESC 
          LIMIT ? OFFSET ?"

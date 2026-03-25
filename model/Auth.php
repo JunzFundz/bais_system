@@ -248,15 +248,15 @@ class Signup extends Dbh
 
                     switch ($_SESSION['user_role']) {
                         case 1:
-                            $redirect = '../public/admin/home.php';
+                            $redirect = '../public/admin/home';
                             break;
 
                         case 2:
-                            $redirect = '../public/staff/home.php';
+                            $redirect = '../public/staff/home';
                             break;
 
                         case 3:
-                            $redirect = '../public/users/home.php';
+                            $redirect = '../public/users/home';
                             break;
 
                         default:
@@ -305,15 +305,16 @@ class Signup extends Dbh
         $user_id = $this->mysqli->insert_id;
         $_SESSION['u_id'] = $user_id;
         $_SESSION['PP'] = $photo;
-        $stmt2 = $this->mysqli->prepare("INSERT INTO tbl_personal_info (USER_ID, DATE_ADDED, PI_STATUS)
-        VALUES (?,?,?,?,?)
-    ");
+        $_SESSION['u_email'] = $email;
+    //     $stmt2 = $this->mysqli->prepare("INSERT INTO tbl_personal_info (USER_ID, DATE_ADDED, PI_STATUS)
+    //     VALUES (?,?,?,?,?)
+    // ");
 
-        if (!$stmt2) return 4;
-        $sts = 'yes';
-        $stmt2->bind_param("iss", $user_id, $nowdate, $sts);
+    //     if (!$stmt2) return 4;
+    //     $sts = 'yes';
+    //     $stmt2->bind_param("iss", $user_id, $nowdate, $sts);
 
-        if (!$stmt2->execute()) return 5;
+    //     if (!$stmt2->execute()) return 5;
 
         $this->sendGenPass($email, $pass);
         $redirect = '../public/users/';
