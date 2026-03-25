@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 24, 2026 at 03:46 AM
+-- Generation Time: Mar 25, 2026 at 11:50 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -161,6 +161,7 @@ CREATE TABLE `tbl_posts` (
   `TITLE` longtext NOT NULL,
   `DESCRIPTION` longtext NOT NULL,
   `FILES` longtext NOT NULL,
+  `DATE_CREATED` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `STATUS` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -168,8 +169,8 @@ CREATE TABLE `tbl_posts` (
 -- Dumping data for table `tbl_posts`
 --
 
-INSERT INTO `tbl_posts` (`ID`, `TITLE`, `DESCRIPTION`, `FILES`, `STATUS`) VALUES
-(3, 'Dimension Chorus 2nd', 'Nice', '[\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_signature_1773053444659.png\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_signature_1773141321456.png\"]', 1);
+INSERT INTO `tbl_posts` (`ID`, `TITLE`, `DESCRIPTION`, `FILES`, `DATE_CREATED`, `STATUS`) VALUES
+(3, 'Dimension Chorus 2nd', 'Nice', '[\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_signature_1773053444659.png\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_signature_1773141321456.png\"]', '2026-03-24 13:07:26', 1);
 
 -- --------------------------------------------------------
 
@@ -265,7 +266,7 @@ CREATE TABLE `tbl_users` (
 
 INSERT INTO `tbl_users` (`u_id`, `google_uid`, `PP`, `u_email`, `u_username`, `u_password`, `user_role`, `u_otp`, `OTP_DATE`, `DATE_CREATED`, `u_status`) VALUES
 (35, NULL, '', 'fundadordiongie@gmail.com', NULL, '$2y$10$9RU0jTI473XiJVEFjD7ZC.63oYf6uGWdpcSa7voc7ou1do2hRJ0Zm', 1, '230483', '2026-03-16 20:43:28', '2026-03-16 20:43:28', 'yes'),
-(50, 'i9Jz00YMjVUftt5PTcorNc5b69G3', 'https://lh3.googleusercontent.com/a/ACg8ocJ37R3iTIP6dmckKz2gK4a-kUfI5RQcUf2Qpu341XeE51bVYA=s96-c', 'junzfundador142@gmail.com', NULL, '$2y$10$upwG8bXOn0oJEPcs8RW6/.KfRz546zAnLQvnFp7SW8oz7skbWVPp.', 3, NULL, NULL, '2026-03-24 08:56:23', 'yes');
+(53, NULL, NULL, 'junzfundador142@gmail.com', NULL, '$2y$10$qOEaqGZsstMFs0008pB9NuG..WaP1TF9fZDrKkmEm3.ULntEqSp2C', 3, '294871', '2026-03-25 15:03:52', '2026-03-25 15:03:52', 'verified');
 
 --
 -- Indexes for dumped tables
@@ -393,7 +394,7 @@ ALTER TABLE `tbl_status`
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
