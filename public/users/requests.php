@@ -1,114 +1,107 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
-
 include('header.php') ?>
 
-
 <section class="container px-4 mx-auto">
-    <h2 class="text-lg font-medium text-gray-800 dark:text-white">Requests</h2>
+    <h2 class="text-lg font-medium mt-12 text-gray-800 dark:text-white">Requests</h2>
     <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">You can see all your requests here.</p>
-    <div class="flex flex-col mt-6">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+    <div class="flex flex-col mt-6 justify-center">
+        <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8 grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 px-7">
+            <?php if (!empty($req)) {
+                foreach ($req as $rrow):
+                    if ($rrow['REQ_STATUS'] === 'pending') { ?>
 
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="myTable">
-                        <thead class="bg-gray-50 dark:bg-gray-800">
-                            <tr>
-                                <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    <button class="flex items-center gap-x-3 focus:outline-none">
-                                        <span>Control number</span>
+                        <div class="flex w-full border-2 border-gray-400 overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+                            <div class="flex items-center justify-center w-12 bg-yellow-400">
+                                <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM21.6667 28.3333H18.3334V25H21.6667V28.3333ZM21.6667 21.6666H18.3334V11.6666H21.6667V21.6666Z" />
+                                </svg>
+                            </div>
 
-                                        <svg class="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z" fill="currentColor" stroke="currentColor" stroke-width="0.1" />
-                                            <path d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z" fill="currentColor" stroke="currentColor" stroke-width="0.1" />
-                                            <path d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z" fill="currentColor" stroke="currentColor" stroke-width="0.3" />
-                                        </svg>
-                                    </button>
-                                </th>
+                            <div class="px-4 py-2 -mx-3 w-full">
+                                <div class="mx-3">
+                                    <span class="font-semibold text-yellow-400 dark:text-yellow-300"><?= strtoupper($rrow['REQ_STATUS']) ?></span>
+                                    <p class="text-sm text-gray-600 dark:text-gray-200">
+                                        <span>Control Number : </span class="font-bold"><?= htmlspecialchars($rrow['CTRL_NUM']) ?>
+                                        <br>
+                                        <span>Full Name : </span><span class="font-bold"><?= htmlspecialchars($rrow['FNAME'] . " " . $rrow['MNAME'] . " " . $rrow['LNAME']) ?></span>
+                                        <br>
+                                        <span>Request Date : </span><span class="font-bold"> <?= htmlspecialchars(date("Y-m-d", strtotime($rrow['REQ_DATE']))) ?></span>
+                                    </p>
+                                </div>
+                            </div>
 
-                                <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    Full name
-                                </th>
+                            <!-- <div class="px-4 py-2 -mx-3 relative">
+                                <div class="mx-3">
+                                    <i class=" text-red-600 cursor-pointer fa-solid fa-box-archive archive-requests"></i>
+                                </div>
+                            </div> -->
+                        </div>
 
-                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    Document
-                                </th>
+                    <?php } else if ($rrow['REQ_STATUS'] === 'approved') { ?>
 
-                                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Status</th>
+                        <div class="border-2 border-gray-400 flex w-full overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+                            <div class="flex items-center justify-center w-12 bg-emerald-500">
+                                <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM16.6667 28.3333L8.33337 20L10.6834 17.65L16.6667 23.6166L29.3167 10.9666L31.6667 13.3333L16.6667 28.3333Z" />
+                                </svg>
+                            </div>
 
-                                <th scope="col" class="relative py-3.5 px-4">
-                                    <span class="">Action</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                            <?php if (!empty($req)) {
-                                foreach ($req as $rrow): ?>
+                            <div class="px-4 py-2 -mx-3  w-full">
+                                <div class="mx-3">
+                                    <span class="font-semibold text-emerald-500 dark:text-emerald-400"><?= strtoupper($rrow['REQ_STATUS']) ?></span>
+                                    <p class="text-sm text-gray-600 dark:text-gray-200">
+                                        <span>Control Number : </span class="font-bold"><?= htmlspecialchars($rrow['CTRL_NUM']) ?>
+                                        <br>
+                                        <span>Full Name : </span><span class="font-bold"><?= htmlspecialchars($rrow['FNAME'] . " " . $rrow['MNAME'] . " " . $rrow['LNAME']) ?></span>
+                                        <br>
+                                        <span>Request Date : </span><span class="font-bold"> <?= htmlspecialchars(date("Y-m-d", strtotime($rrow['REQ_DATE']))) ?></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2 -mx-3 relative">
+                                <div class="mx-3">
+                                    <i class=" text-red-600 cursor-pointer fa-solid fa-box-archive archive-requests"></i>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <tr>
-                                        <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                                            <div>
-                                                <h2 class="font-medium text-gray-800 dark:text-white "><?= $rrow['CTRL_NUM'] ?></h2>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                            <div>
-                                                <h4 class="text-gray-700 dark:text-gray-200"><?= $rrow['FNAME'] . " " . $rrow['MNAME'] . " " . $rrow['LNAME'] ?></h4>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <?= $rrow['CERT_NAME'] ?>
-                                            </div>
-                                        </td>
+                    <?php } else { ?>
 
-                                        <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
-                                            <?php if ($rrow['REQ_STATUS'] == 'pending') { ?>
-                                                <div class="inline px-3 py-1 text-sm font-normal rounded-full text-amber-800 gap-x-2 bg-amber-500/60 dark:bg-gray-800">
-                                                    <?= $rrow['REQ_STATUS'] ?>
-                                                </div>
-                                            <?php } else if ($rrow['REQ_STATUS'] == 'approved') { ?>
-                                                <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                                    <?= $rrow['REQ_STATUS'] ?>
-                                                </div>
-                                            <?php } else { ?>
-                                                <div class="inline px-3 py-1 text-sm font-normal rounded-full text-red-800 gap-x-2 bg-red-100/60 dark:bg-gray-800">
-                                                    <?= $rrow['REQ_STATUS'] ?>
-                                                </div>
-                                            <?php } ?>
-                                        </td>
+                        <div class="flex w-full overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 border-gray-400">
+                            <div class="flex items-center justify-center w-12 bg-red-500">
+                                <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 3.36667C10.8167 3.36667 3.3667 10.8167 3.3667 20C3.3667 29.1833 10.8167 36.6333 20 36.6333C29.1834 36.6333 36.6334 29.1833 36.6334 20C36.6334 10.8167 29.1834 3.36667 20 3.36667ZM19.1334 33.3333V22.9H13.3334L21.6667 6.66667V17.1H27.25L19.1334 33.3333Z" />
+                                </svg>
+                            </div>
 
-                                        <td class="flex items-center px-6 py-4">
-                                            <a href="#" class="font-medium text-blue-900 hover:underline">Edit</a>
-                                            <?php if ($rrow['REQ_STATUS'] == 'pending') { ?>
-                                                <a href="#" class="font-medium text-red-600 hover:underline ms-3">Cancel</a>
-                                            <?php } else if ($rrow['REQ_STATUS'] == 'approved') { ?>
-                                                <a href="#" class="font-medium text-red-600 hover:underline ms-3">Archive</a>
-                                            <?php } else { ?>
-                                                 <a href="#" class="font-medium text-red-600 hover:underline ms-3">Archive</a>
-                                            <?php } ?>
+                            <div class="px-4 py-2 -mx-3  w-full">
+                                <div class="mx-3">
+                                    <span class="font-semibold text-red-500 dark:text-red-400"><?= strtoupper($rrow['REQ_STATUS']) ?></span>
+                                    <p class="text-sm text-gray-600 dark:text-gray-200">
+                                        <span>Control Number : </span class="font-bold"><?= htmlspecialchars($rrow['CTRL_NUM']) ?>
+                                        <br>
+                                        <span>Full Name : </span><span class="font-bold"><?= htmlspecialchars($rrow['FNAME'] . " " . $rrow['MNAME'] . " " . $rrow['LNAME']) ?></span>
+                                        <br>
+                                        <span>Request Date : </span><span class="font-bold"> <?= htmlspecialchars(date("Y-m-d", strtotime($rrow['REQ_DATE']))) ?></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2 -mx-3 relative">
+                                <div class="mx-3">
+                                    <i class=" text-red-600 cursor-pointer fa-solid fa-box-archive archive-requests"></i>
+                                </div>
+                            </div>
+                        </div>
 
-                                        </td>
-                                    </tr>
+                    <?php } ?>
 
-                            <?php endforeach;
-                            } else {
-                                echo "No data found";
-                            }
-                            ?>
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
+            <?php endforeach;
+            } else {
+                echo "No data found";
+            }
+            ?>
         </div>
-    </div>
 </section>
-
-<script>
-    let table = new DataTable('#myTable');
-</script>
+<br>
 <?php include('footer.php') ?>

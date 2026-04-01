@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-
     // PREVIEW CLICK
     previewLetterBtn.addEventListener("click", function () {
         letterModal.classList.remove("hidden");
@@ -83,22 +82,19 @@ document.addEventListener('DOMContentLoaded', () => {
         changeReq.classList.remove('hidden');
     });
 
-
     let sigDrawing = false;
     let sigLastX = 0;
     let sigLastY = 0;
     let sigCapturedImage = null;
 
-    // Debug
-    console.log('=== SIGNATURE DEBUG ===');
     console.log('Canvas:', sigCanvas);
     console.log('Context:', ctx);
     console.log('Canvas width:', sigCanvas.width);
     console.log('Canvas height:', sigCanvas.height);
 
     // Set canvas size
-    sigCanvas.width = 320;
-    sigCanvas.height = 160;
+    sigCanvas.width = 400;
+    sigCanvas.height = 300;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.lineWidth = 2;
@@ -442,8 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const indicators = [
         document.getElementById("indicator-1"),
         document.getElementById("indicator-2"),
-        document.getElementById("indicator-3"),
-        document.getElementById("indicator-4")
+        document.getElementById("indicator-3")
     ];
     const lines = [
         document.getElementById("line-1"),
@@ -463,9 +458,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show error message
     function showError(message) {
-        errorContainer.innerHTML = message;
-        errorContainer.classList.remove('hidden');
-        errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        Toastify({
+            text: message,
+            duration: 4000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#ef4444", // red
+            stopOnFocus: true
+        }).showToast();
     }
 
     // Hide error message
@@ -518,60 +518,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Validate Step 3: Photo & Signature
-    const validateCertId = parseInt(document.getElementById('cert-id').value);
-    let hideSignature = document.getElementById('open-signature');
-    let hideCamera = document.getElementById('open-camera');
+    function validateStep3() {
+        const validateCertId = parseInt(document.getElementById('cert-id').value);
+        let hideSignature = document.getElementById('open-signature');
+        let hideCamera = document.getElementById('open-camera');
+        const errors = [];
+        const imageFilename = document.getElementById('image-filename');
+        const signatureFilename = document.getElementById('signature-filename');
+        const letter = document.getElementById('letter-filename');
+        const type = document.getElementById('select-type').value;
 
-    if (validateCertId === 3 || validateCertId === 4) {
-        function validateStep3() {
-            const errors = [];
-            const imageFilename = document.getElementById('image-filename');
-            const signatureFilename = document.getElementById('signature-filename');
-            const letter = document.getElementById('letter-filename');
-            const type = document.getElementById('select-type').value;
+        const purpose = document.getElementById('purpose').value.trim()
 
-            // ✅ Only validate letter if type is "2"
-            if (type === "2") {
+        if (!purpose) {
+            errors.push('Empty purpose');
+        }
+
+        if (validateCertId === 3 || validateCertId === 4) {
+            if (type === '2') {
                 if (!letter || !letter.dataset.imageData) {
                     errors.push('Please upload authorization letter');
                 }
             }
 
-            // Check if photo is saved
-            if (!imageFilename || !imageFilename.dataset.imageData) {
+            if (!imageFilename ||
+                !imageFilename.dataset.imageData ||
+                imageFilename.dataset.imageData.trim() === "") {
                 errors.push('Please add your photo');
             }
 
-            // Check if signature is saved
-            if (!signatureFilename || !signatureFilename.dataset.imageData) {
+            if (!signatureFilename ||
+                !signatureFilename.dataset.imageData ||
+                signatureFilename.dataset.imageData.trim() === "") {
                 errors.push('Please add your signature');
             }
 
-            return errors;
-        }
-        validateStep3()
-    } else {
-        hideCamera.classList.add("hidden");
-        hideSignature.classList.add("hidden");
+        } else {
+            if (hideCamera) hideCamera.classList.add("hidden");
+            if (hideSignature) hideSignature.classList.add("hidden");
 
-        function validateStep3() {
-            const errors = [];
-            const letter = document.getElementById('letter-filename');
-            const type = document.getElementById('select-type').value;
-
-            // ✅ Only validate letter if type is "2"
-            if (type === "2") {
-                if (!letter || !letter.dataset.imageData) {
-                    errors.push('Please upload authorization letter');
-                }
-            }
-
-            return errors;
         }
 
-        validateStep3()
+        console.log("STEP 3 ERRORS:", errors); // DEBUG
+        return errors;
     }
-
 
     // Validate Step 4: Review
     function validateStep4() {
@@ -601,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (errors.length > 0) {
-            showError(errors.join('<br>'));
+            showError(errors.join('\n'));
             return false;
         }
 
@@ -672,12 +662,19 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Update review section
-    function updateReviewSection() {
-        const formData = collectFormData();
-        document.getElementById('review-name').textContent = `${formData.fname} ${formData.mname} ${formData.lname}`;
-        document.getElementById('review-email').textContent = formData.email;
-        document.getElementById('review-address').textContent = `${formData.street}, ${formData.Barangay}, ${formData.city}`;
+    function openConfirmModal(msg) {
+        document.getElementById('my-modal').classList.remove('hidden');
+        const textTittle = document.getElementById('modal-title');
+
+        textTittle.innerText = msg
+    }
+
+    function openAlertModal() {
+        document.getElementById('alert-modal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('my-modal').classList.add('hidden');
     }
 
     // Next button with validation
@@ -687,16 +684,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentStep++;
                 showStep(currentStep);
             } else {
-                // Update review section before submit
-                updateReviewSection();
-                // Show submit confirmation
-                if (confirm("Submit the form?")) {
-                    submitForm();
-                }
+                openConfirmModal()
             }
         }
     });
-
     // Previous button
     prevBtn.addEventListener("click", () => {
         if (currentStep > 0) {
@@ -704,6 +695,16 @@ document.addEventListener('DOMContentLoaded', () => {
             showStep(currentStep);
         }
     });
+
+    const submitRequestForm = document.getElementById('confirm-request');
+    const textTittle = document.getElementById('modal-title');
+
+    submitRequestForm.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        submitForm()
+        closeConfirmModal()
+    })
 
     function submitForm() {
         const formData = collectFormData();
@@ -713,8 +714,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
 
-        console.log('=== SUBMITTING FORM ===');
-        console.log('Form Data:', formData);
+        // console.log('=== SUBMITTING FORM ===');
+        // console.log('Form Data:', formData);
 
         fetch('../../data/user-add-requests.php', {
             method: 'POST',
@@ -723,36 +724,24 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify(formData)
         })
-            .then(response => {
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error('Response is not JSON. Content-Type: ' + contentType);
-                }
-
-                return response.text().then(text => {
-                    console.log("RAW RESPONSE:", text);
-                    return text ? JSON.parse(text) : {};
-                });
-            })
+            .then(res => res.json())
             .then(data => {
-                console.log('Response data:', data);
-
-                if (data.status === 'success') {
-                    alert('Form submitted successfully!');
-                    console.log(data)
+                if (data.success) {
+                    showLoader()
+                    setTimeout(() => {
+                        openAlertModal()
+                        hideLoader()
+                    }, 5000)
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('Error: ' + data.success);
                 }
             })
             .catch(error => {
                 console.error('Fetch error:', error);
-                alert('An error occurred: ' + error.message);
+                alert('An error occurred: ' + error);
 
                 console.error('Error details:', {
-                    message: error.message,
+                    message: error.error,
                     stack: error.stack
                 });
             })
@@ -766,48 +755,47 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const updateInformation = document.getElementById('update-user');
-updateInformation.addEventListener('click', async (e) => {
 
-    e.preventDefault();
+if (updateInformation) {
+    updateInformation.addEventListener('click', async (e) => {
+        e.preventDefault();
 
-    const payload = {
-        fname: document.getElementById('fname').value,
-        mname: document.getElementById('mname').value,
-        lname: document.getElementById('lname').value,
-        cship: document.getElementById('cship').value,
-        sex: document.getElementById('sex').value,
-        cs: document.getElementById('cs').value,
-        age: document.getElementById('age').value,
-        contact: document.getElementById('contact').value,
-        street: document.getElementById('street').value,
-        brgy: document.getElementById('brgy').value,
-        city: document.getElementById('city').value
-    };
+        const payload = {
+            fname: document.getElementById('fname').value,
+            mname: document.getElementById('mname').value,
+            lname: document.getElementById('lname').value,
+            cship: document.getElementById('cship').value,
+            sex: document.getElementById('sex').value,
+            cs: document.getElementById('cs').value,
+            age: document.getElementById('age').value,
+            contact: document.getElementById('contact').value,
+            street: document.getElementById('street').value,
+            brgy: document.getElementById('brgy').value,
+            city: document.getElementById('city').value
+        };
 
-    try {
-        const res = await fetch("../../data/user-update-info.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+        try {
+            const res = await fetch("../../data/user-update-info.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        console.log("Server response:", data);
+            if (data.status === "success") {
+                alert(data.message); // fix this too
+            } else {
+                alert(data.message);
+            }
 
-        if (data.status === "success") {
-            alert(data)
-            // window.location.reload();
-
-        } else {
-            alert(data.message);
+        } catch (error) {
+            console.error(error);
+            alert("Update failed");
         }
+    });
+}
 
-    } catch (error) {
-        console.error(error);
-        alert("Update failed");
-    }
 
-});

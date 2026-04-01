@@ -2,7 +2,7 @@
 include("header.php");
 ?>
 
-<div class="bg-slate-50 text-slate-600 font-sans antialiased overflow-x-hidden">
+<div class="bg-slate-50 text-slate-600 dark:bg-gray-900 font-sans antialiased overflow-x-hidden">
     <div class="flex h-screen overflow-hidden">
 
         <!-- Sidebar -->
@@ -10,10 +10,9 @@ include("header.php");
             <!-- Logo Area -->
             <div class="h-20 flex items-center px-8 border-b border-slate-50/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30">
-                        <span class="text-lg font-semibold font-poppins">H</span>
-                    </div>
-                    <span class="text-dark text-xl font-extrabold tracking-tight font-poppins">HORIZON<span class="text-primary">.</span></span>
+                    <button id="theme-toggle" class=" mr-4 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 dark:border-dark-border dark:text-slate-400 dark:hover:bg-white/5">
+                        <iconify-icon id="theme-icon" icon="solar:sun-2-linear" width="20"></iconify-icon>
+                    </button>
                 </div>
             </div>
 
@@ -112,7 +111,7 @@ include("header.php");
                         <div class="text-right hidden md:block">
                             <p id="user-email" class="text-sm font-semibold text-dark group-hover:text-primary transition-colors"></p>
                             <p class="text-xs text-slate-400">Administrator</p>
-                        </div>  
+                        </div>
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-indigo-400 p-[2px]">
                             <img id="user-photo" alt="Profile" class="w-full h-full object-cover border-white border-2 rounded-full">
                         </div>
@@ -130,8 +129,6 @@ include("header.php");
 <?php include("footer.php"); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
-
     const token = sessionStorage.getItem("googleToken");
     const user = document.getElementById("user-email").textContent = sessionStorage.getItem("userName");
     const userNameDisplay = document.getElementById("username-display").textContent = sessionStorage.getItem("userName");

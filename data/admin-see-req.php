@@ -1,5 +1,5 @@
 <?php
-include(__DIR__ . '/../model/AdminModel.php');
+include(__DIR__ . '/../model/Staff.php');
 $admin = new AdminModel();
 session_start();
 if (isset($_POST['view'])) {
@@ -8,13 +8,13 @@ if (isset($_POST['view'])) {
 
     $req = $admin->getRequests($rid, $uid);
 
-    echo $_SESSION['USER_ID'] = $req['USER_ID'];
+    $_SESSION['USER_ID'] = $req['USER_ID'];
     $_SESSION['PI_ID'] = $req['PI_ID'];
     $_SESSION['REQ_ID'] = $req['REQ_ID'];
     $_SESSION['CERT_ID'] = $req['CERT_ID'];
     if ($req) { ?>
 
-        <h1 class="text-2xl font-bold mb-4"><?= htmlspecialchars($req['CTRL_NUM']) ?></h1>
+        <h1 class="text-2xl font-bold mb-4 dark:text-white text-gray-800"><?= htmlspecialchars($req['CTRL_NUM']) ?></h1>
 
         <section class="bg-white dark:bg-gray-700">
             <div class="max-w-2xl px-4 py-2 mx-auto ">
@@ -35,7 +35,7 @@ if (isset($_POST['view'])) {
                         </div>
                         <div class="sm:col-span-2">
                             <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-                            <input type="TEXT" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="<?= htmlspecialchars($req['BRGY'] . ", " . $req['STREET'] . " " . $req['CITY']) ?>">
+                            <input type="TEXT" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="<?= htmlspecialchars($req['BARANGAY'] . ", " . $req['STREET'] . " " . $req['CITY']) ?>">
                         </div>
                         <div class="sm:col-span-2">
                             <figure class="max-w-lg">
@@ -45,7 +45,8 @@ if (isset($_POST['view'])) {
                         </div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="../admin/verify"
+                        <a href="../staff/verify"
+                        target="_blank"
                         id="accept-req"
                         type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Proceed

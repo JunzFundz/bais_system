@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 25, 2026 at 11:50 AM
+-- Generation Time: Apr 01, 2026 at 08:24 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -37,9 +37,41 @@ CREATE TABLE `tbl_brgy` (
 --
 
 INSERT INTO `tbl_brgy` (`BRGY_ID`, `BARANGAY`) VALUES
-(1, 'dfgdfgfdg'),
-(2, 'Juan Luna'),
-(3, 'sdfsdfsd');
+(1, 'Barangay I (Pob.)'),
+(2, 'Barangay II (Pob.)'),
+(3, 'Basak'),
+(4, 'Biñohon'),
+(5, 'Cabanlutan'),
+(6, 'Calasga-an'),
+(7, 'Cambagahan'),
+(8, 'Cambaguio'),
+(9, 'Cambanjao'),
+(10, 'Cambuilao'),
+(11, 'Canlargo'),
+(12, 'Capiñahan'),
+(13, 'Consolacion'),
+(14, 'Dansulan'),
+(15, 'Hangyad'),
+(16, 'Katacgahan (Tacgahan)'),
+(17, 'La Paz'),
+(18, 'Lo-oc'),
+(19, 'Lonoy'),
+(20, 'Mabunao'),
+(21, 'Manlipac'),
+(22, 'Mansangaban'),
+(23, 'Okiot'),
+(24, 'Olympia'),
+(25, 'Panala-an'),
+(26, 'Panam-angan'),
+(27, 'Rosario'),
+(28, 'Sab-ahan'),
+(29, 'San Isidro'),
+(30, 'Tagpo'),
+(31, 'Talungon'),
+(32, 'Tamisu'),
+(33, 'Tamogong'),
+(34, 'Tangculogan'),
+(35, 'Valencia');
 
 -- --------------------------------------------------------
 
@@ -72,17 +104,22 @@ INSERT INTO `tbl_certificates` (`CERT_ID`, `CERT_NAME`, `CONTENTS`) VALUES
 
 CREATE TABLE `tbl_officials` (
   `OFFICIAL_ID` int(11) NOT NULL,
+  `PHOTO` text DEFAULT NULL,
+  `EMP_ID` varchar(50) NOT NULL,
   `F_NAME` varchar(25) NOT NULL,
   `L_NAME` varchar(25) NOT NULL,
   `M_NAME` varchar(25) NOT NULL,
   `DOB` date NOT NULL,
   `POB` varchar(255) NOT NULL,
-  `CIVIL_STATUS` varchar(20) NOT NULL,
+  `CIVIL_STATUS` int(11) NOT NULL,
   `EMAIL` varchar(50) NOT NULL,
   `CONTACT` varchar(15) NOT NULL,
-  `POSITION` varchar(255) NOT NULL,
+  `POSITION` int(11) NOT NULL,
   `BRGY_ID` int(255) NOT NULL,
   `TITLE` varchar(20) NOT NULL,
+  `OFF_SIGNATURE` text DEFAULT NULL,
+  `DATE_STARTED` date NOT NULL,
+  `DATE_ENDED` date NOT NULL,
   `STATUS` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -90,10 +127,9 @@ CREATE TABLE `tbl_officials` (
 -- Dumping data for table `tbl_officials`
 --
 
-INSERT INTO `tbl_officials` (`OFFICIAL_ID`, `F_NAME`, `L_NAME`, `M_NAME`, `DOB`, `POB`, `CIVIL_STATUS`, `EMAIL`, `CONTACT`, `POSITION`, `BRGY_ID`, `TITLE`, `STATUS`) VALUES
-(1, 'Dione', 'Fundador', 'Caday', '1998-08-25', 'manjuyod', 'Single', 'diongief@gmail.com', '09319158016', '1', 2, 'Honorable', 'NEW'),
-(2, 'Dione', 'Fundador', 'Manaban', '1998-09-25', 'manjuyod', 'Single', 'fundadordiongie@gmail.com', '09319158016', 'captain', 2, '', 'NEW'),
-(3, 'Diongie', 'Fundador', 'Caday', '2026-03-05', 'Manjuyod negros oriental', 'Single', 'devdhaif@gmail.com', '09537217937', 'captain', 2, 'Honorable', 'NEW');
+INSERT INTO `tbl_officials` (`OFFICIAL_ID`, `PHOTO`, `EMP_ID`, `F_NAME`, `L_NAME`, `M_NAME`, `DOB`, `POB`, `CIVIL_STATUS`, `EMAIL`, `CONTACT`, `POSITION`, `BRGY_ID`, `TITLE`, `OFF_SIGNATURE`, `DATE_STARTED`, `DATE_ENDED`, `STATUS`) VALUES
+(4, '1775013080_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg', '90823492374', 'Junz', 'Caday', 'FUNDADOR', '2026-03-04', 'Caday', 1, 'diongief@gmail.com', '09537217937', 1, 2, 'ASFasdf', '', '2026-03-30', '2026-03-30', 'active'),
+(5, '1774849561_signature_1773141321456.png', '90823492374', 'Diongie', 'Caday', 'Caday', '2026-03-04', 'Caday', 2, 'diongief@gmail.com', '09537217937', 1, 2, 'Junzcf.devs', '', '2026-03-30', '2026-03-30', 'active');
 
 -- --------------------------------------------------------
 
@@ -114,7 +150,7 @@ CREATE TABLE `tbl_personal_info` (
   `CONTACT` varchar(11) DEFAULT NULL,
   `EMAIL` varchar(50) DEFAULT NULL,
   `STREET` varchar(255) DEFAULT NULL,
-  `BRGY` varchar(50) DEFAULT NULL,
+  `BRGY_ID` int(50) NOT NULL,
   `CITY` varchar(50) DEFAULT NULL,
   `TYPE` varchar(20) DEFAULT NULL,
   `PHOTO` longtext DEFAULT NULL,
@@ -127,9 +163,8 @@ CREATE TABLE `tbl_personal_info` (
 -- Dumping data for table `tbl_personal_info`
 --
 
-INSERT INTO `tbl_personal_info` (`PI_ID`, `USER_ID`, `FNAME`, `MNAME`, `LNAME`, `CITIZEN`, `SEX`, `CIVIL`, `AGE`, `CONTACT`, `EMAIL`, `STREET`, `BRGY`, `CITY`, `TYPE`, `PHOTO`, `SIGNATURE`, `DATE_ADDED`, `PI_STATUS`) VALUES
-(34, 35, 'Gwapo ko', 'Manaban', 'Fundador', 'filipino', 'male', 'married', '79', '09319158016', 'fundadordiongie@gmail.com', 'juan luna', 'II', 'BAIS', '1', 'photo_1774246098_69c0d8d288f0b.jpg', 'signature_1774246098_69c0d8d2896ae.png', '2026-03-23 06:10:35', 'active'),
-(42, 50, 'Dione', 'Manaban', 'Fundador', 'filipino', 'male', 'married', '79', '09319158016', 'junzfundador142@gmail.com', 'juan luna', 'II', 'BAIS', '2', 'photo_1774318496_69c1f3a037752.jpg', 'signature_1774318496_69c1f3a038b46.png', '2026-03-24 02:14:56', 'active');
+INSERT INTO `tbl_personal_info` (`PI_ID`, `USER_ID`, `FNAME`, `MNAME`, `LNAME`, `CITIZEN`, `SEX`, `CIVIL`, `AGE`, `CONTACT`, `EMAIL`, `STREET`, `BRGY_ID`, `CITY`, `TYPE`, `PHOTO`, `SIGNATURE`, `DATE_ADDED`, `PI_STATUS`) VALUES
+(43, 54, 'Dione', 'Manaban', 'Fundador', 'filipino', 'male', 'Single', '79', '09319158016', 'junzfundador142@gmail.com', 'juan luna', 1, 'Bais', '2', 'photo_1775023214_69ccb46e4abd1.jpg', 'signature_1775023214_69ccb46e4c6b2.png', '2026-04-01 06:00:14', 'active');
 
 -- --------------------------------------------------------
 
@@ -170,7 +205,7 @@ CREATE TABLE `tbl_posts` (
 --
 
 INSERT INTO `tbl_posts` (`ID`, `TITLE`, `DESCRIPTION`, `FILES`, `DATE_CREATED`, `STATUS`) VALUES
-(3, 'Dimension Chorus 2nd', 'Nice', '[\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_signature_1773053444659.png\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774255077_signature_1773141321456.png\"]', '2026-03-24 13:07:26', 1);
+(4, 'Dimension Chorus 2nd', 'Nice gwapa kaayo', '[\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_259b0762-5ad2-4f4d-ad71-588408a0f085.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_2089a979-fd14-49fd-874b-685b36f59639.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_8277bf54-b8b6-46b6-80fa-743de9311778.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_394666e6-117b-4d5d-a4f6-3b8ac0fd7a54.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_574918406_1141073091485029_7399286479672047395_n.jpg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_576921887_689445843814502_2162802240117555914_n.jpg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_590235744_1415104546912614_4354408474593096173_n.png\"]', '2026-03-31 01:00:28', 1);
 
 -- --------------------------------------------------------
 
@@ -194,17 +229,7 @@ CREATE TABLE `tbl_requests` (
 --
 
 INSERT INTO `tbl_requests` (`REQ_ID`, `USER_ID`, `CERT_ID`, `PURPOSE`, `LETTER`, `CTRL_NUM`, `REQ_DATE`, `REQ_STATUS`) VALUES
-(41, 35, 3, '12hahaha', '', '5470-5038-7090', '2026-03-23 13:19:22', 'pending'),
-(42, 35, 3, '12hahaha', '', '9854-7901-8108', '2026-03-23 13:20:55', 'pending'),
-(43, 35, 3, '', '', '7800-4258-3865', '2026-03-23 13:24:03', 'pending'),
-(44, 35, 3, '12hahaha', '', '7152-3817-0193', '2026-03-23 13:24:58', 'declined'),
-(45, 35, 3, '12hahaha', '', '5251-8814-5528', '2026-03-23 13:25:39', 'pending'),
-(46, 35, 4, '', '', '9536-9925-4023', '2026-03-23 13:36:11', 'pending'),
-(47, 35, 4, '12hahaha', '', '7044-5268-1215', '2026-03-23 14:08:18', 'pending'),
-(48, 35, 2, '12hahaha', '', '7651-4017-4873', '2026-03-23 14:10:08', 'pending'),
-(49, 35, 2, '12hahaha', '', '6742-2032-9419', '2026-03-23 14:10:35', 'pending'),
-(50, 35, 2, '12hahaha', '', '3999-1884-9128', '2026-03-23 14:11:10', 'pending'),
-(51, 50, 3, '12hahaha', 'letter_1774318496_69c1f3a0395e1.png', '4043-9454-1088', '2026-03-24 10:14:56', 'pending');
+(76, 54, 4, 'Motorcycle', '', '7892-4308-9756', '2026-04-01 14:00:14', 'pending');
 
 -- --------------------------------------------------------
 
@@ -238,7 +263,8 @@ CREATE TABLE `tbl_status` (
 --
 
 INSERT INTO `tbl_status` (`STATUS_ID`, `STATUS_NAME`, `DATE_ADDED`) VALUES
-(1, 'Single', '2026-02-28');
+(1, 'Single', '2026-02-28'),
+(2, 'Married', '2026-03-28');
 
 -- --------------------------------------------------------
 
@@ -265,8 +291,9 @@ CREATE TABLE `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`u_id`, `google_uid`, `PP`, `u_email`, `u_username`, `u_password`, `user_role`, `u_otp`, `OTP_DATE`, `DATE_CREATED`, `u_status`) VALUES
-(35, NULL, '', 'fundadordiongie@gmail.com', NULL, '$2y$10$9RU0jTI473XiJVEFjD7ZC.63oYf6uGWdpcSa7voc7ou1do2hRJ0Zm', 1, '230483', '2026-03-16 20:43:28', '2026-03-16 20:43:28', 'yes'),
-(53, NULL, NULL, 'junzfundador142@gmail.com', NULL, '$2y$10$qOEaqGZsstMFs0008pB9NuG..WaP1TF9fZDrKkmEm3.ULntEqSp2C', 3, '294871', '2026-03-25 15:03:52', '2026-03-25 15:03:52', 'verified');
+(35, NULL, '', 'fundadordiongie@gmail.com', NULL, '$2y$10$9RU0jTI473XiJVEFjD7ZC.63oYf6uGWdpcSa7voc7ou1do2hRJ0Zm', 1, '907916', '2026-03-16 20:43:28', '2026-03-16 20:43:28', 'yes'),
+(54, 'i9Jz00YMjVUftt5PTcorNc5b69G3', 'https://lh3.googleusercontent.com/a/ACg8ocJ37R3iTIP6dmckKz2gK4a-kUfI5RQcUf2Qpu341XeE51bVYA=s96-c', 'junzfundador142@gmail.com', NULL, '$2y$10$wJ8aZ/s/cxRi60VqjEz9geU2bPJSUpR/2iMrh2utkgQt48AthSXrC', 3, NULL, NULL, '2026-03-28 17:34:39', 'yes'),
+(55, 'oT0FfSF2rqOfH9pr2jlJkAENJPq2', 'https://lh3.googleusercontent.com/a/ACg8ocJL1qzIEkSb2UqBoiEqcJIhuSK73Jvg2gyi9Kh0KhPP2IVNvbk=s96-c', 'fundadordiongie@gmail.com', NULL, '$2y$10$lB6ftGN8bXGnNK9tr2jR9eVkQhldja89tFDu5HYg22dwZnI6eKx0a', 3, NULL, NULL, '2026-03-31 18:42:49', 'yes');
 
 --
 -- Indexes for dumped tables
@@ -340,7 +367,7 @@ ALTER TABLE `tbl_users`
 -- AUTO_INCREMENT for table `tbl_brgy`
 --
 ALTER TABLE `tbl_brgy`
-  MODIFY `BRGY_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `BRGY_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `tbl_certificates`
@@ -352,13 +379,13 @@ ALTER TABLE `tbl_certificates`
 -- AUTO_INCREMENT for table `tbl_officials`
 --
 ALTER TABLE `tbl_officials`
-  MODIFY `OFFICIAL_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `OFFICIAL_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_personal_info`
 --
 ALTER TABLE `tbl_personal_info`
-  MODIFY `PI_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `PI_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `tbl_position`
@@ -370,13 +397,13 @@ ALTER TABLE `tbl_position`
 -- AUTO_INCREMENT for table `tbl_posts`
 --
 ALTER TABLE `tbl_posts`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_requests`
 --
 ALTER TABLE `tbl_requests`
-  MODIFY `REQ_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `REQ_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `tbl_staff_login`
@@ -388,13 +415,13 @@ ALTER TABLE `tbl_staff_login`
 -- AUTO_INCREMENT for table `tbl_status`
 --
 ALTER TABLE `tbl_status`
-  MODIFY `STATUS_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `STATUS_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

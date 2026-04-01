@@ -6,16 +6,15 @@
     x-transition:leave="transition duration-150 ease-in"
     x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
     x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-    class="fixed inset-0 z-40 overflow-y-auto bg-amber-50/70"
+    class="absolute inset-0 z-30 overflow-y-auto bg-amber-50/70"
     aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0 ">
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <div class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg border border-gray-300 dark:border-white shadow-xl dark:bg-gray-900 sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-
-            <div class="flex justify-center mx-auto">
+            <!-- <div class="flex justify-center mx-auto">
                 <img class="w-auto h-7 sm:h-8" src="https://merakiui.com/images/logo.svg" alt="">
-            </div>
+            </div> -->
 
             <form class="mt-6">
                 <div>
@@ -26,7 +25,7 @@
                 <div class="mt-4">
                     <div class="flex items-center justify-between">
                         <label for="password" class="block text-sm text-gray-800 dark:text-gray-200">Password</label>
-                        <a href="#" class="text-xs text-gray-600 dark:text-gray-400 hover:underline">Forget Password?</a>
+                        <a href="forgot_password" class="text-xs text-gray-600 dark:text-gray-400 hover:underline">Forget Password?</a>
                     </div>
 
                     <input type="password" id="loginPass" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" />

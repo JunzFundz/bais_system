@@ -88,7 +88,19 @@
 <script src="../assets/js/Auth.js"></script>
 <script src="../assets/js/animation.js"></script>
 <script defer type="module" src="includes/firebaseGoogleAuth.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
+    function showToast(msg) {
+        Toastify({
+            text: msg,
+            className: "warning",
+            gravity: "bottom",
+            style: {
+                background: "linear-gradient(to right top, #ff3737, #f22347, #e21253, #d0095d, #bb0d64)",
+            }
+        }).showToast();
+    }
+
     function showLoader() {
         const loader = document.getElementById('preloader');
         if (loader) {
@@ -105,60 +117,96 @@
 
     hideLoader()
     const continueGoogle = document.getElementById('continue-with-google');
-    continueGoogle.addEventListener('click', () => {
-        showLoader()
-    })
+    if (continueGoogle) {
+        continueGoogle.addEventListener('click', () => {
+            showLoader();
+        });
+    }
 
+    const btnReset = document.getElementById("btn-reset");
+    const resetOtpModal = document.getElementById("reset-otp-modal");
 
-    document.getElementById('create-account').addEventListener('click', async function(e) {
-        e.preventDefault();
-        showLoader()
+    if (btnReset) {
+        btnReset.addEventListener("click", async function(e) {
+            e.preventDefault();
+            showLoader();
 
-        const email = document.getElementById('sEmailAddress').value.trim();
-        const password = document.getElementById('sPassword').value.trim();
-        const confirm = document.getElementById('cPassword').value.trim();
-        const emailOutput = document.getElementById('email-see');
+            const email = document.getElementById("resetemail").value.trim();
+            const pass = document.getElementById("npassword").value.trim();
+            const cpass = document.getElementById("cpassword").value.trim();
 
-        try {
-            const res = await fetch('../data/auth.php', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    signup: true,
-                    confirm: confirm,
-                    email: email,
-                    password: password
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.error) {
-                hideLoader()
-                alert(data.error);
-            } else {
-                emailOutput.value = data.email
-                showModal.classList.remove('hidden')
-                hideLoader()
+            // ✅ VALIDATION
+            if (!email || !pass || !cpass) {
+                hideLoader();
+                showToast("All fields are required");
+                return;
             }
 
-        } catch (err) {
-            console.log(err);
-            alert("Request failed");
-        }
-    });
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                hideLoader();
+                showToast("Invalid email format");
+                return;
+            }
+
+            if (pass.length < 6) {
+                hideLoader();
+                showToast("Password must be at least 6 characters");
+                return;
+            }
+
+            if (pass !== cpass) {
+                hideLoader();
+                showToast("Passwords do not match");
+                return;
+            }
+
+            try {
+                const res = await fetch("../data/reset-password.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        reset: true,
+                        email: email,
+                        password: pass
+                    })
+                });
+
+                const data = await res.json();
+
+                hideLoader();
+
+                if (data.error) {
+                    showToast(data.error);
+                } else if (data.success) {
+                    resetOtpModal.classList.remove('hidden')
+                } else {
+                    showToast("Unexpected response");
+                }
+
+            } catch (err) {
+                console.error(err);
+                hideLoader();
+                showToast("Request failed");
+            }
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         hideLoader()
-
+        // const resetOtpInputs = document.querySelectorAll('.otp-input');
+        //Log in
         const otpInputs = document.querySelectorAll('.otp-input');
         const otpForm = document.getElementById('otpForm');
 
+        const resetOtpForm = document.getElementById('resetOtpForm');
+        const cpass = document.getElementById("cpassword").value.trim();
+
+        const resend = document.getElementById("resend-otp");
+
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
-                // Move to next input if a digit is entered
                 if (e.data && /^\d$/.test(e.data)) {
                     if (index < otpInputs.length - 1) {
                         otpInputs[index + 1].focus();
@@ -174,6 +222,95 @@
                     }
                 }
             });
+        });
+
+        resend.addEventListener('click', async (e) => {
+            e.preventDefault();
+            let otpCode = '';
+            otpInputs.forEach(input => {
+                otpCode += '';
+            });
+
+            const getEmail = document.getElementById('resetemail').value;
+
+            showLoader();
+
+            try {
+                const res = await fetch('../data/resend-otp.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        resend_otp: true,
+                        email: getEmail
+                    })
+                });
+
+                const data = await res.json();
+                hideLoader();
+
+                if (data.error) {
+                    showToast(data.error);
+                } else if (data.success) {
+                    showToast(data.success);
+                } else {
+                    showToast("Unexpected error");
+                }
+
+            } catch (err) {
+                hideLoader();
+                console.error(err);
+                alert('Request failed, please try again.');
+            }
+        });
+
+        resetOtpForm.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            let otpCode = '';
+            otpInputs.forEach(input => {
+                otpCode += input.value;
+            });
+
+            const getEmail = document.getElementById('resetemail').value;
+            const cpass = document.getElementById("cpassword").value.trim();
+
+            showLoader();
+            console.log(cpass);
+
+            try {
+                const res = await fetch('../data/verify-reset-otp.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        verify_otp: true,
+                        email: getEmail,
+                        pass: cpass,
+                        otpCode: otpCode
+                    })
+                });
+
+                const data = await res.json();
+                hideLoader();
+
+                if (data.error) {
+                    showToast(data.error);
+                } else if (data.success) {
+                    showToast(data.success);
+                    setTimeout(() => {
+                        window.location.href = 'home'
+                    }, 4000);
+                } else {
+                    showToast("Unexpected error");
+                }
+            } catch (err) {
+                hideLoader();
+                console.error(err);
+                alert('Request failed, please try again.');
+            }
         });
 
         otpForm.addEventListener('submit', async (e) => {
@@ -217,6 +354,49 @@
                 alert('Request failed, please try again.');
             }
         });
+
+        const createAccount = document.getElementById('create-account');
+
+        createAccount.addEventListener('click', async function(e) {
+            e.preventDefault();
+            showLoader()
+
+            const email = document.getElementById('sEmailAddress').value.trim();
+            const password = document.getElementById('sPassword').value.trim();
+            const confirm = document.getElementById('cPassword').value.trim();
+            const emailOutput = document.getElementById('email-see');
+
+            try {
+                const res = await fetch('../data/auth.php', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        signup: true,
+                        confirm: confirm,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.error) {
+                    hideLoader()
+                    alert(data.error);
+                } else {
+                    emailOutput.value = data.email
+                    showModal.classList.remove('hidden')
+                    hideLoader()
+                }
+
+            } catch (err) {
+                console.log(err);
+                alert("Request failed");
+            }
+        });
+
     });
 
     const showModal = document.getElementById('otp-modal');
@@ -228,6 +408,7 @@
 
     function loginUser() {
         showLoader()
+        const alert = document.getElementById('alerts-modal');
         const loginEmail = $('#loginEmail').val();
         const loginPass = $('#loginPass').val();
 
@@ -245,7 +426,8 @@
                 if (res.redirect) {
                     window.location.href = res.redirect
                 } else if (res.error) {
-                    alert(res.error)
+                    showToast(res.error)
+                    // alert(res.error)
                 }
             },
             error: function() {

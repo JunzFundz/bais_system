@@ -85,12 +85,18 @@ class AdminModel extends Dbh
     }
 
 
-    public function addOfficials($fname, $lname, $mname, $dob, $pob, $cs, $email, $contact, $position, $brgy, $title)
+    public function addOfficials($fname, $lname, $mname, $dob, $pob, $cs, $email, $contact, $position, $brgy, $title, $photoName, $emp_id)
     {
-        $stmt = $this->mysqli->prepare("INSERT INTO tbl_officials (F_NAME, L_NAME, M_NAME, DOB, POB, CIVIL_STATUS, EMAIL, CONTACT, POSITION, BRGY_ID, TITLE, STATUS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NEW')");
+
+        date_default_timezone_set('Asia/Manila');
+        $date = date('Y-m-d H:i:s');
+
+        $stmt = $this->mysqli->prepare("INSERT INTO tbl_officials (PHOTO, EMP_ID, F_NAME, L_NAME, M_NAME, DOB, POB, CIVIL_STATUS, EMAIL, CONTACT, POSITION, BRGY_ID, TITLE, DATE_STARTED, DATE_ENDED, STATUS) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?, 'active')");
 
         $stmt->bind_param(
-            "sssssssssis",
+            "ssssssssssiisss",
+            $photoName,
+            $emp_id,
             $fname,
             $lname,
             $mname,
@@ -101,7 +107,9 @@ class AdminModel extends Dbh
             $contact,
             $position,
             $brgy,
-            $title
+            $title,
+            $date,
+            $date
         );
 
         $result = $stmt->execute();
@@ -193,7 +201,7 @@ class AdminModel extends Dbh
     public function insertPost($title, $description, $files = [])
     {
         $files_json = json_encode($files); // store file paths as JSON
-        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (TITLE, DESCRIPTION, DATE_CREATED, FILES, STATUS) VALUES (?, ?,NOW , ?, 1)");
+        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (TITLE, DESCRIPTION, DATE_CREATED, FILES, STATUS) VALUES (?, ?,NOW(), ?, 1)");
         $stmt->bind_param("sss", $title, $description, $files_json);
         return $stmt->execute();
     }

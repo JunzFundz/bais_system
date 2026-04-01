@@ -79,7 +79,7 @@ class Signup extends Dbh
             return 4;
         }
 
-        return false; // fallback if user not found
+        return false;
     }
 
     public function insertEmail($email, $name)
@@ -205,12 +205,17 @@ class Signup extends Dbh
         return false;
     }
 
-    public function resendOtp($email, $id)
+    public function resendOtp($email)
     {
         $otp = $this->generateOtp();
 
-        $stmt = $this->mysqli->prepare("UPDATE tbl_users SET u_otp = ?, u_otp_created = NOW() WHERE u_id = ? AND u_email = ?");
-        $stmt->bind_param("sis", $otp, $id, $email);
+        session_start();
+        $pass = $this->generatePassword($length = 12);
+        $dt = new DateTime('now', new DateTimeZone('Asia/Manila'));
+        $nowdate = $dt->format('Y-m-d H:i:s');
+
+        $stmt = $this->mysqli->prepare("UPDATE tbl_users SET u_otp = ?, OTP_DATE = ? WHERE u_email = ?");
+        $stmt->bind_param("sss", $otp, $nowdate, $email);
 
         if ($stmt->execute()) {
             $this->sendMail($email, $otp);
@@ -280,21 +285,20 @@ class Signup extends Dbh
         $pass = $this->generatePassword($length = 12);
         $dt = new DateTime('now', new DateTimeZone('Asia/Manila'));
         $nowdate = $dt->format('Y-m-d H:i:s');
-        // check if exists
+
         $check = $this->mysqli->prepare("SELECT google_uid FROM tbl_users WHERE google_uid=?");
         $check->bind_param("s", $uid);
         $check->execute();
         $check->store_result();
 
         if ($check->num_rows > 0) {
-            return 1; // already exists
+            return 1;
         }
 
         $hashed = password_hash($pass, PASSWORD_DEFAULT);
 
         $stmt = $this->mysqli->prepare("INSERT INTO tbl_users (google_uid, PP, u_email, u_password, DATE_CREATED, u_status)
-        VALUES (?,?,?,?,?,'yes')
-    ");
+        VALUES (?,?,?,?,?,'yes')");
 
         if (!$stmt) return 2;
 
@@ -306,15 +310,6 @@ class Signup extends Dbh
         $_SESSION['u_id'] = $user_id;
         $_SESSION['PP'] = $photo;
         $_SESSION['u_email'] = $email;
-    //     $stmt2 = $this->mysqli->prepare("INSERT INTO tbl_personal_info (USER_ID, DATE_ADDED, PI_STATUS)
-    //     VALUES (?,?,?,?,?)
-    // ");
-
-    //     if (!$stmt2) return 4;
-    //     $sts = 'yes';
-    //     $stmt2->bind_param("iss", $user_id, $nowdate, $sts);
-
-    //     if (!$stmt2->execute()) return 5;
 
         $this->sendGenPass($email, $pass);
         $redirect = '../public/users/';
@@ -345,4 +340,118 @@ class Signup extends Dbh
 
         $mail->send();
     }
+
+    public function resetOtp($email, $otp)
+    {
+        try {
+            $mail = new PHPMailer(true);
+
+            $mail->isSMTP();
+            $mail->SMTPAuth   = true;
+            $mail->Host = "smtp.gmail.com";
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->Username   = 'crestinemaemendezromano0217@gmail.com';
+            $mail->Password   = 'zutggtbanddnzquy';
+
+            $mail->setFrom('crestinemaemendezromano0217@gmail.com');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'OTP Code';
+            $mail->Body    = "Your OTP is: <b>$otp</b>";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function verifyChangePassword($otp, $email, $password)
+    {
+        $this->mysqli->begin_transaction();
+
+        try {
+
+            // 1. Check OTP + Email
+            $stmt1 = $this->mysqli->prepare(
+                "SELECT u_otp FROM tbl_users WHERE u_email = ?"
+            );
+            $stmt1->bind_param("s", $email);
+            $stmt1->execute();
+            $res1 = $stmt1->get_result();
+
+            if (!$res1->num_rows) {
+                $this->mysqli->rollback();
+                return 1;
+            }
+
+            $row = $res1->fetch_assoc();
+
+            // 2. Verify OTP
+            if ($row['u_otp'] != $otp) {
+                $this->mysqli->rollback();
+                return 2;
+            }
+
+            // 3. Update password
+            $stmt2 = $this->mysqli->prepare(
+                "UPDATE tbl_users SET u_password = ? WHERE u_email = ?"
+            );
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $stmt2->bind_param("ss", $hashed, $email);
+            $stmt2->execute();
+
+            if ($stmt2->affected_rows === 0) {
+                $this->mysqli->rollback();
+                return 3;
+            }
+
+            // 4. (Optional but recommended) Clear OTP after success
+            $stmt3 = $this->mysqli->prepare(
+                "UPDATE tbl_users SET u_otp = NULL WHERE u_email = ?"
+            );
+            $stmt3->bind_param("s", $email);
+            $stmt3->execute();
+
+            // SUCCESS → COMMIT
+            $this->mysqli->commit();
+
+            return true;
+        } catch (Exception $e) {
+            $this->mysqli->rollback();
+            return "Error: " . $e->getMessage();
+        }
+    }
+
+    public function requestPasswordReset($email)
+    {
+        $stmt = $this->mysqli->prepare("SELECT u_id FROM tbl_users WHERE u_email=?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        if (!$res->num_rows) {
+            return 1;
+        }
+
+        $otp = $this->generateOtp();
+
+        $stmt = $this->mysqli->prepare("UPDATE tbl_users SET u_otp=? WHERE u_email=?");
+        $stmt->bind_param("ss", $otp, $email);
+
+        if (!$stmt->execute()) {
+            return 0;
+        }
+
+        if (!$this->resetOtp($email, $otp)) {
+            return 0;
+        }
+
+        return 2;
+    }
+
+
 }

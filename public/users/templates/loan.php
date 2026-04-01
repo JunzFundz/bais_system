@@ -1,10 +1,7 @@
-
-
 <style>
     .canvas-container {
         position: relative;
         display: inline-block;
-        margin: 20px;
     }
 
     #signature {
@@ -38,29 +35,25 @@
 <input type="hidden" name="" id="cert-id" value="<?php echo $_SESSION['certId'] ?? '' ?>">
 <input type="hidden" name="" id="pi-id" value="<?php echo $_SESSION['PI_ID'] = $users['PI_ID'] ?>">
 
-<div class="min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8">
+<div class="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
+    <div class="lg:w-lg sm:w-9/12 w-full border-2 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-400 shadow-lg rounded-lg p-8">
         <!-- Step Indicator with Progress Bar -->
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4 w-full">
                 <!-- Step 1 -->
                 <div class="relative flex-1 flex items-center">
-                    <div id="indicator-1" class="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full transition-colors duration-300">1</div>
+                    <div id="indicator-1" class="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full transition-colors duration-300"><i class="fa-solid fa-user-check"></i></div>
                     <div id="line-1" class="absolute w-full h-1 bg-gray-300 left-0 top-1/2 transform translate-y-[-50%] z-[-1] transition-colors duration-300"></div>
                 </div>
                 <!-- Step 2 -->
                 <div class="relative flex-1 flex items-center">
-                    <div id="indicator-2" class="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full transition-colors duration-300">2</div>
+                    <div id="indicator-2" class="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full transition-colors duration-300"><i class="fa-solid fa-location-arrow"></i></div>
                     <div id="line-2" class="absolute w-full h-1 bg-gray-300 left-0 top-1/2 transform translate-y-[-50%] z-[-1] transition-colors duration-300"></div>
                 </div>
                 <!-- 3 -->
-                <div class="relative flex-1 flex items-center">
-                    <div id="indicator-3" class="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full transition-colors duration-300">3</div>
-                    <div id="line-2" class="absolute w-full h-1 bg-gray-300 left-0 top-1/2 transform translate-y-[-50%] z-[-1] transition-colors duration-300"></div>
-                </div>
-                <!-- Step 4 -->
+
                 <div>
-                    <div id="indicator-4" class="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full transition-colors duration-300">4</div>
+                    <div id="indicator-3" class="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full transition-colors duration-300"><i class="fa-solid fa-circle-info"></i></div>
                 </div>
             </div>
         </div>
@@ -70,40 +63,52 @@
             <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%;"></div>
         </div>
 
+        <div id="error-box" class="hidden text-red-600"></div>
         <!-- Form Content -->
         <form id="multi-step-form">
             <!-- Step 1 -->
             <div id="step-1" class="step">
-                <h2 class="text-xl font-semibold mb-4">Step 1: Personal Info</h2>
+                <h2 class="text-xl font-semibold mb-6">Step 1: Personal Info</h2>
                 <div class="space-y-4">
                     <form>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
                             <div>
-                                <input value="<?=  $users['FNAME'] ?? '' ?>" id="fname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="First name" >
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">First Name<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['FNAME'] ?? '' ?>" id="fname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="First name">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['MNAME'] ?? '' ?>" placeholder="Middle name" id="mname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Middle Name</label>
+                                <input value="<?= $users['MNAME'] ?? '' ?>" placeholder="Middle name" id="mname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['LNAME'] ?? '' ?>" placeholder="Last name" id="lname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Last Name<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['LNAME'] ?? '' ?>" placeholder="Last name" id="lname" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
                             <div>
-                                <input value="<?=  $users['CITIZEN'] ?? '' ?>" placeholder="Citizenship" id="citizen" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Citizenship<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['CITIZEN'] ?? '' ?>" placeholder="Citizenship" id="citizen" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['SEX'] ?? '' ?>" placeholder="Sex" id="sex" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Sex<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['SEX'] ?? '' ?>" placeholder="Sex" id="sex" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
 
                             <div>
-                                <input value="<?=  $users['CIVIL'] ?? '' ?>" placeholder="Civil Status" id="civilstatus" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Status <span class="text-red-700 text-center">*</span></label>
+                                <select id="civilstatus" class=" h-10 block w-full px-4 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                    <?php foreach ($status as $statusRow) { ?>
+                                        <option value="<?= $statusRow['STATUS_NAME'] ?>"><?= $statusRow['STATUS_NAME'] ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                             <div>
-                                <input value="<?=  $users['AGE'] ?? '' ?>" placeholder="Age" id="age" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Age<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['AGE'] ?? '' ?>" placeholder="Age" id="age" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                     </form>
@@ -117,21 +122,30 @@
                     <form>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                             <div>
-                                <input value="<?=  $users['CONTACT'] ?? '' ?>" placeholder="Contact" id="contact" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Contact No.<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['CONTACT'] ?? '' ?>" placeholder="Contact" id="contact" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
                             </div>
                             <div>
-                                <input disabled value="<?=  $users['EMAIL'] ?? '' ?>" placeholder="Email" id="email" type="email" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Email Address<span class="text-red-700 text-center">*</span></label>
+                                <input disabled value="<?= $_SESSION['u_email'] ?? '' ?>" placeholder="Email" id="email" type="email" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
                             <div>
-                                <input value="<?=  $users['STREET'] ?? '' ?>" placeholder="Street" id="street" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Barangay<span class="text-red-700 text-center">*</span></label>
+                                <select id="Barangay" class="block w-full h-10 px-4 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                    <?php foreach ($brgys as $brgyRow) { ?>
+                                        <option value="<?= $brgyRow['BRGY_ID'] ?>"><?= $brgyRow['BARANGAY'] ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                             <div>
-                                <input value="<?=  $users['BRGY'] ?? '' ?>" placeholder="Barangay" id="Barangay" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">Street<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['STREET'] ?? '' ?>" placeholder="Street" id="street" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div>
-                                <input value="<?=  $users['CITY'] ?? '' ?>" placeholder="City" id="city" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                                <label for="visitors" class="block mb-2 text-md font-medium text-heading">City<span class="text-red-700 text-center">*</span></label>
+                                <input value="<?= $users['CITY'] ?? '' ?>" placeholder="City" id="city" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                         </div>
                     </form>
@@ -141,17 +155,26 @@
             <!-- Step 3 -->
             <div id="step-3" class="step hidden">
                 <h2 class="text-xl font-semibold mb-4">Step 3: Photo</h2>
-                <p class="mb-4">Please review your information before submitting.</p>
-                <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-1">
+                <p class="mb-4">Here are some essential media needs for the requests:</p>
+
+                <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                     <div>
-                        <label class="text-gray-700 dark:text-gray-200" for="username">Street</label>
-                        <select id="select-type" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+                        <label for="visitors" class="block mb-2 text-md font-medium text-heading">Select type<span class="text-red-700 text-center">*</span></label>
+                        <select id="select-type" type="text" class="h-10 block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             <option selected value="1">Applicant</option>
                             <option value="2">Representative</option>
                         </select>
                     </div>
+                    <div>
+                        <label for="visitors" class="block mb-2 text-md font-medium text-heading">Loan<span class="text-red-700 text-center">*</span></label>
+                        <input placeholder="Full name" id="purpose" type="text" class="h-10 block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-1">
                     <div id="change-req" class="hidden">
-                        <label for="dropzone-letter" class="flex items-center px-3 py-1 mx-auto mt-2 text-center bg-white border-2 border-dashed rounded-lg cursor-pointer dark:border-gray-600 dark:bg-gray-900">
+                        <label for="dropzone-letter" class="h-10 flex items-center px-3 py-1 mx-auto mt-2 text-center bg-white border-2 border-dashed rounded-lg cursor-pointer dark:border-gray-600 dark:bg-gray-900">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                             </svg>
@@ -166,6 +189,26 @@
                         </svg>
                         Selfie
                     </button>
+                    <!-- Camera Container (hidden by default) -->
+                    <center>
+                        <div id="camera-container" class="w-full h-80 hidden mt-3 relative">
+                            <video id="camera" autoplay playsinline class="w-full h-full object-cover border"></video>
+                            <canvas id="canvas" class="hidden w-full h-full border object-cover absolute top-0 left-0"></canvas>
+                        </div>
+                    </center>
+
+                    <!-- Photo Buttons -->
+                    <div class="mt-3 space-x-2 hidden" id="photo-buttons">
+                        <button type="button" id="take-btn" class="rounded-2xl px-4 py-2 bg-blue-500 text-white">
+                            Take Photo
+                        </button>
+                        <button type="button" id="retake-btn" class="rounded-2xl px-4 py-2 bg-gray-500 text-white hidden">
+                            Take Again
+                        </button>
+                        <button type="button" id="done-btn" class="rounded-2xl px-4 py-2 bg-green-500 text-white hidden">
+                            Done
+                        </button>
+                    </div>
 
                     <button id="open-signature" class="px-4 py-2 bg-blue-500 text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -173,10 +216,20 @@
                         </svg>
                         Signature
                     </button>
+                    <!-- Signature Container -->
+                    <div id="sigCanva" class="hidden grid place-items-center">
+                        <div class="canvas-container">
+                            <canvas id="signature" class="bg-white border rounded"></canvas>
+                            <button id="clear-signature" class="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-sm rounded">Clear</button>
+                        </div>
 
-                    <div>
-                        <input placeholder="Embalmin of late: Full name" id="purpose" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
+                        <div class="mt-3 space-x-2">
+                            <button id="save-signature" class="px-4 py-2 bg-blue-500 text-white rounded">Save Signature</button>
+                        </div>
                     </div>
+
+
+                    <label for="visitors" class="block text-md font-medium text-heading">Files</label>
 
                     <!-- Authorization Letter Preview Container -->
                     <div id="letter-preview-container" class="mt-3 hidden">
@@ -222,28 +275,6 @@
                         </div>
                     </div>
 
-
-                    <!-- Camera Container (hidden by default) -->
-                    <center>
-                        <div id="camera-container" class="w-full h-80 hidden mt-3 relative">
-                            <video id="camera" autoplay playsinline class="w-full h-full object-cover border"></video>
-                            <canvas id="canvas" class="hidden w-full h-full border object-cover absolute top-0 left-0"></canvas>
-                        </div>
-                    </center>
-
-                    <!-- Photo Buttons -->
-                    <div class="mt-3 space-x-2 hidden" id="photo-buttons">
-                        <button type="button" id="take-btn" class="px-4 py-2 bg-blue-500 text-white">
-                            Take Photo
-                        </button>
-                        <button type="button" id="retake-btn" class="px-4 py-2 bg-gray-500 text-white hidden">
-                            Take Again
-                        </button>
-                        <button type="button" id="done-btn" class="px-4 py-2 bg-green-500 text-white hidden">
-                            Done
-                        </button>
-                    </div>
-
                     <!-- Image Preview Container -->
                     <div id="image-preview-container" class="mt-3 hidden">
                         <div class="flex items-center space-x-2 bg-white p-3 rounded-lg shadow">
@@ -284,18 +315,6 @@
                     </div>
 
                     <center>
-                        <!-- Signature Container -->
-                        <div id="sigCanva" class="hidden">
-                            <div class="canvas-container relative">
-                                <canvas id="signature" width="320" height="160" class="bg-white border rounded"></canvas>
-                                <button id="clear-signature" class="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-sm rounded">Clear</button>
-                            </div>
-
-                            <div class="mt-3 space-x-2">
-                                <button id="save-signature" class="px-4 py-2 bg-blue-500 text-white rounded">Save Signature</button>
-                            </div>
-                        </div>
-
                         <!-- Signature Preview Container (Shows filename after save) -->
                         <div id="signature-preview-container" class="mt-3 hidden">
                             <div class="flex items-center space-x-2 bg-white p-3 rounded-lg shadow">
@@ -335,19 +354,11 @@
                             </div>
                         </div>
                     </center>
+
+
                 </div>
             </div>
 
-            <!-- Step 4 (Fixed ID from step-3 to step-4) -->
-            <div id="step-4" class="step hidden">
-                <h2 class="text-xl font-semibold mb-4">Step 4: Review & Submit</h2>
-                <p class="mb-4">Please review your information before submitting.</p>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li><strong>Name:</strong> <span id="review-name">John Doe</span></li>
-                    <li><strong>Email:</strong> <span id="review-email">john.doe@example.com</span></li>
-                    <li><strong>Address:</strong> <span id="review-address">123 Main St, City, 12345</span></li>
-                </ul>
-            </div>
             <!-- Navigation -->
             <div class="flex justify-between mt-8">
                 <button id="prev-btn" type="button" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hidden">Previous</button>

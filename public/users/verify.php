@@ -15,13 +15,13 @@
 
     $_SESSION['encryptedCertId'] = $encryptedCertId;
     $_SESSION['certId'] = $certId;
-
-} 
+}
 ?>
 
 
 <?php
-
+require_once 'confirm.php';
+require_once 'alert.php';
 switch ($certId) {
     case 1:
         require_once 'templates/financial_assistance.php';
@@ -42,9 +42,8 @@ switch ($certId) {
 
     default:
 
-    echo "invalid";
-    break;
-
+        echo "invalid";
+        break;
 }
 
 

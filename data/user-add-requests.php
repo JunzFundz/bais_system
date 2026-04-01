@@ -58,20 +58,26 @@ $keyId = openssl_decrypt($encrypted, $method, $key, 0, $iv);
 
 
 if (empty($keyId)) {
-    $response = ['status' => 'error', 'message' => 'Invalid key'];
+    $response = ['error' => 'Invalid key'];
+    echo json_encode($response);
+    exit;
+}
+
+if (empty($purpose)) {
+    $response = ['error' => 'Purpose is empty!'];
     echo json_encode($response);
     exit;
 }
 
 // Basic validation
 if (!$fname || !$lname || !$contact || !$email || !$brgy) {
-    $response = ['status' => 'error', 'message' => 'Please fill all required fields'];
+    $response = ['error' => 'Please fill all required fields'];
     echo json_encode($response);
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $response = ['status' => 'error', 'message' => 'Invalid email format'];
+    $response = ['error' => 'Invalid email format'];
     echo json_encode($response);
     exit;
 }
@@ -81,18 +87,18 @@ $uploadDir = __DIR__ . '/../uploads/';
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0755, true)) {
         error_log("Failed to create uploads directory");
-        $response = ['status' => 'error', 'message' => 'Failed to create upload directory'];
+        $response = ['error' => 'Failed to create upload directory'];
         echo json_encode($response);
         exit;
     }
     error_log("Created uploads directory");
 }
 
-// 💾 SAVE IMAGE FUNCTION (Fixed)
+// SAVE IMAGE FUNCTION (Fixed)
 function saveImage($base64Data, $prefix, $uploadDir)
 {
     if (empty($base64Data)) {
-        error_log("⚠️ No image data for $prefix");
+        error_log("No image data for $prefix");
         return '';
     }
 
@@ -133,8 +139,8 @@ function saveImage($base64Data, $prefix, $uploadDir)
     }
 
     $fileSize = filesize($fullPath);
-    error_log("✅ Saved $filename ($fileSize bytes)");
-    return $filename; // Return filename only (for database)
+    error_log("Saved $filename ($fileSize bytes)");
+    return $filename;
 }
 
 // Save images
@@ -144,8 +150,7 @@ $letterFilename = saveImage($letter, 'letter', $uploadDir);
 
 if ($type == "2" && empty($letterFilename)) {
     echo json_encode([
-        'status' => 'error',
-        'message' => 'Authorization letter upload failed'
+         'error' => 'Authorization letter upload failed'
     ]);
     exit;
 }
@@ -153,24 +158,9 @@ if ($type == "2" && empty($letterFilename)) {
 error_log("Attempting database insert...");
 
 if (($keyId === 3 || $keyId === 4) && (empty($photoFilename) || empty($signatureFilename))) {
-    echo json_encode(['status' => 'error', 'message' => 'Photo and signature required']);
+    echo json_encode(['error' => 'Photo and signature required']);
     exit;
 }
-
-// Check if images saved successfully
-// if (empty($photoFilename) || empty($signatureFilename)) {
-//     $response = [
-//         'status' => 'error',
-//         'message' => 'Failed to save images',
-//         'debug' => [
-//             'photo' => $photoFilename,
-//             'signature' => $signatureFilename,
-//             'upload_dir' => realpath($uploadDir)
-//         ]
-//     ];
-//     echo json_encode($response);
-//     exit;
-// }
 
 $result = $set->insertPersonalInfo($pid, $purpose, $userid, $keyId, $fname, $mname, $lname, $citizen, $sex, $civil, $age, $contact, $email, $street, $brgy, $city, $type, $photoFilename, $signatureFilename, $letterFilename);
 
@@ -178,8 +168,7 @@ error_log("Database result code: $result");
 
 if (is_numeric($result) && $result > 4) {
     $response = [
-        'status' => 'success',
-        'message' => 'Form submitted successfully!',
+        'success' => 'Form submitted successfully!',
         'user_id' => $result,
         'images' => [
             'photo' => $photoFilename,
@@ -196,8 +185,7 @@ if (is_numeric($result) && $result > 4) {
 
     $msg = $errorMessages[$result] ?? "Unknown database error ($result)";
     $response = [
-        'status' => 'error',
-        'message' => $msg,
+        'error' => $msg,
         'debug_code' => $result
     ];
 }

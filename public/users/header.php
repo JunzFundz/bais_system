@@ -5,14 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/js/theme.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="../../assets/css/output.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Toastify -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
     <style>
         [x-cloak] {
@@ -21,7 +27,7 @@
     </style>
 </head>
 
-<body>
+<body class="bg-gray-200 dark:bg-gray-900">
     <?php
     session_start();
 
@@ -39,6 +45,8 @@
     $c = $client->viewInfo($user_id);
     $certificates = $client->cert();
     $req = $client->getUserRequest($user_id);
+    $status = $client->searchStatus();
+    $brgys = $client->getAllBrgy();
 
     $limit = 3;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
@@ -75,6 +83,7 @@
             </div>
         </div>
     </div>
+    
     <div class="">
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -136,11 +145,12 @@
                             <a href="" class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Certificates</a>
                         </li> -->
                     </ul>
+
                 </div>
             </div>
         </nav>
 
-        <div class="flex items-center py-4 overflow-x-auto whitespace-nowrap bg-white border-t-2 border-b-2 border-gray-600 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-900 w-full" >
+        <div class="flex items-center py-4 overflow-x-auto whitespace-nowrap bg-white border-t-2 border-b-2 border-gray-600 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-900 w-full">
             <a href="#" class="text-gray-600 dark:text-gray-300 ml-8">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -163,4 +173,13 @@
                 Activities
             </a>
         </div>
+    </div>
+
+    <div id="preloader"
+        class="flex-col gap-4 w-full flex items-center justify-center fixed inset-0 bg-amber-50/80 z-50 transition-opacity duration-500 cursor-not-allowed">
+        <div class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full">
+            <div class="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full">
+            </div>
+        </div>
+        <span>Please wait</span>
     </div>

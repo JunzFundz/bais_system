@@ -14,10 +14,24 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
     <link rel="stylesheet" href="assets/index.css">
+    <link rel="stylesheet" href="assets/output.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <style>
         [x-cloak] {
             display: none !important;
+        }
+
+        * {
+            font-family: "Public Sans", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
         }
     </style>
 </head>
@@ -34,7 +48,7 @@
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
     $posts = $client->getPosts($limit, $offset);
     ?>
-    <nav class="bg-white border-gray-200 dark:bg-gray-900 border-b-2">
+    <nav class="bg-white border-gray-200 dark:border-gray-500 dark:bg-gray-800 border-b-2">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="#" class="flex items-center justify-between">
                 <img style="" class="w-auto h-10 sm:h-7 lg:h-14" src="assets/banner-rework.png" alt="">
@@ -52,7 +66,7 @@
                 </button>
             </div>
             <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-                <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-800 dark:border-gray-800">
                     <li>
                         <a href="home" class="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
                     </li>

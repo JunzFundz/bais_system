@@ -7,7 +7,7 @@
 </style>
 
 
-<div class="w-full p-5 sm:p-8 md:p-16 dark:bg-gray-900">
+<div class="w-full p-5 sm:p-8 md:p-16 dark:bg-gray-900 bg-gray-200">
 
     <h1 class="text-5xl font-extrabold text-center lg:text-7xl ">
         <span class="text-transparent bg-gradient-to-br bg-clip-text from-teal-500 via-indigo-500 to-sky-500 dark:from-teal-200 dark:via-indigo-300 dark:to-sky-500">

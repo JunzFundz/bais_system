@@ -8,6 +8,7 @@ require_once "../model/AdminModel.php";
 $admin = new AdminModel();
 
 if (isset($_POST['addOfficial'])) {
+
     $fname = $_POST['fname'];
     $mname = $_POST['mname'];
     $lname = $_POST['lname'];
@@ -19,19 +20,49 @@ if (isset($_POST['addOfficial'])) {
     $position = $_POST['position'];
     $brgy = $_POST['brgy'];
     $title = $_POST['otitle'];
+    $emp_id = $_POST['emp_id'];
 
-    $insert = $admin->addOfficials($fname, $lname, $mname, $dob, $pob, $cs, $email, $contact, $position, $brgy, $title);
+    $uploadDir = "../profiles/";
+    $photoName = '';
 
-    if ($insert) {
-        $response = [
-            'success' => "Successfully added"
-        ];
-    } else {
-        $response = [
-            'error' => "Error db"
-        ];
+    if (!empty($_FILES['photo']['name'])) {
+
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+
+        $fileType = $_FILES['photo']['type'];
+        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($fileType, $allowedTypes) || !in_array($ext, $allowedExt)) {
+            echo json_encode(['error' => 'Only image files are allowed']);
+            exit;
+        }
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        if ($_FILES['photo']['error'] === 0) {
+            $photoName = time() . "_" . basename($_FILES['photo']['name']);
+            $filePath = $uploadDir . $photoName;
+
+            if (!move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                echo json_encode(['error' => 'Upload failed']);
+                exit;
+            }
+        } else {
+            echo json_encode(['error' => 'Upload error']);
+            exit;
+        }
     }
 
-    echo json_encode($response);
+    $insert = $admin->addOfficials($fname, $lname, $mname, $dob, $pob, $cs, $email, $contact, $position, $brgy, $title, $photoName, $emp_id);
+
+    if ($insert) {
+        echo json_encode(['success' => "Successfully added"]);
+    } else {
+        echo json_encode(['error' => "Error db"]);
+    }
+
     exit;
 }

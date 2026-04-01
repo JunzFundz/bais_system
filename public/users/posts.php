@@ -2,7 +2,7 @@
 
     <?php foreach ($posts as $post): ?>
 
-        <section class="text-gray-400 bg-gray-900 body-font overflow-hidden">
+        <section class="text-gray-400 bg-gray-800 body-font dark:border-gray-500 border-2 rounded-2xl overflow-hidden">
             <div class="container px-2 py-9 mx-auto">
                 <div class="lg:w-4/5 mx-auto flex flex-wrap">
                     <?php
@@ -42,9 +42,8 @@
 
 
     <?php foreach ($posts as $post): ?>
-        <article class="mb-10 rounded-xl dark:text-white dark:bg-gray-800 overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col mx-auto border border-gray-400 dark:border-gray-600">
+        <!-- <article class="mb-10 rounded-xl dark:text-white dark:bg-gray-800 overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col mx-auto border border-gray-400 dark:border-gray-600">
 
-            <!-- Post Title -->
             <div class="p-6">
                 <a href="?post=<?php echo $post['id']; ?>"
                     class="text-2xl sm:text-2xl md:text-3xl font-bold inline-block hover:text-indigo-600 transition-all duration-500 ease-in-out mb-4 line-clamp-2 leading-tight">
@@ -52,7 +51,6 @@
                 </a>
             </div>
 
-            <!-- Featured Image + Gallery Overlay -->
             <div class="relative group">
                 <?php
                 $postImages = !empty($post['FILES']) ? array_filter($post['FILES'], function ($file) {
@@ -71,7 +69,6 @@
                             loading="lazy"
                             onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'">
 
-                        <!-- Multiple Images Badge -->
                         <?php if (count($postImages) > 1): ?>
                             <div class="absolute top-4 right-4 bg-black/70 text-white px-2 py-1 rounded-full text-xs font-medium">
                                 +<?php echo count($postImages) - 1; ?> photos
@@ -79,7 +76,6 @@
                         <?php endif; ?>
                     </a>
                 <?php else: ?>
-                    <!-- No image fallback -->
                     <div class="w-full h-64 sm:h-80 md:h-96 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                         <div class="text-center p-8">
                             <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +86,6 @@
                     </div>
                 <?php endif; ?>
 
-                <!-- Category & Action Buttons -->
                 <div class="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
                     <a href="#!" class="bg-indigo-600/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs font-semibold hover:bg-indigo-700 transition-all duration-300 flex items-center shadow-lg">
                         <span class="w-2 h-2 bg-white rounded-full mr-2"></span>
@@ -104,13 +99,11 @@
                 </div>
             </div>
 
-            <!-- Post Content -->
             <div class="p-6 flex-1">
                 <p class="text-gray-700 text-base leading-relaxed line-clamp-3 mb-6">
                     <?php echo htmlspecialchars($post['description']); ?>
                 </p>
 
-                <!-- Images Gallery (if multiple images) -->
                 <?php if (count($postImages) > 1): ?>
                     <div class="mb-6">
                         <h5 class="font-semibold text-gray-800 text-sm uppercase tracking-wide mb-3">Gallery</h5>
@@ -131,7 +124,6 @@
                     </div>
                 <?php endif; ?>
 
-                <!-- All Files (Images + Documents) -->
                 <?php
                 $allFiles = !empty($post['FILES']) ? $post['FILES'] : [];
                 $nonImages = array_filter($allFiles, function ($file) {
@@ -176,7 +168,6 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Post Meta -->
             <div class="px-6 pb-6 pt-2 text-sm text-gray-500 flex flex-wrap items-center justify-between border-t">
                 <div class="flex flex-wrap items-center gap-4">
                     <span class="flex items-center">
@@ -199,6 +190,6 @@
                     <span class="text-indigo-600 font-semibold"><?php echo count($nonImages); ?> docs</span>
                 </div>
             </div>
-        </article>
+        </article> -->
     <?php endforeach; ?>
 </div>

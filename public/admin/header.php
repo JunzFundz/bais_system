@@ -10,13 +10,13 @@
 
     <!-- Tailwind CSS -->
     <script src="../assets/js/tailwind.js"></script>
+    <script src="../assets/js/theme.js"></script>
 
     <!-- Iconify -->
     <script src="../assets/js/iconify-icon.min.js"></script>
 
-    <!-- <link rel="stylesheet" href="../../node_modules/daisyui/daisyui.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="../assets/css/output.css" rel="stylesheet" />
+    <!-- <link href="../assets/css/output.css" rel="stylesheet" /> -->
     <link href="../assets/css/userHome.css" rel="stylesheet" />
     <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css" />

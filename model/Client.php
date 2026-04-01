@@ -92,7 +92,7 @@ class Client extends Dbh
         return $rows;
     }
 
-    public function insertPersonalInfo($pid, $purpose, $userid, $keyId, $fname, $mname, $lname, $citizen, $sex, $civil, $age, $contact, $email, $street, $brgy, $city, $type, $photo, $signature, $letter)
+    public function insertPersonalInfo($pid, $purpose, $userid, $keyId, $fname, $mname, $lname, $citizen, $sex, $civil, $age, $contact, $email, $street, int $brgy, $city, $type, $photo, $signature, $letter)
     {
         date_default_timezone_set('Asia/Manila');
         $date = date('Y-m-d H:i:s');
@@ -107,14 +107,14 @@ class Client extends Dbh
             return 5;
         }
 
-        $stmt = $this->mysqli->prepare("INSERT INTO tbl_personal_info (USER_ID, FNAME,MNAME,LNAME,CITIZEN,SEX,CIVIL,AGE,CONTACT,EMAIL,STREET,BRGY,CITY,TYPE,PHOTO,SIGNATURE,PI_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'active')");
+        $stmt = $this->mysqli->prepare("INSERT INTO tbl_personal_info (USER_ID, FNAME,MNAME,LNAME,CITIZEN,SEX,CIVIL,AGE,CONTACT,EMAIL,STREET,BRGY_ID,CITY,TYPE,PHOTO,SIGNATURE,PI_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'active')");
 
         if (!$stmt) {
             error_log($this->mysqli->error);
             return 1;
         }
         $stmt->bind_param(
-            "issssssissssssss",
+            "issssssisssissss",
             $userid,
             $fname,
             $mname,
@@ -171,7 +171,7 @@ class Client extends Dbh
         return true;
     }
 
-    public function update($keyId, $purpose, $letter, $date, $pid, $userid, $fname, $mname, $lname, $citizen, $sex, $civil, $age, $contact, $email, $street, $brgy, $city, $photo, $signature)
+    public function update($keyId, $purpose, $letter, $date, $pid, $userid, $fname, $mname, $lname, $citizen, $sex, $civil, $age, $contact, $email, $street, int $brgy, $city, $photo, $signature)
     {
         $this->debugPhoto($photo);
 
@@ -200,10 +200,10 @@ class Client extends Dbh
             CONTACT=?,
             EMAIL=?,
             STREET=?,
-            BRGY=?,
+            BRGY_ID=?,
             CITY=?";
 
-        $types = "ssssssisssss";
+        $types = "ssssssisssis";
         $params = [
             $fname,
             $mname,
@@ -304,5 +304,28 @@ class Client extends Dbh
 
         $stmt->close();
         return $posts;
+    }
+
+    public function searchStatus()
+    {
+        $stmt = $this->mysqli->query("SELECT STATUS_NAME FROM tbl_status");
+        $rows = [];
+        while ($row = $stmt->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
+    public function getAllBrgy()
+    {
+        $result = $this->mysqli->query("SELECT BRGY_ID, BARANGAY FROM tbl_brgy");
+
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
     }
 }
