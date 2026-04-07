@@ -225,6 +225,11 @@ class Signup extends Dbh
         return false;
     }
 
+    public function generateToken($length = 32)
+    {
+        return bin2hex(random_bytes($length));
+    }
+
     public function login($password, $email)
     {
         session_start();
@@ -249,15 +254,17 @@ class Signup extends Dbh
                     $_SESSION['u_email'] = $row["u_email"];
                     $_SESSION['PP'] = $row["PP"];
 
+                    $_SESSION['token_login'] = $this->generateToken();
+
                     $redirect = '';
 
                     switch ($_SESSION['user_role']) {
                         case 1:
-                            $redirect = '../public/admin/home';
+                            $redirect = '../public/verification/';
                             break;
 
                         case 2:
-                            $redirect = '../public/staff/home';
+                            $redirect = '../public/verification/';
                             break;
 
                         case 3:
@@ -282,7 +289,7 @@ class Signup extends Dbh
     public function insertGoogleUser($uid, $email, $fname, $lname, $photo)
     {
         session_start();
-        $pass = $this->generatePassword($length = 12);
+        $pass = $this->generatePassword();
         $dt = new DateTime('now', new DateTimeZone('Asia/Manila'));
         $nowdate = $dt->format('Y-m-d H:i:s');
 
@@ -375,9 +382,9 @@ class Signup extends Dbh
 
         try {
 
-            // 1. Check OTP + Email
+            // 1. Get OTP + role + user id
             $stmt1 = $this->mysqli->prepare(
-                "SELECT u_otp FROM tbl_users WHERE u_email = ?"
+                "SELECT u_id, u_otp, user_role FROM tbl_users WHERE u_email = ?"
             );
             $stmt1->bind_param("s", $email);
             $stmt1->execute();
@@ -396,11 +403,16 @@ class Signup extends Dbh
                 return 2;
             }
 
-            // 3. Update password
+            $u_id = $row['u_id'];
+            $role = $row['user_role'];
+
+            // 3. Hash password
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+
+            // 4. Update tbl_users
             $stmt2 = $this->mysqli->prepare(
                 "UPDATE tbl_users SET u_password = ? WHERE u_email = ?"
             );
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
             $stmt2->bind_param("ss", $hashed, $email);
             $stmt2->execute();
 
@@ -409,14 +421,23 @@ class Signup extends Dbh
                 return 3;
             }
 
-            // 4. (Optional but recommended) Clear OTP after success
+            // 🔥 5. If role is 1 or 3 → update tbl_staff_login
+            if ($role == 1 || $role == 2) {
+                $stmtStaff = $this->mysqli->prepare(
+                    "UPDATE tbl_staff_login SET PASSWORD = ? WHERE USER_ID = ?"
+                );
+                $stmtStaff->bind_param("si", $hashed, $u_id);
+                $stmtStaff->execute();
+            }
+
+            // 6. Clear OTP
             $stmt3 = $this->mysqli->prepare(
                 "UPDATE tbl_users SET u_otp = NULL WHERE u_email = ?"
             );
             $stmt3->bind_param("s", $email);
             $stmt3->execute();
 
-            // SUCCESS → COMMIT
+            // ✅ COMMIT
             $this->mysqli->commit();
 
             return true;
@@ -428,7 +449,7 @@ class Signup extends Dbh
 
     public function requestPasswordReset($email)
     {
-        $stmt = $this->mysqli->prepare("SELECT u_id FROM tbl_users WHERE u_email=?");
+        $stmt = $this->mysqli->prepare("SELECT u_id, u_email FROM tbl_users WHERE u_email=?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -452,6 +473,4 @@ class Signup extends Dbh
 
         return 2;
     }
-
-
 }

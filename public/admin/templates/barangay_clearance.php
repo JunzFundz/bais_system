@@ -1,55 +1,91 @@
 <?php
-include 'header.php';
-require '../../model/AdminModel.php';
 
 $uid = $_SESSION['USER_ID'];
 $pid = $_SESSION['PI_ID'];
 $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
 
-
-$admin = new AdminModel();
 $d = $admin->generate($uid, $pid, $rid, $cid);
-
-
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate - Republic of the Philippines</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'serif': ['Times New Roman', 'serif'],
-                        'script': ['Brush Script MT', 'cursive'],
-                    }
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+    })
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    'serif': ['Times New Roman', 'serif'],
+                    'script': ['Brush Script MT', 'cursive'],
                 }
             }
         }
-    </script>
-    <style>
-        @font-face {
-            font-family: 'CertificateScript';
-            src: local('Brush Script MT'), local('BrushScript'), url('data:font/woff2;base64,...') format('woff2');
+    }
+</script>
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    @media print {
+
+        html,
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+            overflow: visible !important;
         }
 
-        .certificate-bg {
-            background: linear-gradient(135deg, #f8f4e6 0%, #e8e2d3 50%, #f8f4e6 100%);
-            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1);
+        body * {
+            visibility: hidden;
         }
-    </style>
-</head>
 
-<body class="bg-gradient-to-br from-stone-100 to-amber-50 min-h-screen flex items-center justify-center p-8">
-    <div class="certificate-bg max-w-4xl w-full mx-auto bg-white rounded-3xl shadow-2xl border-8 border-amber-800/50 p-12 relative overflow-hidden">
+        #content-navigations,
+        #content-navigations * {
+            visibility: visible;
+        }
+
+        #content-navigations {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 210mm;
+            min-height: 297mm;
+
+            padding: 15mm;
+            /* SAFE PRINT MARGIN */
+            box-sizing: border-box;
+
+            overflow: visible !important;
+        }
+    }
+</style>
+
+
+<center>
+    <div class="inline-flex rounded-md shadow-xs pt-3" id="buttons-group" role="group">
+        <button onclick="closeTab()" type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Back to certificates
+        </button>
+        <button onclick="window.print()" type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Print
+        </button>
+        <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Send as mail
+        </button>
+    </div>
+</center>
+
+<div class="flex-1 overflow-y-auto lg:p-8 dark:bg-dark-bg bg-slate-50/50 pt-4 pr-4 pb-4 pl-4 ">
+
+    <div class="flex-1 dark:bg-dark-bg bg-white border-2 border-gray-500 px-32 pt-20 h-auto" id="content-navigations">
         <!-- Watermark -->
         <div class="absolute inset-0 opacity-5 flex items-center justify-center pointer-events-none">
             <div class="text-8xl font-serif font-bold text-amber-800 rotate-[-5deg] tracking-widest">BAIS CITY</div>
@@ -58,7 +94,7 @@ $d = $admin->generate($uid, $pid, $rid, $cid);
         <!-- Top Header Section -->
         <div class="text-center relative z-10">
             <!-- Logo 1 (Left) -->
-            <div class="absolute left-0 top-0 w-24 h-24 bg-gradient-to-br from-blue-800 to-blue-600 rounded-full shadow-lg flex items-center justify-center">
+            <div class="absolute left-0 top-0  w-28 h-28 bg-linear-to-br from-blue-800 to-blue-600 rounded-full shadow-lg flex items-center justify-center">
                 <img src="../assets/images/logo1.png" alt="">
             </div>
 
@@ -71,20 +107,17 @@ $d = $admin->generate($uid, $pid, $rid, $cid);
                     <br>
                     City of Bais
                 </p>
-                <!-- <div class="w-48 h-1 bg-gradient-to-r from-amber-600 to-orange-500 mx-auto rounded-full shadow-md"></div> -->
+                <!-- <div class="w-48 h-1 from-amber-600 to-orange-500 mx-auto rounded-full shadow-md"></div> -->
                 <p class="text-xl md:text-2xl font-serif font-semibold text-gray-700 mt-4 uppercase tracking-wide">
-                    <?= $d['BRGY'] ?>
+                    <?= $d['BARANGAY'] ?>
                 </p>
                 <p class="text-xl md:text-2xl font-serif font-semibold text-gray-700 mt-4 uppercase tracking-wide">
                     OFFICE OF THE PUNONG BARANGAY
                 </p>
-                <!-- <p class="text-lg md:text-xl font-serif italic text-gray-600 mt-1">
-                    Division of [Your Division]
-                </p> -->
             </div>
 
             <!-- Logo 2 (Right) -->
-            <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-br from-red-600 to-orange-500 rounded-full shadow-lg flex items-center justify-center">
+            <div class="absolute right-0 top-0 w-28 h-28 bg-gradient-to-br from-red-600 to-orange-500 rounded-full shadow-lg flex items-center justify-center">
                 <img src="../assets/images/logo2.png" alt="">
             </div>
         </div>
@@ -92,11 +125,11 @@ $d = $admin->generate($uid, $pid, $rid, $cid);
         <!-- Certificate Body -->
         <div class="max-w-3xl mx-auto  space-y-8">
             <!-- Certificate Title -->
-            <div class="bg-gradient-to-r text-center from-amber-500/20 to-orange-500/20 border-t border-b border-amber-600/50  p-2 backdrop-blur-sm">
+            <div class="text-center from-amber-500/20 to-orange-500/20 border-t border-b border-amber-600/50  p-2 backdrop-blur-sm">
                 <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-800 uppercase tracking-widest mb-4 drop-shadow-lg">
-                    Certification
+                    <?= $d['CERT_NAME'] ?>
                 </h2>
-                <div class="w-32 h-1 bg-gradient-to-r from-amber-600 via-orange-500 to-red-500 mx-auto rounded-full shadow-md"></div>
+                <div class="w-32 h-1 from-amber-600 via-orange-500 to-red-500 mx-auto rounded-full shadow-md"></div>
             </div>
 
             <!-- Main Content -->
@@ -104,29 +137,11 @@ $d = $admin->generate($uid, $pid, $rid, $cid);
                 <p>
                     To whom It May Concern:
                 </p>
-                <p>
-                   
+                <p class="" style="font-style: italic;">
+                    This is to certify that <span class="font-bold underline"> <?= $d['FNAME'] . " " . $d['MNAME'] . " " . $d['LNAME'] ?>,<?= $d['AGE'] ?></span> years old, <span class="font-bold underline"><?= $d['SEX'] ?>, <?= $d['CIVIL'] ?>, <?= $d['CITIZEN'] ?></span> and Bonafide resident of <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> , Negros Oriental. Know to be a person of good community standing and has no pending case or derogatory information as to this date, as far as the Office of Punong Barangay is concerned.
+                    <br><br><br><br>
+                    This clerance is issued upon the request of the named person stated above for the purpose of <span class="font-bold underline"> <?= $d['PURPOSE'] ?></span>.
                 </p>
-            </div>
-
-            <!-- Seals/Emblems -->
-            <div class="flex flex-col md:flex-row gap-8 justify-center items-center mt-12">
-                <div class="w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-xl flex flex-col items-center justify-center p-4 text-white font-bold text-sm uppercase tracking-wider">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                        </svg>
-                    </div>
-                    Excellence
-                </div>
-                <div class="w-32 h-32 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl shadow-xl flex flex-col items-center justify-center p-4 text-white font-bold text-sm uppercase tracking-wider">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                    </div>
-                    Achievement
-                </div>
             </div>
 
             <!-- Signature Section -->
@@ -168,6 +183,21 @@ $d = $admin->generate($uid, $pid, $rid, $cid);
             </p>
         </div>
     </div>
-</body>
 
-</html>
+</div>
+
+
+
+<script>
+    function closeTab() {
+        window.open('', '_self');
+        window.close();
+        window.location.href = 'requests';
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('sidebar').classList.add('hidden');
+        document.getElementById('top-navigation').classList.add('hidden');
+    })
+</script>

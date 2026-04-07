@@ -72,14 +72,13 @@ if (isset($_POST['login-user'])) {
         );
     } else if ($result === 3) {
         $response = array(
-            'error' => "Account not verified",
+            'error' => "Account is deactivated",
         );
     } else {
         $response = array(
             'redirect' => $result
         );
     }
-
     echo json_encode($response);
     exit;
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../model/Staff.php';
+require_once '../model/AdminModel.php';
 
 $admin = new AdminModel();
 
@@ -10,7 +10,7 @@ if (isset($_POST['update'])) {
         echo "Id invalid";
         exit;
     }
-    $data = $admin->seeOfficialData($id);
+    $data = $admin->seeOfficialData($id);   
     $statuses = $admin->getStatus();
     $position = $admin->getPosition();
     $brgy = $admin->getAllBrgy();
@@ -153,15 +153,16 @@ if (isset($_POST['update'])) {
                             console.log(response);
 
                             if (response.success) {
-                                alert(response.success);
+                                showToast(response.success);
                                 window.updateModalInstance.hide();
+                                
                             } else if (response.error) {
-                                alert(response.error);
+                                showToast(response.error);
                             }
                         },
                         error: function(xhr, status, error) {
                             console.log(xhr.responseText);
-                            alert("Error: " + error);
+                            showToast("Error: " + error);
                         }
                     });
                 }

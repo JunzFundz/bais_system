@@ -30,12 +30,6 @@ include('header.php') ?>
                                     </p>
                                 </div>
                             </div>
-
-                            <!-- <div class="px-4 py-2 -mx-3 relative">
-                                <div class="mx-3">
-                                    <i class=" text-red-600 cursor-pointer fa-solid fa-box-archive archive-requests"></i>
-                                </div>
-                            </div> -->
                         </div>
 
                     <?php } else if ($rrow['REQ_STATUS'] === 'approved') { ?>

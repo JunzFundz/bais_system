@@ -9,60 +9,116 @@ $admin = new AdminModel();
 
 if (isset($_POST['addOfficial'])) {
 
-    $fname = $_POST['fname'];
-    $mname = $_POST['mname'];
-    $lname = $_POST['lname'];
-    $dob = $_POST['dob'];
-    $pob = $_POST['pob'];
-    $cs = $_POST['cs'];
-    $email = $_POST['email'];
-    $contact = $_POST['contact'];
-    $position = $_POST['position'];
-    $brgy = $_POST['brgy'];
-    $title = $_POST['otitle'];
-    $emp_id = $_POST['emp_id'];
+    function clean($data)
+    {
+        return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
+    }
+
+    $errors = [];
+
+    $fname   = clean($_POST['fname'] ?? '');
+    $mname   = clean($_POST['mname'] ?? '');
+    $lname   = clean($_POST['lname'] ?? '');
+    $dob     = $_POST['dob'] ?? '';
+    $pob     = clean($_POST['pob'] ?? '');
+    $cs      = clean($_POST['cs'] ?? '');
+    $email   = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+    $contact = clean($_POST['contact'] ?? '');
+    $position = intval($_POST['position'] ?? 0);
+    $brgy    = intval($_POST['brgy'] ?? 0);
+    $title   = clean($_POST['otitle'] ?? '');
+    $emp_id  = clean($_POST['emp_id'] ?? '');
 
     $uploadDir = "../profiles/";
     $photoName = '';
 
-    if (!empty($_FILES['photo']['name'])) {
+    if (empty($fname)) $errors[] = "First name is required";
+    if (empty($lname)) $errors[] = "Last name is required";
+    if (empty($dob)) $errors[] = "Date of birth is required";
+    if (empty($email)) $errors[] = "Email is required";
+    if (empty($contact)) $errors[] = "Contact is required";
+    if ($position <= 0) $errors[] = "Invalid position";
+    if ($brgy <= 0) $errors[] = "Invalid barangay";
 
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-        $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format";
+    }
 
-        $fileType = $_FILES['photo']['type'];
-        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+    if (!preg_match('/^[0-9]{10,11}$/', $contact)) {
+        $errors[] = "Invalid contact number";
+    }
 
-        if (!in_array($fileType, $allowedTypes) || !in_array($ext, $allowedExt)) {
-            echo json_encode(['error' => 'Only image files are allowed']);
-            exit;
+    if (!empty($dob) && strtotime($dob) > time()) {
+        $errors[] = "Invalid birth date";
+    }
+
+    if (!preg_match('/^[a-zA-Z\s]+$/', $fname)) {
+        $errors[] = "First name must contain letters only";
+    }
+
+    if (!preg_match('/^[a-zA-Z\s]*$/', $mname)) {
+        $errors[] = "Middle name must contain letters only";
+    }
+
+    if (!preg_match('/^[a-zA-Z\s]+$/', $lname)) {
+        $errors[] = "Last name must contain letters only";
+    }
+
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
+
+        $fileTmp  = $_FILES['photo']['tmp_name'];
+        $fileName = $_FILES['photo']['name'];
+        $fileSize = $_FILES['photo']['size'];
+        $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        $allowed = ['jpg', 'jpeg', 'png'];
+
+        if (!in_array($fileExt, $allowed)) {
+            $errors[] = "Only JPG, JPEG, PNG allowed";
         }
 
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+        if ($fileSize > 2 * 1024 * 1024) { // 2MB
+            $errors[] = "File too large (max 2MB)";
         }
 
-        if ($_FILES['photo']['error'] === 0) {
-            $photoName = time() . "_" . basename($_FILES['photo']['name']);
-            $filePath = $uploadDir . $photoName;
-
-            if (!move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
-                echo json_encode(['error' => 'Upload failed']);
-                exit;
-            }
-        } else {
-            echo json_encode(['error' => 'Upload error']);
-            exit;
+        if (empty($errors)) {
+            $photoName = uniqid() . '.' . $fileExt;
+            move_uploaded_file($fileTmp, $uploadDir . $photoName);
         }
     }
 
-    $insert = $admin->addOfficials($fname, $lname, $mname, $dob, $pob, $cs, $email, $contact, $position, $brgy, $title, $photoName, $emp_id);
+    if (!empty($errors)) {
+        echo json_encode([
+            'error' => implode(", ", $errors)
+        ]);
+        exit;
+    }
 
-    if ($insert) {
-        echo json_encode(['success' => "Successfully added"]);
+    $result = $admin->addOfficials(
+        $fname,
+        $lname,
+        $mname,
+        $dob,
+        $pob,
+        $cs,
+        $email,
+        $contact,
+        $position,
+        $brgy,
+        $title,
+        $photoName,
+        $emp_id
+    );
+
+    if ($result === 1) {
+        echo json_encode(['error' => "Email already exist"]);
+    } else if ($result === 2) {
+        echo json_encode(['error' => "Error adding officials"]);
+    } else if ($result === 3) {
+        echo json_encode(['error' => "Error adding to users"]);
+    } else if ($result === 4) {
+        echo json_encode(['error' => "Error adding to staff"]);
     } else {
-        echo json_encode(['error' => "Error db"]);
+        echo json_encode(['success' => "Official added successfully"]);
     }
-
-    exit;
 }

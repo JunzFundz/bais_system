@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/Connection.php';
 
-class AdminModel extends Dbh
+class Staff extends Dbh
 {
     private $mysqli;
 
@@ -11,19 +11,26 @@ class AdminModel extends Dbh
     {
         $this->mysqli = Dbh::getInstance();
     }
-    public function getAllBrgy()
+    public function getAllBrgy(int $brgyID)
     {
-        $result = $this->mysqli->query(" SELECT  b.BRGY_ID, b.BARANGAY, 
-        COUNT(p.BRGY_ID) AS total_persons,
-        COUNT(o.BRGY_ID) AS total_officials
+        $stmt = $this->mysqli->prepare("
+        SELECT 
+            b.BRGY_ID, 
+            b.BARANGAY,
+            COUNT(DISTINCT p.BRGY_ID) AS total_persons,
+            COUNT(DISTINCT CASE WHEN o.DATE_ENDED IS NULL THEN o.BRGY_ID END) AS total_officials
         FROM tbl_brgy b
         LEFT JOIN tbl_personal_info p ON b.BRGY_ID = p.BRGY_ID
         LEFT JOIN tbl_officials o ON b.BRGY_ID = o.BRGY_ID
-        GROUP BY b.BRGY_ID
+        WHERE b.BRGY_ID = ? 
+        GROUP BY b.BRGY_ID, b.BARANGAY
     ");
+        $stmt->bind_param('i', $brgyID);
+        $stmt->execute();
+        $res = $stmt->get_result();
 
         $rows = [];
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $res->fetch_assoc()) {
             $rows[] = $row;
         }
 
@@ -44,11 +51,14 @@ class AdminModel extends Dbh
         return $rows;
     }
 
-    public function getOfficialsBrgy($brgy)
+    public function getOfficialsBrgy($brgyID)
     {
-        $stmt = $this->mysqli->prepare("SELECT b.BRGY_ID, b.BARANGAY, o.*, p.POSITION_NAME FROM tbl_brgy b INNER JOIN tbl_officials o ON b.BRGY_ID = o.BRGY_ID INNER JOIN tbl_position p ON o.POSITION = p.POSITION_ID WHERE b.BRGY_ID = ?");
+        $stmt = $this->mysqli->prepare("SELECT b.*, o.*, p.POSITION_NAME 
+        FROM tbl_brgy b 
+        LEFT JOIN tbl_officials o ON b.BRGY_ID = o.BRGY_ID 
+        LEFT JOIN tbl_position p ON o.POSITION = p.POSITION_ID WHERE b.BRGY_ID = ?");
 
-        $stmt->bind_param("i", $brgy);
+        $stmt->bind_param("i", $brgyID);
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -158,28 +168,25 @@ class AdminModel extends Dbh
         return $result;
     }
 
-    public function requests()
+    public function requests($brgyID)
     {
-        $query = "SELECT 
-                r.*,
-                c.*, 
-                u.PI_ID,u.USER_ID, u.FNAME, u.MNAME, u.LNAME, u.CONTACT, u.EMAIL
-              FROM tbl_requests r
-              INNER JOIN tbl_personal_info u
-              ON r.USER_ID = u.USER_ID
-              INNER JOIN tbl_certificates c 
-              ON r.CERT_ID = c.CERT_ID
-              ORDER BY r.REQ_DATE DESC";
+        $stmt = $this->mysqli->prepare("SELECT 
+            r.*,
+            c.*,u.PI_ID, u.USER_ID, u.FNAME, u.MNAME, u.LNAME, u.CONTACT, u.EMAIL, u.BRGY_ID FROM tbl_requests r INNER JOIN tbl_personal_info u ON r.USER_ID = u.USER_ID INNER JOIN tbl_certificates c ON r.CERT_ID = c.CERT_ID WHERE u.BRGY_ID = ? AND r.REQ_STATUS != 'archived' ORDER BY r.REQ_DATE DESC");
 
-        $stmt = $this->mysqli->query($query);
+        $stmt->bind_param('i', $brgyID);
+        $stmt->execute();
 
-        if (!$stmt) {
+        $result = $stmt->get_result();
+
+        if (!$result) {
             error_log("MySQL Error: " . $this->mysqli->error);
             return [];
         }
 
-        return $stmt->fetch_all(MYSQLI_ASSOC);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
+
     public function officials()
     {
         $query = "SELECT * FROM tbl_officials o INNER JOIN tbl_brgy b ON o.BRGY_ID = b.BRGY_ID";
@@ -246,11 +253,39 @@ class AdminModel extends Dbh
 
         return $data;
     }
-    public function insertPost($title, $description, $files = [])
+    public function getOfficialInfo($off_id)
     {
-        $files_json = json_encode($files); // store file paths as JSON
-        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (TITLE, DESCRIPTION, DATE_CREATED, FILES, STATUS) VALUES (?, ?,NOW , ?, 1)");
-        $stmt->bind_param("sss", $title, $description, $files_json);
+        $stmt = $this->mysqli->prepare("SELECT * 
+        FROM tbl_officials o 
+        INNER JOIN tbl_status s ON o.CIVIL_STATUS = s.STATUS_ID
+        INNER JOIN tbl_position p ON o.POSITION = p.POSITION_ID
+        WHERE o.OFFICIAL_ID = ? AND o.STATUS = 'active'");
+        $stmt->bind_param("i", $off_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_assoc();
+
+        return $data;
+    }
+
+    public function activities($brgyID)
+    {
+        $stmt = $this->mysqli->prepare("SELECT * 
+        FROM tbl_posts WHERE BRGY_ID = ? AND STATUS != 3");
+        $stmt->bind_param("i", $brgyID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+        return $data;
+    }
+
+    public function insertPost(int $id, $title, $description, $files = [])
+    {
+        $files_json = json_encode($files);
+        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (BRGY_ID, TITLE, DESCRIPTION, FILES, DATE_CREATED, STATUS) VALUES (?, ?, ?, ?, NOW(), 1)");
+        $stmt->bind_param("isss", $id, $title, $description, $files_json);
+
         return $stmt->execute();
     }
 
@@ -258,7 +293,6 @@ class AdminModel extends Dbh
     public function getBrgy()
     {
         $result = $this->mysqli->query("SELECT COUNT(*) AS total_brgy FROM tbl_brgy");
-
         if ($row = $result->fetch_assoc()) {
             return $row['total_brgy']; // return integer directly
         }
@@ -302,5 +336,135 @@ class AdminModel extends Dbh
         $result = $stmt->get_result();
 
         return $result->fetch_assoc();
+    }
+
+    public function insertSignature(int $official_id, $fname, $mname, $lname, $dob, $pob, $cs, $email, $contact, $signaturePath, $avatarPath)
+    {
+        $stmt = $this->mysqli->prepare("UPDATE tbl_officials SET 
+        PHOTO = ?,
+        F_NAME  = ?,
+        L_NAME = ?,
+        M_NAME = ?,
+        DOB = ?,
+        POB = ?,
+        CIVIL_STATUS  = ?,
+        EMAIL = ?,
+        CONTACT = ?,
+        OFF_SIGNATURE = ?
+        WHERE OFFICIAL_ID = ?
+");
+        // $stmt = $this->mysqli->prepare("UPDATE tbl_officials SET OFF_SIGNATURE = ? WHERE OFFICIAL_ID = ?");
+        $stmt->bind_param("ssssssisssi", $avatarPath, $fname, $lname, $mname,  $dob, $pob, $cs, $email, $contact, $signaturePath, $official_id);
+        $result = $stmt->execute();
+
+        if ($result) {
+            error_log("Signature saved for OFFICIAL_ID: $official_id, Path: $signaturePath");
+        }
+
+        return $result;
+    }
+
+    public function declineRequests($id)
+    {
+        $stmt = $this->mysqli->prepare("UPDATE tbl_requests SET REQ_STATUS = 'declined' WHERE CTRL_NUM = ?");
+        $stmt->bind_param("s", $id);
+        $result = $stmt->execute();
+
+        return $result;
+    }
+
+    public function archiveRequests($id)
+    {
+        $stmt = $this->mysqli->prepare("UPDATE tbl_requests SET REQ_STATUS = 'archived' WHERE CTRL_NUM = ?");
+        $stmt->bind_param("s", $id);
+        $result = $stmt->execute();
+
+        return $result;
+    }
+
+    public function updatePostStatus(int $postId, int $status)
+    {
+        $stmt = $this->mysqli->prepare("UPDATE tbl_posts SET STATUS = ? WHERE ID = ?");
+        $stmt->bind_param("ii", $status, $postId);
+
+        return $stmt->execute();
+    }
+    public function approveRequest($user_id)
+    {
+        $this->mysqli->begin_transaction();
+
+        try {
+            $now = date('Y-m-d H:i:s');
+
+            $stmt1 = $this->mysqli->prepare("
+            UPDATE tbl_requests 
+            SET REQ_STATUS = 'approved' 
+            WHERE USER_ID = ?
+        ");
+            $stmt1->bind_param("i", $user_id);
+            $stmt1->execute();
+
+            $this->mysqli->commit();
+
+            return [
+                'success' => true,
+                'message' => 'Request approved successfully'
+            ];
+        } catch (Exception $e) {
+            $this->mysqli->rollback();
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function getUsersPerMonth($year)
+    {
+        $stmt = $this->mysqli->prepare("
+        SELECT 
+            MONTH(DATE_CREATED) AS month,
+            COUNT(*) AS total
+        FROM tbl_users
+        WHERE YEAR(DATE_CREATED) = ?
+        GROUP BY MONTH(DATE_CREATED)
+        ORDER BY month ASC
+    ");
+
+        $stmt->bind_param("i", $year);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getYearRange()
+    {
+        $result = $this->mysqli->query("
+        SELECT 
+            MIN(YEAR(DATE_CREATED)) AS min_year,
+            MAX(YEAR(DATE_CREATED)) AS max_year
+        FROM tbl_users
+    ");
+
+        return $result->fetch_assoc();
+    }
+    public function getPostsPerBarangay()
+    {
+        $stmt = $this->mysqli->prepare("
+        SELECT 
+            b.BARANGAY,
+            COUNT(p.BRGY_ID) AS total
+        FROM tbl_posts p
+        INNER JOIN tbl_brgy b ON b.BRGY_ID = p.BRGY_ID
+        GROUP BY p.BRGY_ID
+        ORDER BY total DESC
+    ");
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 }

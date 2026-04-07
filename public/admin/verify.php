@@ -1,13 +1,11 @@
 <?php 
-include 'header.php';
-require '../../model/AdminModel.php';
+// include 'header.php';
 
 $uid = $_SESSION['USER_ID'];
 $pid = $_SESSION['PI_ID'];
 $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
 
-$admin = new AdminModel();
 $d = $admin->generate($uid, $pid, $rid, $cid);
 ?>
 

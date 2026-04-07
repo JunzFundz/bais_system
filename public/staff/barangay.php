@@ -1,50 +1,88 @@
 <?php
-include 'header.php';
+require_once __DIR__ . '/../../model/Staff.php';
+$admin = new Staff();
 
-$allbrgy = $admin->getAllBrgy();
+session_start();
 
+$brgyID = $_SESSION['BRGY_ID'];
+
+$viewbrgy = $admin->getAllBrgy($brgyID);
+$viewofficials = $admin->getOfficialsBrgy($brgyID);
+include 'modal-add-officials.php';
+include 'modal-update-official.php';
 ?>
 
-<div class="flex-1 overflow-y-auto lg:p-8 dark:bg-dark-bg bg-slate-50/50 pt-4 pr-4 pb-4 pl-4" id="content-navigations">
-    <!-- Welcome Section -->
-    <div class="flex flex-col md:flex-row md:items-end gap-4 gap-x-4 gap-y-4 justify-between">
-        <div class="">
-            <h1 id="username-display" class="md:text-4xl text-dark text-3xl font-semibold tracking-tight font-poppins mb-2">Barangay</h1>
-            <p class="text-slate-500 font-poppins">Baranggay</p>
-        </div>
-        <div class="flex items-center gap-3">
-            <button onclick="my_modal_4.showModal()" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-700 text-white text-sm font-medium shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transition-all">
-                <iconify-icon icon="solar:add-circle-linear" width="18"></iconify-icon>
-                <span>Add Barangay</span>
-            </button>
-        </div>
-    </div>
+<?php if (!empty($viewbrgy)) {
+    foreach ($viewbrgy as $row):
+?>
+        <div class="setting-item">
+            <div class="container px-6 py-8 mx-auto bg-white border border-gray-300 rounded-xl dark:bg-gray-900">
+                <h1 class="mt-4 text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl dark:text-white">Barangay of: <?= htmlspecialchars($row['BARANGAY']) ?></h1>
 
-    <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Card 1 -->
-        <?php if (!empty($allbrgy)) {
-            foreach ($allbrgy as $row): ?>
+                <div class="mt-6 space-y-8 xl:mt-12">
+                    <div class="flex items-center justify-between max-w-2xl px-8 py-4 mx-auto border cursor-pointer rounded-xl dark:border-gray-700">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400 sm:h-9 sm:w-9" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
 
-                <a href="officials?barangay=<?= htmlspecialchars($row['BRGY_ID']) ?>">
-                    <div class="hover:shadow-[0_8px_30px_-4px_rgba(88,2,247,0.08)] transition-all duration-300 group bg-white border-slate-50 border rounded-2xl pt-6 pr-6 pb-6 pl-6 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.04)]">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                                Registered: <?= htmlspecialchars($row['total_persons']) ?> <iconify-icon icon="solar:arrow-right-up-linear" class="ml-1"></iconify-icon>
-                            </span>
+                            <div class="flex flex-col items-center mx-5 space-y-1">
+                                <h2 class="text-lg font-medium text-gray-700 sm:text-2xl dark:text-gray-200"><?= $row['total_officials'] ?></h2>
+
+                                <div class="px-2 text-xs text-blue-500 bg-gray-100 rounded-full sm:px-4 sm:py-1 dark:bg-gray-700 ">
+                                    Total Officials
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="text-slate-400 text-sm font-medium mb-1">Total Officials</h3>
-                        <p class="text-dark text-2xl font-bold font-poppins"><?= $row['total_officials'] ?></p>
+
+                        <h2 class="text-2xl font-semibold text-gray-500 sm:text-3xl dark:text-gray-300"><?= htmlspecialchars($row['total_persons']) ?><span class="text-base font-medium">/Registered</span></h2>
                     </div>
-                </a>
+                    <div class="flex justify-center">
+                        <button data-modal-target="add-official-modal" data-modal-toggle="add-official-modal" class="flex h-9 items-center gap-2 rounded-lg bg-brand-900 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">
+                            Add Officials
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<?php
+    endforeach;
+} ?>
 
-        <?php
-            endforeach;
-        } ?>
 
+<section class="">
+    <div class="container px-6 py-8 mx-auto">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl dark:text-white"></h2>
+        <div class="grid gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+
+            <?php
+            if (!empty($viewofficials)) {
+                foreach ($viewofficials as $row) {
+                    if ($row['DATE_ENDED'] == NULL && $row['POSITION'] != 1) {
+            ?>
+                        <div class="w-full max-w-xs bg-white dark:bg-gray-900 p-3 border border-gray-300 rounded-xl">
+                            <img class="object-cover object-center w-full h-48 mx-auto rounded-lg" src="../../profiles/<?= htmlspecialchars(strtoupper($row['PHOTO'])) ?>" alt="avatar" />
+                            <div class="mt-2">
+                                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200"><?= htmlspecialchars($row['L_NAME'] . " " . $row['F_NAME'] . " " . $row['M_NAME']) ?></h3>
+                                <span class="mt-1 font-medium text-gray-600 dark:text-gray-300"><?= htmlspecialchars(strtoupper($row['POSITION_NAME'])) ?></span>
+                            </div>
+                            <center>
+                                <div class="inline-flex rounded-md shadow-xs">
+                                    <a href="#" data-id="<?= htmlspecialchars($row['OFFICIAL_ID']) ?>" id="" aria-current="page" class="update-official px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                                        Update
+                                    </a>
+                                    <a href="#" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                                        Mail
+                                    </a>
+                                </div>
+                            </center>
+                        </div>
+            <?php
+                    }
+                }
+            }
+            ?>
+
+        </div>
     </div>
-
-</div>
-
-
-<?php include 'footer.php' ?>
+</section>

@@ -7,7 +7,6 @@
 
         include 'modal-add-officials.php'; ?>
 
-
        <div class="flex-1 overflow-y-auto lg:p-8 dark:bg-dark-bg bg-slate-50/50 pt-4 pr-4 pb-4 pl-4" id="content-navigations">
            <!-- Welcome Section -->
            <div class="flex flex-col md:flex-row md:items-end gap-4 gap-x-4 gap-y-4 justify-between">
@@ -16,7 +15,7 @@
                    <p class="text-slate-500 font-poppins"><?= htmlspecialchars($_SESSION['BARANGAY']) ?></p>
                </div>
                <div class="flex items-center gap-3">
-                   <button data-modal-target="add-official-modal" data-modal-toggle="add-official-modal" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-700 text-white text-sm font-medium shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transition-all">
+                   <button  class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-700 text-white text-sm font-medium shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transition-all">
                        <iconify-icon icon="solar:add-circle-linear" width="18"></iconify-icon>
                        <span>Add Officials</span>
                    </button>

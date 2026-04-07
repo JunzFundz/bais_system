@@ -3,6 +3,21 @@ $.ajaxSetup({
     dataType: 'json'
 });
 
+function showLoader() {
+    const loader = document.getElementById('preloader');
+    if (loader) {
+        loader.classList.remove('hidden');
+    }
+}
+
+function hideLoader() {
+    const loader = document.getElementById('preloader');
+    if (loader) {
+        loader.classList.add('hidden');
+    }
+}
+
+hideLoader()
 
 function addBrgy(e) {
     e.preventDefault();
@@ -51,152 +66,98 @@ function addBrgy(e) {
 }
 
 function addOfficial() {
-    // e.preventDefault();
-    // Get values
-    const fname = $('#fname').val();
-    const mname = $('#mname').val();
-    const lname = $('#lname').val();
-    const dob = $('#dob').val();
-    const pob = $('#pob').val();
-    const cs = $('#cs').val();
-    const email = $('#email').val();
-    const contact = $('#contact').val();
-    const position = $('#position').val();
-    const brgy = $('#brgy').val();
-    const otitle = $('#otitle').val();
+    showLoader()
+    const formData = new FormData();
 
-    const errors = [];
+    formData.append('addOfficial', true);
+    formData.append('fname', $('#fname').val());
+    formData.append('mname', $('#mname').val());
+    formData.append('lname', $('#lname').val());
+    formData.append('dob', $('#dob').val());
+    formData.append('pob', $('#pob').val());
+    formData.append('cs', $('#cs').val());
+    formData.append('email', $('#email').val());
+    formData.append('contact', $('#contact').val());
+    formData.append('position', $('#position').val());
+    formData.append('brgy', $('#brgy').val());
+    formData.append('otitle', $('#otitle').val());
+    formData.append('emp_id', $('#emp_id').val());
 
-    // First Name
-    if (!fname) {
-        errors.push('First name is required');
-    } else if (fname.length < 2) {
-        errors.push('First name must be at least 2 characters');
-    } else if (fname.length > 50) {
-        errors.push('First name must be less than 50 characters');
-    } else if (!/^[a-zA-Z\s\-']+$/.test(fname)) {
-        errors.push('First name can only contain letters, spaces, hyphens, and apostrophes');
+    const fileInput = document.getElementById('photo_profile');
+    if (fileInput.files.length > 0) {
+        formData.append('photo', fileInput.files[0]);
     }
 
-    // Middle Name (optional)
-    if (mname && !/^[a-zA-Z\s\-']+$/.test(mname)) {
-        errors.push('Middle name can only contain letters, spaces, hyphens, and apostrophes');
-    }
-
-    // Last Name
-    if (!lname) {
-        errors.push('Last name is required');
-    } else if (lname.length < 2) {
-        errors.push('Last name must be at least 2 characters');
-    } else if (lname.length > 50) {
-        errors.push('Last name must be less than 50 characters');
-    } else if (!/^[a-zA-Z\s\-']+$/.test(lname)) {
-        errors.push('Last name can only contain letters, spaces, hyphens, and apostrophes');
-    }
-
-    // Date of Birth
-    if (!dob) {
-        errors.push('Date of birth is required');
-    } else {
-        const birthDate = new Date(dob);
-        const today = new Date();
-        const age = today.getFullYear() - birthDate.getFullYear();
-        if (birthDate > today) {
-            errors.push('Date of birth cannot be in the future');
-        }
-        if (age > 120) {
-            errors.push('Please enter a valid date of birth');
-        }
-    }
-
-    // Place of Birth
-    if (!pob) {
-        errors.push('Place of birth is required');
-    } else if (pob.length > 100) {
-        errors.push('Place of birth must be less than 100 characters');
-    } else if (!/^[a-zA-Z\s\-',.]+$/.test(pob)) {
-        errors.push('Place of birth contains invalid characters');
-    }
-
-    // Civil Status
-    if (!cs) {
-        errors.push('Civil status is required');
-    }
-
-    // Email
-    if (!email) {
-        errors.push('Email is required');
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        errors.push('Please enter a valid email address');
-    }
-
-    // Contact Number
-    if (!contact) {
-        errors.push('Contact number is required');
-    } else if (!/^09\d{9}$/.test(contact)) {
-        errors.push('Contact number must be 11 digits starting with 09');
-    }
-
-    // Position
-    if (!position) {
-        errors.push('Position is required');
-    }
-
-    // Barangay
-    if (!brgy) {
-        errors.push('Barangay is required');
-    }
-
-    // Title (optional)
-    if (otitle && otitle.length > 50) {
-        errors.push('Title must be less than 50 characters');
-    }
-
-    // Show errors if any
-    if (errors.length > 0) {
-        alert(errors.join('\n'));
-        return;
-    }
-    console.log(fname,
-        mname,
-        lname,
-        dob,
-        pob,
-        cs,
-        email,
-        contact,
-        position,
-        brgy,
-        otitle)
     $.ajax({
         url: '../../data/admin-add-officials.php',
         type: 'POST',
-        data: {
-            addOfficial: true,
-            fname: fname,
-            mname: mname,
-            lname: lname,
-            dob: dob,
-            pob: pob,
-            cs: cs,
-            email: email,
-            contact: contact,
-            position: position,
-            brgy: brgy,
-            otitle: otitle
-        },
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             if (response.success) {
-                alert(response.success);
+                if(confirm(response.success+"Add another officials?")){
+                    $('#add-official-modal').find('input:not([type="hidden"]), textarea, select').val('');
+                }else{
+                    $('#add-official-modal').classList.add('hidden')
+                }
+                hideLoader()
+            } else if (response.error) {
+                alert(response.error);
+                hideLoader()
             }
         },
         error: function (xhr, status, error) {
-            alert(error);
-        },
+            console.log(xhr.responseText);
+            alert("Error: " + error);
+        }
     });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const updateModal = document.getElementById("modal-update-official");
+    if (updateModal) {
+        window.updateModalInstance = new Modal(updateModal);
+    }
+
+    const modalElement = document.getElementById("custom-modal");
+    if (modalElement) {
+        window.customModalInstance = new Modal(modalElement);
+    }
+    const reqModal = document.getElementById("modal-requests-certs");
+    if (reqModal) {
+        window.requestsModal = new Modal(reqModal);
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    $('.update-official').on('click', function (e) {
+        e.preventDefault();
+
+        const modal = $('#modal-update-official');
+        const id = $(this).data('id');
+
+        $.ajax({
+            url: '../../data/admin-update-officials.php',
+            method: 'post',
+            data: {
+                'update': true,
+                id: id
+            },
+            dataType: 'html',
+            success: function (res) {
+                $('.modal-body').html(res);
+                window.updateModalInstance.show();
+            },
+            error: function () {
+
+            }
+        })
+    })
+
+})
 
 
 

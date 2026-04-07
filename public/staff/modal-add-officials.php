@@ -1,8 +1,4 @@
-   <?php #myTable
-    // include __DIR__ . "/../../model/AdminModel.php";
-
-    // $admin = new AdminModel();
-    // $brgy = $admin->getBrgy();
+   <?php
     $position = $admin->getPosition();
     $status = $admin->getStatus();
 
@@ -86,9 +82,12 @@
                                <select type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="email" id="position" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                                <?php if (!empty($position)) { ?>
                                    <?php foreach ($position as $row) { ?>
-                                       <option value="<?= $row['POSITION_ID']; ?>">
+
+                                       <?php if ($row['POSITION_ID'] == 1) continue; ?>
+                                       <option value="<?= $row['POSITION_ID'] ?>">
                                            <?= $row['POSITION_NAME']; ?>
                                        </option>
+
                                    <?php } ?>
                                <?php } else { ?>
                                    <option disabled>No data found</option>
@@ -98,7 +97,7 @@
                            </div>
                            <div class="relative z-0 w-full mb-5 group">
                                <input type="hidden" name="" id="brgy" value="<?= htmlspecialchars($_SESSION['BRGY_ID']) ?>">
-                               <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="email" id="" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" value="<?= htmlspecialchars($_SESSION['BARANGAY']) ?>" />
+                               <input disabled type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="email" id="" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer cursor-not-allowed" value="<?= htmlspecialchars($_SESSION['BARANGAY']) ?>" />
 
                                <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Barangay</label>
                            </div>
@@ -120,8 +119,9 @@
                </div>
                <!-- Modal footer -->
                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                   <button onclick="addOfficial()" data-modal-hide="add-official-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add</button>
-                   <button data-modal-hide="add-official-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
+                   <button onclick="addOfficial()" type="button" class="flex h-9 items-center gap-2 rounded-lg bg-brand-900 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">Add</button>
+
+                   <button data-modal-hide="add-official-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
                </div>
            </div>
        </div>

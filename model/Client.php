@@ -328,4 +328,108 @@ class Client extends Dbh
 
         return $rows;
     }
+
+    public function activities()
+    {
+        $result = $this->mysqli->query("
+        SELECT * 
+        FROM tbl_posts 
+        WHERE STATUS != 3
+    ");
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    public function genders()
+    {
+        $result = $this->mysqli->query("SELECT * FROM tbl_gender");
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function seeYourInfo($id)
+    {
+        $stmt = $this->mysqli->prepare("SELECT u.*, p.*, b.*
+        FROM tbl_users u
+        INNER JOIN tbl_personal_info p ON u.u_id = p.USER_ID
+        INNER JOIN tbl_brgy b ON p.BRGY_ID = b.BRGY_ID
+        WHERE u.u_id = ?
+    ");
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc();
+    }
+
+    public function updateInfo($id, $fname, $mname, $lname, $dob, $pob, $cs, $gender, $email, $contact, $brgy, $street, $city, $signaturePath, $avatarPath)
+    {
+        try {
+            $this->mysqli->begin_transaction();
+
+            $stmt1 = $this->mysqli->prepare("UPDATE tbl_personal_info SET 
+            FNAME = ?,
+            MNAME = ?, 
+            LNAME = ?,
+            SEX = ?,
+            CIVIL = ?,
+            DOB = ?,
+            POB = ?,
+            CONTACT = ?,
+            EMAIL = ?,
+            STREET = ?,
+            BRGY_ID = ?,
+            CITY = ?,
+            SIGNATURE = ?
+            WHERE USER_ID = ?
+        ");
+
+            if (!$stmt1) {
+                throw new Exception($this->mysqli->error);
+            }
+
+            $stmt1->bind_param(
+                "ssssssssssissi",
+                $fname,
+                $mname,
+                $lname,
+                $gender,
+                $cs,
+                $dob,
+                $pob,
+                $contact,
+                $email,
+                $street,
+                $brgy,
+                $city,
+                $signaturePath,
+                $id
+            );
+
+            if (!$stmt1->execute()) {
+                throw new Exception($stmt1->error);
+            }
+
+            $stmt2 = $this->mysqli->prepare("UPDATE tbl_users SET PP = ? WHERE u_id = ?");
+
+            if (!$stmt2) {
+                throw new Exception($this->mysqli->error);
+            }
+
+            $stmt2->bind_param("si", $avatarPath, $id);
+
+            if (!$stmt2->execute()) {
+                throw new Exception($stmt2->error);
+            }
+
+            $this->mysqli->commit();
+            return true;
+        } catch (Exception $e) {
+
+            $this->mysqli->rollback();
+
+            error_log("Update failed: " . $e->getMessage());
+
+            return false;
+        }
+    }
 }

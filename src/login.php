@@ -6,7 +6,7 @@
     x-transition:leave="transition duration-150 ease-in"
     x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
     x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-    class="absolute inset-0 z-30 overflow-y-auto bg-amber-50/70"
+    class="fixed inset-0 z-40 overflow-y-auto bg-amber-50/70"
     aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0 ">
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -27,8 +27,15 @@
                         <label for="password" class="block text-sm text-gray-800 dark:text-gray-200">Password</label>
                         <a href="forgot_password" class="text-xs text-gray-600 dark:text-gray-400 hover:underline">Forget Password?</a>
                     </div>
+                    <div class="relative">
+                        <input type="password" id="loginPass" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" />
 
-                    <input type="password" id="loginPass" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        <!-- Eye Icon -->
+                        <span onclick="togglePassword('loginPass', this)"
+                            class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500">
+                            <iconify-icon icon="mdi:eye-off-outline" width="20"></iconify-icon>
+                        </span>
+                    </div>
                 </div>
 
                 <div class="mt-6">
@@ -79,3 +86,19 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    function togglePassword(inputId, el) {
+        const input = document.getElementById(inputId);
+        const icon = el.querySelector('iconify-icon');
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.setAttribute("icon", "mdi:eye-outline");
+        } else {
+            input.type = "password";
+            icon.setAttribute("icon", "mdi:eye-off-outline");
+        }
+    }
+</script>

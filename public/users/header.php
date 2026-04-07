@@ -47,6 +47,7 @@
     $req = $client->getUserRequest($user_id);
     $status = $client->searchStatus();
     $brgys = $client->getAllBrgy();
+    $gen = $client->genders();
 
     $limit = 3;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
@@ -111,10 +112,10 @@
                             </li>
                             <li>
                                 <!-- onclick="loadDashboard()" -->
-                                <a href="dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Account Settings</a>
+                                <a href="settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Account Settings</a>
                             </li>
                             <li>
-                                <a href="#" id="logout-btn" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Log out</a>
+                                <a href="../../data/logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Log out</a>
                             </li>
                         </ul>
                     </div>
@@ -150,7 +151,7 @@
             </div>
         </nav>
 
-        <div class="flex items-center py-4 overflow-x-auto whitespace-nowrap bg-white border-t-2 border-b-2 border-gray-600 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-900 w-full">
+        <div id="second-nav" class="flex items-center py-4 overflow-x-auto whitespace-nowrap bg-white border-t-2 border-b-2 border-gray-600 dark:border-gray-400 dark:bg-gray-700 dark:text-gray-900 w-full">
             <a href="#" class="text-gray-600 dark:text-gray-300 ml-8">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -175,11 +176,11 @@
         </div>
     </div>
 
-    <div id="preloader"
+    <!-- <div id="preloader"
         class="flex-col gap-4 w-full flex items-center justify-center fixed inset-0 bg-amber-50/80 z-50 transition-opacity duration-500 cursor-not-allowed">
         <div class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full">
             <div class="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full">
             </div>
         </div>
         <span>Please wait</span>
-    </div>
+    </div> -->

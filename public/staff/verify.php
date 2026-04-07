@@ -5,8 +5,10 @@ $uid = $_SESSION['USER_ID'];
 $pid = $_SESSION['PI_ID'];
 $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
+$off_id = $_SESSION['OFFICIAL_ID'];
 
 $d = $admin->generate($uid, $pid, $rid, $cid);
+
 ?>
 
 

@@ -3,6 +3,250 @@ $.ajaxSetup({
     dataType: 'json'
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const updateModal = document.getElementById("modal-update-official");
+    if (updateModal) {
+        window.updateModalInstance = new Modal(updateModal);
+    }
+});
+
+function showToast(msg) {
+    Toastify({
+        text: msg,
+        className: "info",
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        }
+    }).showToast();
+}
+
+$(document).ready(function () {
+    $('#add-post').on('click', function (e) {
+        e.preventDefault();
+
+        document.getElementById('add-post').innerText = "Posting....";
+
+        const brgy_id = $('#brgy_id').val().trim();
+        let title = $('#post-title').val().trim();
+        let description = $('#post-description').val().trim();
+        let files = $('#post-file')[0].files;
+
+        if (title === '') {
+            showToast('Title is required');
+            document.getElementById('add-post').innerText = "Post";
+            return;
+        }
+
+        if (files.length === 0) {
+            showToast('Please select at least one file');
+            document.getElementById('add-post').innerText = "Post";
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('brgy_id', brgy_id);
+        formData.append('title', title);
+        formData.append('description', description);
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files[]', files[i]);
+        }
+
+        $.ajax({
+            url: '../../data/staff-add-act.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function (response) {
+                window.updateModalInstance.hide();
+                showToast(response.message);
+                // activities() 
+            },
+            error: function (xhr, status, error) {
+                showToast('Something went wrong while uploading.');
+            }
+        });
+    });
+});
+
+$('#change-password-data').on('click', function (e) {
+    e.preventDefault();
+
+    const u_id = $('#u_id').val();
+    const current = $('#cpass').val();
+    const newpass = $('#npass').val();
+    const confirm = $('#cnpass').val();
+
+    if (newpass !== confirm) {
+        showToast('Passwords do not match');
+        return;
+    }
+
+    $.ajax({
+        url: '../../data/admin-change-password.php',
+        method: 'POST',
+        data: {
+            u_id: u_id,
+            current: current,
+            newpass: newpass
+        },
+        dataType: 'json',
+        success: function (res) {
+            if (res.status === 'success') {
+                showToast(res.message);
+                setTimeout(() => {
+                    location.reload();
+                })
+            } else {
+                showToast(res.message);
+            }
+        },
+        error: function () {
+            showToast('Something went wrong');
+        }
+    });
+});
+
+function settings() {
+    $('#content-navigations').load('settings.php', function () {
+        initFlowbite();
+    });
+}
+
+function officials() {
+    $('#content-navigations').load('officials.php', function () {
+        initFlowbite();
+    });
+}
+
+function dashboard() {
+    $('#content-navigations').load('dashboard.php', function () {
+        initFlowbite();
+        initCharts() 
+    });
+}
+
+function brgy() {
+    $('#content-navigations').load('barangay.php', function () {
+        initFlowbite();
+
+        $('.update-official').on('click', function (e) {
+            e.preventDefault();
+
+            const modal = $('#modal-update-official');
+            const id = $(this).data('id');
+
+            console.log(id)
+
+            $.ajax({
+                url: '../../data/staff-update-officials.php',
+                method: 'post',
+                data: {
+                    'update': true,
+                    id: id
+                },
+                dataType: 'html',
+                success: function (res) {
+                    $('.modal-body').html(res);
+                    window.updateModalInstance.show();
+                },
+                error: function () {
+
+                }
+            })
+        })
+
+
+    });
+}
+
+function activities() {
+    $('#content-navigations').load('activities.php', function () {
+        initFlowbite();
+
+        $('.delete-post').on('click', function () {
+            const id = $(this).data('post');
+
+            $.ajax({
+                url: '../../data/admin-archive-post.php',
+                method: 'post',
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function (res) {
+                    if (res.success) {
+                        showToast(res.success)
+                        activities()
+                    } else {
+                        showToast(res.error)
+                    }
+                },
+                error: function () {
+
+                }
+            })
+        });
+
+    });
+}
+
+function requests() {
+    $('#content-navigations').load('requests.php', function () {
+        initFlowbite();
+
+        $('.view-requests').on('click', function (e) {
+            e.preventDefault();
+            var rid = $(this).data('rid');
+            var uid = $(this).data('uid');
+
+            console.log(rid, uid);
+
+            $.ajax({
+                url: '../../data/staff-see-req.php',
+                type: 'POST',
+                data: {
+                    'view': true,
+                    req_id: rid,
+                    user_id: uid
+                },
+                dataType: "html",
+                success: function (response) {
+                    $('.modal-body').html(response);
+                    if (window.requestsModal) {
+                        window.requestsModal.show();
+                    } else {
+                        console.error("Modal instance is not initialized");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('XHR:', xhr);
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response:', xhr.responseText);
+                    alert('Error getting data: ' + xhr.responseText);
+                }
+            });
+        });
+
+    });
+}
+
+function users() {
+    $('#content-navigations').load('users.php', function () {
+        initFlowbite();
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const updateModal = document.getElementById("modal-update-official");
+    if (updateModal) {
+        window.updateModalInstance = new Modal(updateModal);
+    }
+});
+
 
 function addBrgy(e) {
     e.preventDefault();
@@ -70,28 +314,29 @@ function addOfficial() {
 
     const fileInput = document.getElementById('photo_profile');
     if (fileInput.files.length > 0) {
-        formData.append('photo', fileInput.files[0]); // ✅ actual file
+        formData.append('photo', fileInput.files[0]);
     }
 
     $.ajax({
-        url: '../../data/admin-add-officials.php',
+        url: '../../data/staff-add-officials.php',
         type: 'POST',
         data: formData,
-        processData: false,   // ❗ REQUIRED
-        contentType: false,   // ❗ REQUIRED
+        processData: false,
+        contentType: false,
 
         success: function (response) {
             console.log(response);
 
             if (response.success) {
-                alert(response.success);
+                showToast(response.success);
+                barangay()
             } else if (response.error) {
-                alert(response.error);
+                showToast(response.error);
             }
         },
         error: function (xhr, status, error) {
             console.log(xhr.responseText);
-            alert("Error: " + error);
+            showToast("Error: " + error);
         }
     });
 }
@@ -111,69 +356,4 @@ document.addEventListener("DOMContentLoaded", function () {
         window.requestsModal = new Modal(reqModal);
     }
 });
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    $('.update-official').on('click', function (e) {
-        e.preventDefault();
-
-        const modal = $('#modal-update-official');
-        const id = $(this).data('id');
-
-        $.ajax({
-            url: '../../data/admin-update-officials.php',
-            method: 'post',
-            data: {
-                'update': true,
-                id: id
-            },
-            dataType: 'html',
-            success: function (res) {
-                $('.modal-body').html(res);
-                window.updateModalInstance.show();
-            },
-            error: function () {
-
-            }
-        })
-    })
-
-    $('.view-requests').on('click', function (e) {
-        e.preventDefault();
-        var rid = $(this).data('rid');
-        var uid = $(this).data('uid');
-
-        console.log(rid, uid);
-
-        $.ajax({
-            url: '../../data/admin-see-req.php',
-            type: 'POST',
-            data: {
-                'view': true,
-                req_id: rid,
-                user_id: uid
-            },
-            dataType: "html",
-            success: function (response) {
-                // Fix: Use jQuery .html() or .text() instead of .innerText
-                $('.modal-body').html(response); // Use .html() for HTML content
-                // OR $('.modal-body').text(response); // Use .text() for plain text
-
-                if (window.requestsModal) {
-                    window.requestsModal.show();
-                } else {
-                    console.error("Modal instance is not initialized");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('XHR:', xhr);
-                console.error('Status:', status);
-                console.error('Error:', error);
-                console.error('Response:', xhr.responseText);
-                alert('Error getting data: ' + xhr.responseText);
-            }
-        });
-    });
-
-})
 

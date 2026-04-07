@@ -1,6 +1,4 @@
 <?php
-include 'header.php';
-require '../../model/AdminModel.php';
 
 $uid = $_SESSION['USER_ID'];
 $pid = $_SESSION['PI_ID'];
@@ -8,166 +6,291 @@ $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
 
 
-$admin = new AdminModel();
 $d = $admin->generate($uid, $pid, $rid, $cid);
 
 
-
+date_default_timezone_set('Asia/Manila');
+$date = date('Y-m-d H:i:s');
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    .hide-for-export {
+        display: none !important;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate - Republic of the Philippines</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'serif': ['Times New Roman', 'serif'],
-                        'script': ['Brush Script MT', 'cursive'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @font-face {
-            font-family: 'CertificateScript';
-            src: local('Brush Script MT'), local('BrushScript'), url('data:font/woff2;base64,...') format('woff2');
+    @media print {
+        body * {
+            visibility: hidden;
         }
 
-        .certificate-bg {
-            background: linear-gradient(135deg, #f8f4e6 0%, #e8e2d3 50%, #f8f4e6 100%);
-            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1);
+        #certificate,
+        #certificate * {
+            visibility: visible;
         }
-    </style>
-</head>
 
-<body class="bg-gradient-to-br from-stone-100 to-amber-50 min-h-screen flex items-center justify-center p-8">
-    <div class="certificate-bg max-w-4xl w-full mx-auto bg-white rounded-3xl shadow-2xl border-8 border-amber-800/50 p-12 relative overflow-hidden">
-        <!-- Watermark -->
-        <div class="absolute inset-0 opacity-5 flex items-center justify-center pointer-events-none">
-            <div class="text-8xl font-serif font-bold text-amber-800 rotate-[-5deg] tracking-widest">BAIS CITY</div>
-        </div>
+        #certificate {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 210mm;
+            height: 297mm;
+        }
 
-        <!-- Top Header Section -->
-        <div class="text-center relative z-10">
-            <!-- Logo 1 (Left) -->
-            <div class="absolute left-0 top-0 w-24 h-24 bg-gradient-to-br from-blue-800 to-blue-600 rounded-full shadow-lg flex items-center justify-center">
-                <img src="../assets/images/logo1.png" alt="">
+        #buttons-group {
+            display: none !important;
+        }
+    }
+</style>
+<!-- Add this line to load html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<center>
+    <div class="inline-flex print:hidden rounded-md shadow-xs pt-3" id="buttons-group" role="group">
+        <button onclick="closeTab()" type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Back to certificates
+        </button>
+        <button onclick="window.print()" type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Print
+        </button>
+        <button id="btn-send-file" onclick="sendAsMail('<?php echo $_SESSION['EMAIL'] ?>')" type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+            Send as mail
+        </button>
+    </div>
+</center>
+
+
+<div class="min-h-screen overflow-y-auto w-full">
+    <div id="certificate" class="p-10 mx-auto"
+        style="width:210mm; height:297mm; box-sizing:border-box; font-family:serif;">
+        <div class="p-8 border-2 border-gray-800" style="width:100%; height:100%;">
+            <div class="flex flex-row justify-between w-full text-center">
+                <div class="flex items-center justify-center w-28 h-28">
+                    <img src="../assets/images/logo1.png" alt="">
+                </div>
+                <div>
+                    <p class="text-xl font-serif text-gray-700 mt-4 tracking-wide">
+                        Republic of the Philippines
+                        <br>
+                        Province of Negros Oriental
+                        <br>
+                        City of Bais
+                    </p>
+                    <p class="text-xl font-serif text-gray-700 mt-4 uppercase tracking-wide">
+                        <?= $d['BARANGAY'] ?>
+                    </p>
+                    <p>
+                        -o0o-
+                    </p>
+                    <p class="text-xl print:text-xl font-serif pt-7 pb-7 font-semibold text-gray-700 mt-4 uppercase tracking-wide">
+                        OFFICE OF THE PUNONG BARANGAY
+                    </p>
+                </div>
+                <div class="flex items-center justify-center w-28 h-28">
+                    <img src="../assets/images/logo2.png" alt="">
+                </div>
             </div>
 
-            <!-- Center Header -->
-            <div class="pb-8">
-                <p class="text-xl font-serif font-semibold text-gray-700 mt-4 tracking-wide">
-                    Republic of the Philippines
-                    <br>
-                    Province of Negros Oriental
-                    <br>
-                    City of Bais
-                </p>
-                <!-- <div class="w-48 h-1 bg-gradient-to-r from-amber-600 to-orange-500 mx-auto rounded-full shadow-md"></div> -->
-                <p class="text-xl md:text-2xl font-serif font-semibold text-gray-700 mt-4 uppercase tracking-wide">
-                    <?= $d['BRGY'] ?>
-                </p>
-                <p class="text-xl md:text-2xl font-serif font-semibold text-gray-700 mt-4 uppercase tracking-wide">
-                    OFFICE OF THE PUNONG BARANGAY
-                </p>
-                <!-- <p class="text-lg md:text-xl font-serif italic text-gray-600 mt-1">
-                    Division of [Your Division]
-                </p> -->
-            </div>
-
-            <!-- Logo 2 (Right) -->
-            <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-br from-red-600 to-orange-500 rounded-full shadow-lg flex items-center justify-center">
-                <img src="../assets/images/logo2.png" alt="">
-            </div>
-        </div>
-
-        <!-- Certificate Body -->
-        <div class="max-w-3xl mx-auto  space-y-8">
-            <!-- Certificate Title -->
-            <div class="bg-gradient-to-r text-center from-amber-500/20 to-orange-500/20 border-t border-b border-amber-600/50  p-2 backdrop-blur-sm">
-                <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-800 uppercase tracking-widest mb-4 drop-shadow-lg">
-                    Certification
+            <div class="text-center text-blue-900 border-t border-b border-blue-950 p-2 mb-8">
+                <h2 class="text-3xl print:text-xl font-serif font-bold uppercase tracking-widest lg p-5 print:p-3">
+                    CERTIFICATION
                 </h2>
-                <div class="w-32 h-1 bg-gradient-to-r from-amber-600 via-orange-500 to-red-500 mx-auto rounded-full shadow-md"></div>
             </div>
 
-            <!-- Main Content -->
-            <div class="text-lg md:text-xl leading-relaxed text-gray-700 font-serif space-y-6 px-8">
+            <div>
                 <p>
                     To whom It May Concern:
                 </p>
-                <p>
-                   
+                <br>
+                <p class="" style="font-style: italic;">
+                    This is to certify that <span class="font-bold underline"> <?= $d['FNAME'] . " " . $d['MNAME'] . " " . $d['LNAME'] ?>,<?= $d['AGE'] ?></span> years old, <span class="font-bold underline"><?= $d['SEX'] ?>, <?= $d['CIVIL'] ?>, <?= $d['CITIZEN'] ?></span> and Bonafide resident of <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> , Negros Oriental. Know to be a person of good community standing and has no pending case as to this date, as far as the Office of Punong Barangay is concerned.
+                    <br><br><br><br>
+                    This certification is issued upon the request of the aboved-named person is connection with the requirements for <span class="font-bold underline"> <?= $d['PURPOSE'] ?></span>.
+                    <br><br><br><br>
+                    Issued this <span class="font-bold underline"><?= date('d', strtotime($date)) ?></span> day of <span class="font-bold underline"><?= date('F', strtotime($date)) ?></span>, <span class="font-bold underline"><?= date('Y', strtotime($date)) ?></span> at <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> City, Negros Oriental, Philippines.
+
+                    <br><br><br><br><br>
                 </p>
-            </div>
 
-            <!-- Seals/Emblems -->
-            <div class="flex flex-col md:flex-row gap-8 justify-center items-center mt-12">
-                <div class="w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-xl flex flex-col items-center justify-center p-4 text-white font-bold text-sm uppercase tracking-wider">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                        </svg>
-                    </div>
-                    Excellence
-                </div>
-                <div class="w-32 h-32 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl shadow-xl flex flex-col items-center justify-center p-4 text-white font-bold text-sm uppercase tracking-wider">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                    </div>
-                    Achievement
-                </div>
-            </div>
+                <div id="container" class="relative">
+                    <div id="resizable1" style="position:absolute; top:0; left:0; display:inline-block;">
+                        <img src="../../uploads/<?= $d['SIGNATURE'] ?>"
+                            id="signature-image"
+                            style="height:200px; width:200px; cursor:move; display:block;">
 
-            <!-- Signature Section -->
-            <div class="mt-16 pt-12 border-t-4 border-dashed border-amber-600/30">
-                <div class="grid md:grid-cols-3 gap-8 items-end text-left max-w-2xl mx-auto">
-                    <!-- Prepared By -->
-                    <div class="text-center md:text-left">
-                        <p class="text-sm uppercase tracking-wider text-gray-600 font-semibold mb-2">Prepared by:</p>
-                        <div class="h-24 border-t-2 border-gray-400 pt-4">
-                            <p class="font-serif font-bold text-lg">MARIA SANTOS</p>
-                            <p class="text-sm font-medium text-gray-600">Program Coordinator</p>
-                        </div>
-                    </div>
-
-                    <!-- Date -->
-                    <div class="text-center">
-                        <p class="text-sm uppercase tracking-wider text-gray-600 font-semibold mb-2">Date:</p>
-                        <div class="h-24 border-t-2 border-gray-400 pt-8">
-                            <p class="font-serif font-bold text-xl">December 15, 2024</p>
-                        </div>
-                    </div>
-
-                    <!-- Principal -->
-                    <div class="text-center md:text-right">
-                        <p class="text-sm uppercase tracking-wider text-gray-600 font-semibold mb-2">Certified by:</p>
-                        <div class="h-24 border-t-2 border-gray-400 pt-4">
-                            <p class="font-serif font-bold text-lg">DR. JOSE RIZAL</p>
-                            <p class="text-sm font-medium text-gray-600">School Principal</p>
+                        <div class="resize-handle" id="resize-handle1"
+                            style="width:15px; height:15px; background:black; position:absolute; bottom:0; right:0; cursor:se-resize;">
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Decorative Footer -->
-        <div class="mt-16 pt-8 border-t-4 border-dashed border-amber-600/30 text-center">
-            <p class="text-xs uppercase tracking-widest font-bold text-gray-500 italic">
-                Official Certificate • Not Valid for Legal Purposes
-            </p>
+                <h1 class="float-left">
+                    Specimen Signature: <br>
+                    ________________________
+                </h1>
+
+                <div id="container2" class="relative">
+                    <div id="resizable2" style="position:absolute; top:0; left:0; display:inline-block;">
+                        <img src="../../uploads/<?= $offs['OFF_SIGNATURE'] ?>"
+                            id="signature-image2"
+                            style="height:200px; width:200px; cursor:move; display:block;">
+
+                        <div class="resize-handle" id="resize-handle2"
+                            style="width:15px; height:15px; background:black; position:absolute; bottom:0; right:0; cursor:se-resize;">
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="flex float-right text-center font-bold">
+                    <?= htmlspecialchars(strtoupper($offs['F_NAME'] . " " . substr($offs['M_NAME'], 0, 1) . ". " . $offs['L_NAME'])) ?><br>
+                    ________________________
+                    <br>
+                    Punong Barangay
+                    <br>
+                </h1>
+
+            </div>
+            <div class="pb-[8rem] mb-20">
+
+            </div>
+
+
         </div>
     </div>
-</body>
+</div>
 
-</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('sidebar').classList.add('hidden');
+        document.getElementById('top-navigation').classList.add('hidden');
+    })
+
+    const box1 = document.getElementById("resizable1");
+    const img1 = document.getElementById("signature-image");
+    const handle1 = document.getElementById("resize-handle1");
+
+    const box2 = document.getElementById("resizable2");
+    const img2 = document.getElementById("signature-image2");
+    const handle2 = document.getElementById("resize-handle2");
+
+    makeDraggableResizable(box1, img1, handle1);
+    makeDraggableResizable(box2, img2, handle2);
+
+
+    function makeDraggableResizable(box, img, handle) {
+        let isDragging = false;
+        let isResizing = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        box.addEventListener("mousedown", (e) => {
+            if (e.target === handle) return;
+            isDragging = true;
+            offsetX = e.clientX - box.offsetLeft;
+            offsetY = e.clientY - box.offsetTop;
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                box.style.left = (e.clientX - offsetX) + "px";
+                box.style.top = (e.clientY - offsetY) + "px";
+            }
+
+            if (isResizing) {
+                let width = e.clientX - box.getBoundingClientRect().left;
+                let height = e.clientY - box.getBoundingClientRect().top;
+
+                box.style.width = width + "px";
+                box.style.height = height + "px";
+
+                img.style.width = "100%";
+                img.style.height = "100%";
+            }
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            isResizing = false;
+        });
+
+        handle.addEventListener("mousedown", (e) => {
+            e.stopPropagation();
+            isResizing = true;
+        });
+    }
+
+    function closeTab() {
+        window.open('', '_self');
+        window.close();
+        window.location.href = 'requests';
+    }
+
+
+    async function sendAsMail(email) {
+        const btn = document.getElementById('btn-send-file');
+        btn.innerText = "Generating PDF...";
+
+        try {
+            document.querySelectorAll('.resize-handle').forEach(el => {
+                el.classList.add('hide-for-export');
+            });
+
+            const element = document.getElementById('certificate');
+
+            const opt = {
+                margin: 0,
+                filename: 'certificate.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 1
+                },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait'
+                }
+            };
+
+            const pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob');
+
+            document.querySelectorAll('.resize-handle').forEach(el => {
+                el.classList.remove('hide-for-export');
+            });
+
+            const formData = new FormData();
+            formData.append('file', pdfBlob, 'certificate.pdf');
+            formData.append('email', email);
+
+            btn.innerText = "Sending email...";
+
+            const res = await fetch('../../data/staff-send-certificate.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await res.json();
+
+            btn.innerText = "Send as mail";
+
+            if (result.success) {
+                alert("Sent!");
+            } else {
+                alert("Failed");
+            }
+
+        } catch (error) {
+            document.querySelectorAll('.resize-handle').forEach(el => {
+                el.classList.remove('hide-for-export');
+            });
+
+            btn.innerText = "Send as mail";
+            console.error(error);
+            alert(error.message);
+        }
+    }
+</script>

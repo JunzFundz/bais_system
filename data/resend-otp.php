@@ -1,29 +1,17 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-include("../model/Auth.php");
+session_start();
+header('Content-Type: application/json');
 
-$sup = new Signup();
-$data = json_decode(file_get_contents("php://input"), true);
+// Clear specific session data
+unset($_SESSION['token_login']);
+unset($_SESSION['u_id']);
+unset($_SESSION['user_role']);
+unset($_SESSION['u_email']);
+unset($_SESSION['PP']);
 
-if (isset($data['resend_otp'])) {
+// Optional: Destroy entire session
+// session_destroy();
 
-    $email = $data['email'] ?? '';
-
-    if (empty($email)) {
-        echo json_encode(['error' => 'Email is required']);
-        exit;
-    }
-
-    $input = $sup->resendOtp($email);
-
-    if ($input) {
-        echo json_encode(['success' => "OTP sent"]);
-        exit;
-    } else {
-        echo json_encode(['error' => 'Problem occured during resending otp please try again later']);
-        exit;
-    }
-} else {
-    echo json_encode(['error' => 'Invalid request']);
-    exit;
-}
+echo json_encode(['status' => 'logged_out']);
+exit;
+?>

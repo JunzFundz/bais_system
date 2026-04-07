@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 01, 2026 at 08:24 AM
+-- Generation Time: Apr 07, 2026 at 07:21 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -99,6 +99,25 @@ INSERT INTO `tbl_certificates` (`CERT_ID`, `CERT_NAME`, `CONTENTS`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_gender`
+--
+
+CREATE TABLE `tbl_gender` (
+  `GENDER_ID` int(11) NOT NULL,
+  `GENDER_NAME` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_gender`
+--
+
+INSERT INTO `tbl_gender` (`GENDER_ID`, `GENDER_NAME`) VALUES
+(1, 'Male'),
+(2, 'Female');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_officials`
 --
 
@@ -117,9 +136,9 @@ CREATE TABLE `tbl_officials` (
   `POSITION` int(11) NOT NULL,
   `BRGY_ID` int(255) NOT NULL,
   `TITLE` varchar(20) NOT NULL,
-  `OFF_SIGNATURE` text DEFAULT NULL,
+  `OFF_SIGNATURE` longtext DEFAULT NULL,
   `DATE_STARTED` date NOT NULL,
-  `DATE_ENDED` date NOT NULL,
+  `DATE_ENDED` date DEFAULT NULL,
   `STATUS` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -128,8 +147,8 @@ CREATE TABLE `tbl_officials` (
 --
 
 INSERT INTO `tbl_officials` (`OFFICIAL_ID`, `PHOTO`, `EMP_ID`, `F_NAME`, `L_NAME`, `M_NAME`, `DOB`, `POB`, `CIVIL_STATUS`, `EMAIL`, `CONTACT`, `POSITION`, `BRGY_ID`, `TITLE`, `OFF_SIGNATURE`, `DATE_STARTED`, `DATE_ENDED`, `STATUS`) VALUES
-(4, '1775013080_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg', '90823492374', 'Junz', 'Caday', 'FUNDADOR', '2026-03-04', 'Caday', 1, 'diongief@gmail.com', '09537217937', 1, 2, 'ASFasdf', '', '2026-03-30', '2026-03-30', 'active'),
-(5, '1774849561_signature_1773141321456.png', '90823492374', 'Diongie', 'Caday', 'Caday', '2026-03-04', 'Caday', 2, 'diongief@gmail.com', '09537217937', 1, 2, 'Junzcf.devs', '', '2026-03-30', '2026-03-30', 'active');
+(15, '../profiles/avatar_15_1775446683.png', '09537217937', 'Junz', 'Fundador', 'Fundz', '2025-11-05', 'Manjuyod', 2, 'junzfundador142@gmail.com', '12345678912', 1, 9, 'Honorable', '../uploads/official_15_1775446878.png', '2026-04-02', NULL, 'active'),
+(16, '69d1defb9960b.jpeg', '342434223', 'Junz', 'Eran', 'Eran', '2026-02-19', 'Cdaya', 2, 'fundadordiongie@gmail.com', '234234234234', 2, 9, 'junzcf.devs', NULL, '2026-04-05', '2026-04-05', 'ended');
 
 -- --------------------------------------------------------
 
@@ -147,6 +166,8 @@ CREATE TABLE `tbl_personal_info` (
   `SEX` varchar(10) DEFAULT NULL,
   `CIVIL` varchar(20) DEFAULT NULL,
   `AGE` varchar(255) DEFAULT NULL,
+  `DOB` date NOT NULL,
+  `POB` varchar(255) NOT NULL,
   `CONTACT` varchar(11) DEFAULT NULL,
   `EMAIL` varchar(50) DEFAULT NULL,
   `STREET` varchar(255) DEFAULT NULL,
@@ -163,8 +184,8 @@ CREATE TABLE `tbl_personal_info` (
 -- Dumping data for table `tbl_personal_info`
 --
 
-INSERT INTO `tbl_personal_info` (`PI_ID`, `USER_ID`, `FNAME`, `MNAME`, `LNAME`, `CITIZEN`, `SEX`, `CIVIL`, `AGE`, `CONTACT`, `EMAIL`, `STREET`, `BRGY_ID`, `CITY`, `TYPE`, `PHOTO`, `SIGNATURE`, `DATE_ADDED`, `PI_STATUS`) VALUES
-(43, 54, 'Dione', 'Manaban', 'Fundador', 'filipino', 'male', 'Single', '79', '09319158016', 'junzfundador142@gmail.com', 'juan luna', 1, 'Bais', '2', 'photo_1775023214_69ccb46e4abd1.jpg', 'signature_1775023214_69ccb46e4c6b2.png', '2026-04-01 06:00:14', 'active');
+INSERT INTO `tbl_personal_info` (`PI_ID`, `USER_ID`, `FNAME`, `MNAME`, `LNAME`, `CITIZEN`, `SEX`, `CIVIL`, `AGE`, `DOB`, `POB`, `CONTACT`, `EMAIL`, `STREET`, `BRGY_ID`, `CITY`, `TYPE`, `PHOTO`, `SIGNATURE`, `DATE_ADDED`, `PI_STATUS`) VALUES
+(44, 72, 'Dione', 'Manaban', 'Fundador', 'filipino', 'Female', 'Married', '79', '2019-02-12', 'Bais city', '09319158016', 'crestinemaemendezromano0217@gmail.com', 'Cannibol street', 9, 'Bais City', '1', 'photo_1775131472_69ce5b50b47af.jpg', '../uploads/official_72_1775476914.png', '2026-04-06 13:36:29', 'active');
 
 -- --------------------------------------------------------
 
@@ -193,9 +214,11 @@ INSERT INTO `tbl_position` (`POSITION_ID`, `POSITION_NAME`, `DATE_ADDED`) VALUES
 
 CREATE TABLE `tbl_posts` (
   `ID` int(11) NOT NULL,
+  `BRGY_ID` int(11) DEFAULT NULL,
   `TITLE` longtext NOT NULL,
   `DESCRIPTION` longtext NOT NULL,
   `FILES` longtext NOT NULL,
+  `TYPE` varchar(255) DEFAULT NULL,
   `DATE_CREATED` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `STATUS` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -204,8 +227,19 @@ CREATE TABLE `tbl_posts` (
 -- Dumping data for table `tbl_posts`
 --
 
-INSERT INTO `tbl_posts` (`ID`, `TITLE`, `DESCRIPTION`, `FILES`, `DATE_CREATED`, `STATUS`) VALUES
-(4, 'Dimension Chorus 2nd', 'Nice gwapa kaayo', '[\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_259b0762-5ad2-4f4d-ad71-588408a0f085.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_2089a979-fd14-49fd-874b-685b36f59639.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_8277bf54-b8b6-46b6-80fa-743de9311778.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_394666e6-117b-4d5d-a4f6-3b8ac0fd7a54.jpeg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_574918406_1141073091485029_7399286479672047395_n.jpg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_576921887_689445843814502_2162802240117555914_n.jpg\",\"\\/Applications\\/XAMPP\\/xamppfiles\\/htdocs\\/bais-documents\\/data\\/..\\/uploads\\/1774918828_590235744_1415104546912614_4354408474593096173_n.png\"]', '2026-03-31 01:00:28', 1);
+INSERT INTO `tbl_posts` (`ID`, `BRGY_ID`, `TITLE`, `DESCRIPTION`, `FILES`, `TYPE`, `DATE_CREATED`, `STATUS`) VALUES
+(8, 9, 'Dimension Chorus 2nd', 'I love youuuu', '[\"1775208480_INFINITY___Premium_Dashboard.pdf\",\"1775208480_REVISED-Online_Reservation_System_for_Cugon_Bamboo_Resort__Chapter_1-4__FINALLE.pdf\",\"1775208480_02-28-2026.pdf\",\"1775208480_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\",\"1775208480_signature_1773053444659.png\",\"1775208480_0d8f0c0e-3319-48c5-b9a0-3f27bf88d862.jpeg\",\"1775208480_2ts3nfs9-qr.png\",\"1775208480_4zkxxeuy-qr.png\",\"1775208480_8e1f8aa3-b073-4e73-877f-70a6db58812b.jpeg\"]', '', '2026-04-05 11:53:51', 3),
+(9, 9, 'Dimension Chorus 2nd', 'New uploads please be advise', '[\"1775219840_Accounting-Memorandum-No.-2-s.-2026.pdf\",\"1775219840_4b982cb7-770f-4df0-8547-47dab28cd5cd.jpeg\",\"1775219840_99b86fb1-5abf-4ea4-bbc3-09d6c82eeebc.jpeg\",\"1775219840_2025-2026_Endorsement_Letter.docx\",\"1775219840_2025-2026-Endorsement-Letter.pdf\",\"1775219840_396377b6-378e-455b-b736-520448ebc2ef.jpeg\",\"1775219840_Annex-B-1-RR-11-2018.docx\"]', '', '2026-04-05 11:53:52', 3),
+(10, 9, 'Dimension Chorus 2nd', 'dsfasdfasdfsadfsafdsadf', '[\"1775220079_ANNEX-H-3-CS-Form-No.-212-Revised-2025-Attachment-Guide-to-Filling-Up-the-Personal-Data-Sheet-new.pdf\",\"1775220079_Black_White_Modern_Festive_New_Year_Party_Photo_Collage_Facebook_Post.pdf\",\"1775220079_Black_White_Modern_Festive_New_Year_Party_Photo_Collage_Facebook_Post.png\",\"1775220079_cid-2026-0010_deployment_of_54_student_teachers_for_teaching_internship_from_norsu_bais_city_campus.pdf\",\"1775220079_CLEARANCE-PTI-20252026_UPDATED-EXTERNAL-CAMPUS-BAIS.docx\",\"1775220079_danilo_cover_page___1_.pdf\",\"1775220079_DLP_IN_MATH-5_literal_wownga_final.docx\",\"1775220079_FINAL-Llera.Rhoann.Detailed.Lesson.Plan.In.Grade.5.docx\",\"1775220079_GE_6_ARTS_APPRECIATION_GARIANDO.pdf\"]', '', '2026-04-05 11:53:44', 3),
+(11, 9, 'sdfsadfsadf', 'sfasfsad', '[\"1775220156_576921887_689445843814502_2162802240117555914_n.jpg\",\"1775220156_590235744_1415104546912614_4354408474593096173_n.png\",\"1775220156_ACCOMPLISHMENT-REPORT-ON-AWA-AND-TASKS__1_.docx\",\"1775220156_ARTICLE_2_3.pdf\",\"1775220156_ARTICLE_2_3.docx\",\"1775220156_b9d3b75d-c75b-42e1-a683-858a30eb048f.jpeg\"]', '', '2026-04-05 11:53:49', 3),
+(12, 1, 'Dimension Chorus 2nd', 'Nive\'ssdlf;lsdf;lsmdf', '[\"1775286900_INFINITY___Premium_Dashboard.pdf\",\"1775286900_REVISED-Online_Reservation_System_for_Cugon_Bamboo_Resort__Chapter_1-4__FINALLE.pdf\",\"1775286900_02-28-2026.pdf\",\"1775286900_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\",\"1775286900_4zkxxeuy-qr.png\",\"1775286900_8e1f8aa3-b073-4e73-877f-70a6db58812b.jpeg\",\"1775286900_9d73273b-c49e-43d2-8377-42767990b2e6.jpeg\",\"1775286900_52d1dde0-3fae-45b6-8c42-7112c3fa8012.jpeg\",\"1775286900_75b73661-24e8-4f18-8d6e-6886f2f80b13.jpeg\"]', '', '2026-04-06 02:24:56', 1),
+(13, 1, 'dfsadfsadf', 'asdasdas', '[\"1775305289_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\"]', '', '2026-04-04 12:58:51', 3),
+(14, 1, 'asdasdas', 'asdasdasdasd', '[\"1775306032_02-28-2026.pdf\"]', '', '2026-04-04 13:00:03', 3),
+(15, 1, 'asdasd', 'asdasdasd', '[\"1775306206_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\"]', '', '2026-04-04 13:04:30', 3),
+(16, 1, 'Dimension Chorus 2nd', 'sdfsfsdf', '[\"1775306361_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\"]', '', '2026-04-05 11:43:37', 1),
+(17, 1, 'sdfsdfsd', 'cvdfvdfvgdfsg', '[\"1775306427_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\"]', '', '2026-04-05 11:43:34', 1),
+(18, 1, 'gwapo', 'sdfsdf', '[\"1775306537_02e60fb4-d321-4c7b-97fb-69ff6ae2f5cf.jpeg\"]', '', '2026-04-05 11:43:31', 1),
+(19, 1, 'gwapo', 'asdasdasd', '[\"1775306621_DTR_Generator.pdf\"]', '', '2026-04-06 02:24:45', 3);
 
 -- --------------------------------------------------------
 
@@ -229,7 +263,7 @@ CREATE TABLE `tbl_requests` (
 --
 
 INSERT INTO `tbl_requests` (`REQ_ID`, `USER_ID`, `CERT_ID`, `PURPOSE`, `LETTER`, `CTRL_NUM`, `REQ_DATE`, `REQ_STATUS`) VALUES
-(76, 54, 4, 'Motorcycle', '', '7892-4308-9756', '2026-04-01 14:00:14', 'pending');
+(77, 72, 4, 'Motorcycle Loan', '', '7780-1525-4591', '2026-04-02 20:04:32', 'pending');
 
 -- --------------------------------------------------------
 
@@ -238,13 +272,22 @@ INSERT INTO `tbl_requests` (`REQ_ID`, `USER_ID`, `CERT_ID`, `PURPOSE`, `LETTER`,
 --
 
 CREATE TABLE `tbl_staff_login` (
-  `STAFF_ID` int(11) NOT NULL,
+  `OFFICIALS_LOG_ID` int(11) NOT NULL,
   `USER_ID` int(11) NOT NULL,
-  `EMPLOYEE_NO` varchar(255) NOT NULL,
-  `PASSWORD` varchar(50) NOT NULL,
+  `OFFICIALS_ID` int(11) NOT NULL,
+  `EMPLOYEE_ID` varchar(255) NOT NULL,
+  `PASSWORD` varchar(255) NOT NULL,
   `TOKEN` varchar(255) NOT NULL,
   `LOG_STATUS` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_staff_login`
+--
+
+INSERT INTO `tbl_staff_login` (`OFFICIALS_LOG_ID`, `USER_ID`, `OFFICIALS_ID`, `EMPLOYEE_ID`, `PASSWORD`, `TOKEN`, `LOG_STATUS`) VALUES
+(2, 71, 15, '12345', '$2y$10$AL/YuyGMJaUDt2UcAqStI.8lyZMzxEXLRHf.JXQXIpjEzEDxYeFW.', 'cf8844d7a098a27f2b483c2b446c5014aed24d66b022d368842b918a0e8144c5', 'active'),
+(4, 73, 16, '342434223', '$2y$10$fHcdIHQUZ3fesLIF619lhOqMrAaM15x.ZyvBNkzXJgBp355oyzYgy', '48f785d126eadc6a7e59b47c07cc6b618e206f677d5575d0c6207603f4ea4a6b', 'active');
 
 -- --------------------------------------------------------
 
@@ -269,12 +312,24 @@ INSERT INTO `tbl_status` (`STATUS_ID`, `STATUS_NAME`, `DATE_ADDED`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_transactions`
+--
+
+CREATE TABLE `tbl_transactions` (
+  `TR_ID` int(11) NOT NULL,
+  `USER_ID` int(11) NOT NULL,
+  `MESSAGE` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_users`
 --
 
 CREATE TABLE `tbl_users` (
   `u_id` int(11) NOT NULL,
-  `google_uid` varchar(255) DEFAULT NULL,
+  `google_uid` longtext DEFAULT NULL,
   `PP` varchar(255) DEFAULT NULL,
   `u_email` varchar(255) DEFAULT NULL,
   `u_username` varchar(20) DEFAULT NULL,
@@ -291,9 +346,9 @@ CREATE TABLE `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`u_id`, `google_uid`, `PP`, `u_email`, `u_username`, `u_password`, `user_role`, `u_otp`, `OTP_DATE`, `DATE_CREATED`, `u_status`) VALUES
-(35, NULL, '', 'fundadordiongie@gmail.com', NULL, '$2y$10$9RU0jTI473XiJVEFjD7ZC.63oYf6uGWdpcSa7voc7ou1do2hRJ0Zm', 1, '907916', '2026-03-16 20:43:28', '2026-03-16 20:43:28', 'yes'),
-(54, 'i9Jz00YMjVUftt5PTcorNc5b69G3', 'https://lh3.googleusercontent.com/a/ACg8ocJ37R3iTIP6dmckKz2gK4a-kUfI5RQcUf2Qpu341XeE51bVYA=s96-c', 'junzfundador142@gmail.com', NULL, '$2y$10$wJ8aZ/s/cxRi60VqjEz9geU2bPJSUpR/2iMrh2utkgQt48AthSXrC', 3, NULL, NULL, '2026-03-28 17:34:39', 'yes'),
-(55, 'oT0FfSF2rqOfH9pr2jlJkAENJPq2', 'https://lh3.googleusercontent.com/a/ACg8ocJL1qzIEkSb2UqBoiEqcJIhuSK73Jvg2gyi9Kh0KhPP2IVNvbk=s96-c', 'fundadordiongie@gmail.com', NULL, '$2y$10$lB6ftGN8bXGnNK9tr2jR9eVkQhldja89tFDu5HYg22dwZnI6eKx0a', 3, NULL, NULL, '2026-03-31 18:42:49', 'yes');
+(71, NULL, NULL, 'junzfundador142@gmail.com', NULL, '$2y$10$AL/YuyGMJaUDt2UcAqStI.8lyZMzxEXLRHf.JXQXIpjEzEDxYeFW.', 1, NULL, '2026-04-02 11:36:37', '2026-04-02 11:36:37', 'yes'),
+(72, 'Ydl0XiOVPkaprY0PsEq4hpO3DeF2', 'https://lh3.googleusercontent.com/a/ACg8ocLokfiqsCDBf2BUsUY7gHggo26MtbHmaKEDRoKslmFaSHlphp0=s96-c', 'crestinemaemendezromano0217@gmail.com', NULL, '$2y$10$BJTG5P4S3VEVpK8bdPTwDeo3vLXcDcThzn5IYcFm0hZxS1V/eCMrW', 3, NULL, NULL, '2026-04-05 07:26:54', 'yes'),
+(73, NULL, NULL, 'fundadordiongie@gmail.com', NULL, '$2y$10$fHcdIHQUZ3fesLIF619lhOqMrAaM15x.ZyvBNkzXJgBp355oyzYgy', 2, NULL, '2026-04-05 12:03:07', '2026-04-05 12:03:07', 'yes');
 
 --
 -- Indexes for dumped tables
@@ -310,6 +365,12 @@ ALTER TABLE `tbl_brgy`
 --
 ALTER TABLE `tbl_certificates`
   ADD PRIMARY KEY (`CERT_ID`);
+
+--
+-- Indexes for table `tbl_gender`
+--
+ALTER TABLE `tbl_gender`
+  ADD PRIMARY KEY (`GENDER_ID`);
 
 --
 -- Indexes for table `tbl_officials`
@@ -345,13 +406,19 @@ ALTER TABLE `tbl_requests`
 -- Indexes for table `tbl_staff_login`
 --
 ALTER TABLE `tbl_staff_login`
-  ADD PRIMARY KEY (`STAFF_ID`);
+  ADD PRIMARY KEY (`OFFICIALS_LOG_ID`);
 
 --
 -- Indexes for table `tbl_status`
 --
 ALTER TABLE `tbl_status`
   ADD PRIMARY KEY (`STATUS_ID`);
+
+--
+-- Indexes for table `tbl_transactions`
+--
+ALTER TABLE `tbl_transactions`
+  ADD PRIMARY KEY (`TR_ID`);
 
 --
 -- Indexes for table `tbl_users`
@@ -376,16 +443,22 @@ ALTER TABLE `tbl_certificates`
   MODIFY `CERT_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `tbl_gender`
+--
+ALTER TABLE `tbl_gender`
+  MODIFY `GENDER_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `tbl_officials`
 --
 ALTER TABLE `tbl_officials`
-  MODIFY `OFFICIAL_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `OFFICIAL_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tbl_personal_info`
 --
 ALTER TABLE `tbl_personal_info`
-  MODIFY `PI_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `PI_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `tbl_position`
@@ -397,19 +470,19 @@ ALTER TABLE `tbl_position`
 -- AUTO_INCREMENT for table `tbl_posts`
 --
 ALTER TABLE `tbl_posts`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tbl_requests`
 --
 ALTER TABLE `tbl_requests`
-  MODIFY `REQ_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `REQ_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `tbl_staff_login`
 --
 ALTER TABLE `tbl_staff_login`
-  MODIFY `STAFF_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `OFFICIALS_LOG_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_status`
@@ -418,10 +491,16 @@ ALTER TABLE `tbl_status`
   MODIFY `STATUS_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `tbl_transactions`
+--
+ALTER TABLE `tbl_transactions`
+  MODIFY `TR_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../model/Staff.php';
+require_once __DIR__ . '/../model/AdminModel.php';
 $admin = new AdminModel();
 
 if (isset($_POST['update_off'])) {

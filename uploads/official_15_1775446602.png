@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFINITY | Premium Dashboard</title>
+    <script src="../assets/js/tailwind.js"></script>
+    <script src="../assets/js/iconify-icon.min.js"></script>
+    <script src="../assets/js/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css" />
+    <!-- <link href="../assets/css/output.css" rel="stylesheet" /> -->
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/staff.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            brand: {
+                                DEFAULT: '#010694',
+                                50: '#eff0ff',
+                                100: '#e0e2ff',
+                                200: '#c3c7ff',
+                                300: '#9aa0ff',
+                                400: '#6d70fc',
+                                500: '#4346ef',
+                                600: '#2b2bd1',
+                                700: '#2220aa',
+                                800: '#1e1c89',
+                                900: '#010694',
+                            },
+                            dark: {
+                                bg: '#0B0F19',
+                                card: '#111623',
+                                border: '#1E2536'
+                            }
+                        },
+                        fontSize: {
+                            xxs: '0.65rem',
+                        }
+                    }
+                }
+            }
+        })
+        document.getElementById('yearFilter').addEventListener('change', function() {
+            const year = this.value;
+
+            fetch('../../data/admin-chart-data.php?year=' + year)
+                .then(res => res.json())
+                .then(data => {
+                    revenueChartInstance.data.datasets[0].data = data;
+                    revenueChartInstance.update();
+                });
+        });
+    </script>
+</head>
+
+<body class="bg-gray-50 text-slate-800 antialiased transition-colors duration-300 dark:bg-dark-bg dark:text-slate-300 selection:bg-brand-900 selection:text-white">
+
+    <!-- Main modal -->
+<div id="modal-update-official" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Update Official
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-update-official">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4 modal-body">
+                    
+            </div>
+        </div>
+    </div>
+</div><div id="add-mail-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Send an email
+                </h3>
+                <button onclick="window.mailInstance.hide()" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4 modal-body-email">
+                <section class="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
+                    <header>
+                        <a href="#">
+                            <img class="w-auto h-7 sm:h-8" src="../assets/images/banner-rework.png" alt="">
+                        </a>
+                    </header>
+
+                    <main class="mt-8">
+                        <p class="mt-8 text-gray-600 dark:text-gray-300">
+                            Dear, <br>
+                        </p>
+                        <p class="dark:text-gray-300 text-blue-800">
+                            <input type="hidden" id="email-send">
+                        </p>
+                    </main>
+
+                    <footer class="mt-8">
+                        <textarea id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Body"></textarea>
+
+                        <p class="mt-3 text-gray-500 dark:text-gray-400">© 2026 Bais City. All Rights Reserved.</p>
+                    </footer>
+                </section>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button type="button" id="sendEmailBtn" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Send</button>
+                <button onclick="window.mailInstance.hide()" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script><div id="modal-requests-certs" tabindex="-1" aria-hidden="true" class=" p-14 hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Requests
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-requests-certs">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4 modal-body text-white">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Main modal -->
+<div id="add-activity-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Create New Activity
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="add-activity-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5" enctype="multipart/form-data">
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <input type="hidden" id="brgy_id" value="1">
+                    <div class="col-span-2">
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                        <input type="text" name="name" id="post-title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Title" required="">
+                    </div>
+                    <div class="col-span-2">
+
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
+                        <input id="post-file" name="files[]" accept=".jpg, .jpeg, .png, .pdf, .docx" multiple class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file">
+
+                    </div>
+                    <div class="col-span-2">
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                        <textarea id="post-description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write product description here"></textarea>
+                    </div>
+                </div>
+                <button id="add-post" type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    Post
+                </button>
+            </form>
+        </div>
+    </div>
+</div><!-- Main modal -->
+<div id="change-password" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Change Password
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="change-password">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5">
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <div class="col-span-2">
+                        <input type="hidden" value="71" id="u_id">
+
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Current password
+                        </label>
+
+                        <div class="relative">
+                            <input type="password" id="cpass" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="Current Password" required>
+
+                            <!-- Eye Icon -->
+                            <span onclick="togglePassword('cpass', this)"
+                                class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500">
+                                <iconify-icon icon="mdi:eye-off-outline" width="20"></iconify-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
+                        <div class="relative">
+                            <input type="password" id="npass" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="Current Password" required>
+
+                            <!-- Eye Icon -->
+                            <span onclick="togglePassword('npass', this)"
+                                class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500">
+                                <iconify-icon icon="mdi:eye-off-outline" width="20"></iconify-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="cnpass" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="Current Password" required>
+
+                            <!-- Eye Icon -->
+                            <span onclick="togglePassword('cnpass', this)"
+                                class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500">
+                                <iconify-icon icon="mdi:eye-off-outline" width="20"></iconify-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <button type="button" id="change-password-data" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Change Password
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function togglePassword(inputId, el) {
+        const input = document.getElementById(inputId);
+        const icon = el.querySelector('iconify-icon');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.setAttribute("icon", "mdi:eye-outline");
+        } else {
+            input.type = "password";
+            icon.setAttribute("icon", "mdi:eye-off-outline");
+        }
+    }
+</script>
+    <!-- Mobile Overlay -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm hidden lg:hidden transition-opacity opacity-0"></div>
+
+    <!-- Layout Container -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-40 w-64 -translate-x-full border-r border-slate-200 bg-white lg:static lg:translate-x-0 dark:border-dark-border dark:bg-dark-card flex flex-col justify-between">
+            <div class="">
+                <!-- Logo -->
+                <div class="flex h-16 items-center px-6 border-b border-slate-100 dark:border-dark-border">
+                    <div class="flex items-center gap-2">
+                        <div class="h-[3rem] w-[8rem] rounded flex items-center justify-center text-white">
+                            <img src="../assets/images/banner-rework.png" alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nav -->
+                <nav class="space-y-1 px-3 py-6">
+                    <a onclick="dashboard()" href="javascript: void(0)" class="group flex items-center gap-3 text-sm font-medium text-brand-900 rounded-lg pt-2.5 pr-3 pb-2.5 pl-3">
+                        <iconify-icon icon="solar:widget-5-linear" width="20" stroke-width="1.5"></iconify-icon>
+                        Dashboard
+                    </a>
+                    <a onclick="barangay()" href="javascript: void(0)" class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-all">
+                        <iconify-icon icon="solar:chart-2-linear" width="20" stroke-width="1.5" class=""></iconify-icon>
+                        Barangays
+                    </a>
+                    <a onclick="users()" href="javascript: void(0)" class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-all">
+                        <iconify-icon icon="solar:wallet-money-linear" width="20" stroke-width="1.5"></iconify-icon>
+                        Users
+                    </a>
+                    <a onclick="requests()" href="javascript: void(0)" class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-all">
+                        <iconify-icon icon="solar:folder-with-files-linear" width="20" stroke-width="1.5"></iconify-icon>
+                        Requests
+                    </a>
+                    <a onclick="activities()" href="javascript: void(0)" class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-all">
+                        <iconify-icon icon="solar:users-group-rounded-linear" width="20" stroke-width="1.5"></iconify-icon>
+                        Activities
+                    </a>
+                </nav>
+            </div>
+
+            <div class="border-t border-slate-100 p-3 dark:border-dark-border">
+                <a href="settings" class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-all">
+                    <iconify-icon icon="solar:settings-linear" width="20" stroke-width="1.5"></iconify-icon>
+                    Settings
+                </a>
+
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <!-- Top Navigation -->
+            <header id="top-navigation" class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/60 bg-white/80 px-4 glass-effect lg:px-8 dark:border-dark-border dark:bg-dark-bg/80">
+                <div class="flex items-center gap-4">
+                    <button onclick="window.location.href='home'" id="btn-home-nav" class="hidden px-5 py-1.5 tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                        <- Back to Home
+                            </button>
+                            <button onclick="toggleSidebar()" class="flex items-center justify-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden dark:text-slate-400 dark:hover:bg-white/5 border">
+                                <iconify-icon icon="solar:hamburger-menu-linear" width="24" stroke-width="1.5"></iconify-icon>
+                            </button>
+                            <div class="relative hidden md:flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 ring-1 ring-slate-200 focus-within:ring-brand-500 dark:bg-dark-card dark:ring-dark-border">
+
+                                <iconify-icon icon="solar:magnifer-linear" class="text-slate-400"></iconify-icon>
+
+                                <input id="settingsSearch" type="text" placeholder="Search settings..."
+                                    class="w-64 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white">
+
+                                <div class="flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 dark:border-dark-border">
+                                    <span class="text-xs text-slate-400">⌘K</span>
+                                </div>
+
+                                <div id="searchResults"
+                                    class="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto z-50">
+                                </div>
+                            </div>
+
+                </div>
+
+                <div class="flex items-center gap-3 admin-search-item">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 dark:border-dark-border dark:text-slate-400 dark:hover:bg-white/5">
+                        <iconify-icon id="theme-icon" icon="solar:sun-2-linear" width="20"></iconify-icon>
+                    </button>
+                    <!-- Notification -->
+                    <div class="flex items-center gap-3 px-3 cursor-pointer" data-dropdown-toggle="language-dropdown-menu">
+                        <div class="relative h-8 w-8 overflow-hidden rounded-full bg-slate-200">
+                            <img src="../assets/images/Default.jpg" alt="User" class="h-full w-full object-cover">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-semibold text-slate-900 dark:text-white">junzfundador142@gmail.com</span>
+                            <span class="text-xxs text-slate-500">Admin Workspace</span>
+                        </div>
+                    </div>
+
+                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700" id="language-dropdown-menu">
+                        <ul class="py-2 font-medium" role="none">
+                            <li>
+                                <a data-modal-target="change-password" data-modal-toggle="change-password" href="javascript: void(0)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                                    <div class="inline-flex items-center">
+                                        Change password
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../../data/logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                                    <div class="inline-flex items-center">
+                                        Log out
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <script>
+                const settingsList = [{
+                        name: "Requests",
+                        action: "requests"
+                    },
+                    {
+                        name: "Activities",
+                        action: "activities"
+                    },
+                    {
+                        name: "Barangay",
+                        action: "barangay"
+                    }, // optional
+                    {
+                        name: "Dashboard",
+                        action: "dashboard"
+                    } // optional
+                ];
+
+                $('#settingsSearch').on('keyup focus', function() {
+                    let value = $(this).val().toLowerCase();
+                    let results = '';
+
+                    let filtered = settingsList.filter(item =>
+                        item.name.toLowerCase().includes(value)
+                    );
+
+                    if (filtered.length > 0) {
+                        filtered.forEach(item => {
+                            results += `
+                            <div class="search-item px-4 py-2 text-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-700"
+                                data-action="${item.action || ''}"
+                                data-link="${item.link || ''}">
+                                ${item.name}
+                            </div>
+                        `;
+                        });
+                    } else {
+                        results = `<div class="px-4 py-2 text-sm text-gray-400">No results found</div>`;
+                    }
+
+                    $('#searchResults').html(results).removeClass('hidden');
+                });
+
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#settingsSearch, #searchResults').length) {
+                        $('#searchResults').addClass('hidden');
+                    }
+                });
+
+                $(document).on('click', '.search-item', function() {
+                    let action = $(this).data('action');
+                    let link = $(this).data('link');
+
+                    $('#searchResults').addClass('hidden');
+                    $('#settingsSearch').val($(this).text().trim());
+
+                    if (link) {
+                        window.location.href = link;
+                    } else if (action && typeof window[action] === 'function') {
+                        window[action]();
+                    }
+                });
+
+
+                const activeClass = "dark:bg-brand-900/20 dark:text-brand-100 text-brand-900 bg-brand-50";
+                document.querySelectorAll('nav a').forEach(link => {
+                    link.addEventListener('click', function() {
+
+                        document.querySelectorAll('nav a').forEach(a => {
+                            a.classList.remove(
+                                "dark:bg-brand-900/20",
+                                "dark:text-brand-100",
+                                "text-brand-900",
+                                "bg-brand-50"
+                            );
+                        });
+
+                        this.classList.add(
+                            "dark:bg-brand-900/20",
+                            "dark:text-brand-100",
+                            "text-brand-900",
+                            "bg-brand-50"
+                        );
+                    });
+                });
+            </script>
+
+<input type="hidden" name="" id="off_id" value="15">
+
+<div class="flex-1 overflow-y-auto lg:p-8 dark:bg-dark-bg bg-slate-50/50 pt-4 pr-4 pb-4 pl-4" id="content-navigations">
+
+    <section class="relative overflow-hidden min-h-screen flex items-center justify-center">
+        <!-- Background elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-1/2 -right-1/2 bg-blue-400/20 dark:bg-blue-600/20 blur-3xl w-96 h-96 rounded-full"></div>
+            <div class="absolute -bottom-1/2 -left-1/2 bg-purple-400/20 dark:bg-purple-600/20 blur-3xl w-96 h-96 rounded-full"></div>
+        </div>
+
+        <div class="relative z-10 mx-auto px-4 w-full max-w-2xl">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 leading-tight sm:text-4xl dark:text-white">Complete Your Profile</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">Tell us more about yourself to personalize your experience</p>
+            </div>
+
+            <!-- Profile Setup Form Container -->
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-200/50 dark:border-gray-700/50">
+
+                <!-- Profile Setup Form -->
+
+                <div class="space-y-8">
+                    <!-- Avatar Section -->
+                    <div class="text-center">
+                        <div class="avatar-upload inline-block mb-4 relative">
+                            <div class="relative w-32 h-32 mx-auto rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center overflow-hidden">
+
+                                <!-- Profile Image -->
+                                <img id="profilePreview"
+                                    src="../../profiles/../profiles/avatar_15_1775438327.jpeg"
+                                    alt="Profile Picture"
+                                    class="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 dark:border-blue-900 transition-transform duration-300 hover:scale-105">
+
+                                <!-- Hover Overlay -->
+                                <div class="absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+
+                                <!-- Hidden File Input -->
+                                <input type="file" id="avatarInput" accept="image/*"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full">
+                                <input type="hidden" id="old_pp" value="../profiles/avatar_15_1775438327.jpeg">
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Click on the avatar to upload a profile picture</p>
+                    </div>
+
+
+                    <!-- Personal Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Employee Number</label>
+                            <input disbaled value="09537217937" type="text"
+                                class="w-full px-4 py-3 rounded-lg bg-white text-gray-900 italic font-extrabold dark:text-white focus:outline-none transition-all duration-200"
+                                placeholder="">
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Personal Information</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                                <input value="Junz" type="text" id="fname"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Middle Name</label>
+                                <input value="Caday" type="text" id="mname"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="Doe">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
+                                <input value="Fundador" type="text" id="lname"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="Doe">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Birth</label>
+                                <input value="2025-11-05" type="date" id="dob"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Place of Birth</label>
+                                <input value="Bais City" type="text" id="pob"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Civil Status</label>
+                                <select name="floating_last_name" id="cs" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200" placeholder="">
+                                                                                                                        <option value="2"
+                                                >
+                                                Married                                            </option>
+                                                                                    <option value="1"
+                                                selected>
+                                                Single                                            </option>
+                                                                                                            </select>
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                                <input value="junzfundador142@gmail.com" type="text" id="uemail"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Number</label>
+                                <input value="09537217937" type="text" id="contact"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none transition-all duration-200"
+                                    placeholder="Doe">
+                                <div class="mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Signature</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                            <div>
+                                <button id="open-signature" class="flex h-9 items-center gap-2 rounded-lg bg-brand-900 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h2l2-3h10l2 3h2a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z" />
+                                    </svg>
+                                    Create Signature
+                                </button>
+
+                                <div id="sigCanva" class="hidden grid place-items-center">
+                                    <div class="canvas-container relative">
+                                        <canvas id="signature" class="bg-white border rounded"></canvas>
+                                        <button id="clear-signature" class="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-sm rounded">Clear</button>
+                                    </div>
+
+                                    <div class="mt-3 space-x-2">
+                                        <button id="save-signature" class="flex h-9 items-center gap-2 rounded-lg bg-brand-900 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">Save Signature</button>
+                                    </div>
+                                    <div class="mt-3 space-x-2">
+                                        <button id="cancel-signature" class="flex h-9 items-center gap-2 rounded-lg bg-red-800 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">Cancel</button>
+                                    </div>
+                                </div>
+
+                                <center>
+                                    <div id="signature-preview-container" class="mt-3 hidden">
+                                        <div class="flex items-center space-x-2 bg-white p-3 rounded-lg shadow">
+                                            <span id="signature-filename" class="text-gray-700 font-medium truncate max-w-xs">
+                                                signature.png
+                                            </span>
+                                            <button type="button" id="preview-signature" class="px-3 py-2 bg-gray-200 text-gray-700 rounded">
+                                                Preview
+                                            </button>
+                                            <button type="button" id="remove-signature" class="px-3 py-2 bg-red-500 text-white rounded">
+                                                ✕
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div id="signature-preview-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+                                        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                                            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                                            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                    <div class="sm:flex sm:items-start">
+                                                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                                            <h3 class="text-lg leading-6 font-medium text-gray-900">Signature Preview</h3>
+                                                            <div class="mt-2">
+                                                                <img id="signature-preview-image" src="" alt="Signature Preview" class="max-w-full h-auto rounded-lg border">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                    <button type="button" id="close-preview-sig-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </center>
+                                <input type="hidden" id="old_signature" value="../uploads/official_15_1775446550.png">
+                                <button class="mt-5 hidden  py-2  rounded-xl h-9 items-center gap-2 bg-brand-900 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">
+                                    Upload Signature
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-4">
+                        <button type="submit" id="hide-submit-sig" onclick="AddSignature()" class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed transition-colors duration-200 font-medium flex items-center justify-center">
+                            Update Profile
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <br><br>
+</div>
+<script>
+    function showToast(msg) {
+        Toastify({
+            text: msg,
+            className: "info",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
+    }
+
+    $('#avatarInput').on('change', function(e) {
+        const file = e.target.files[0];
+
+        if (file) {
+            const previewURL = URL.createObjectURL(file);
+            $('#profilePreview').attr('src', previewURL);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('sidebar').classList.add('hidden')
+        document.getElementById('btn-home-nav').classList.remove('hidden')
+
+        // Forms
+        const openSignature = document.getElementById('open-signature');
+        const sigCanvas = document.getElementById('signature');
+        const signatureContainer = document.getElementById('sigCanva');
+        const ctx = sigCanvas.getContext('2d');
+        const clearBtn = document.getElementById('clear-signature');
+        const saveBtn = document.getElementById('save-signature');
+        const signaturePreviewContainer = document.getElementById('signature-preview-container');
+        const signatureFilename = document.getElementById('signature-filename');
+        const previewSignatureBtn = document.getElementById('preview-signature');
+        const removeSignatureBtn = document.getElementById('remove-signature');
+        const signaturePreviewModal = document.getElementById('signature-preview-modal');
+        const signaturePreviewImage = document.getElementById('signature-preview-image');
+        const closePreviewBtn = document.getElementById('close-preview-sig-btn');
+
+        const cancel = document.getElementById('cancel-signature');
+
+        let sigDrawing = false;
+        let sigLastX = 0;
+        let sigLastY = 0;
+        let sigCapturedImage = null;
+
+        console.log('Canvas:', sigCanvas);
+        console.log('Context:', ctx);
+        console.log('Canvas width:', sigCanvas.width);
+        console.log('Canvas height:', sigCanvas.height);
+
+        sigCanvas.width = 400;
+        sigCanvas.height = 300;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#000';
+
+        function getSigPos(e) {
+            const rect = sigCanvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        cancel.addEventListener('click', () => {
+            signatureContainer.classList.add('hidden')
+            saveBtn.classList.add('hidden')
+            openSignature.classList.remove('hidden')
+        })
+
+        openSignature.addEventListener('click', function() {
+            console.log('clicked')
+            this.classList.add('hidden');
+            saveBtn.classList.remove('hidden')
+            signatureContainer.classList.remove('hidden');
+        });
+
+        sigCanvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            sigDrawing = true;
+            const pos = getSigPos(e);
+            sigLastX = pos.x;
+            sigLastY = pos.y;
+            ctx.beginPath();
+            ctx.moveTo(sigLastX, sigLastY);
+            console.log('✓ Drawing started at:', sigLastX, sigLastY);
+        });
+
+        sigCanvas.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            sigDrawing = false;
+            ctx.beginPath();
+            console.log('✓ Drawing stopped');
+        });
+
+        sigCanvas.addEventListener('mouseout', (e) => {
+            e.preventDefault();
+            sigDrawing = false;
+            ctx.beginPath();
+        });
+
+        sigCanvas.addEventListener('mousemove', (e) => {
+            e.preventDefault();
+            if (!sigDrawing) return;
+            const pos = getSigPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            sigLastX = pos.x;
+            sigLastY = pos.y;
+        });
+
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+            sigCapturedImage = null;
+            console.log('✓ Canvas cleared');
+        });
+
+        saveBtn.addEventListener('click', () => {
+            if (sigCanvas.width === 0 || sigCanvas.height === 0) {
+                alert('Please draw a signature first!');
+                return;
+            }
+
+            document.getElementById('hide-submit-sig').classList.remove('hidden');
+
+            sigCapturedImage = sigCanvas.toDataURL('image/png');
+
+            const link = document.createElement('a');
+            const timestamp = new Date().getTime();
+            const filename = `signature_${timestamp}.png`;
+            link.href = sigCapturedImage;
+            link.click();
+
+            console.log('✓ Signature saved as file:', filename);
+
+            signatureContainer.classList.add('hidden');
+
+            signaturePreviewContainer.classList.remove('hidden');
+
+            signatureFilename.textContent = filename;
+
+            signatureFilename.dataset.imageData = sigCapturedImage;
+
+            console.log('✓ Signature filename displayed:', filename);
+        });
+
+        previewSignatureBtn.addEventListener('click', function() {
+            const imageData = signatureFilename.dataset.imageData;
+            if (imageData) {
+                signaturePreviewImage.src = imageData;
+                signaturePreviewModal.classList.remove('hidden');
+            } else {
+                alert('No signature to preview!');
+            }
+        });
+
+        closePreviewBtn.addEventListener('click', function() {
+            signaturePreviewModal.classList.add('hidden');
+        });
+
+        signaturePreviewModal.addEventListener('click', (e) => {
+            if (e.target === signaturePreviewModal) {
+                signaturePreviewModal.classList.add('hidden');
+            }
+        });
+
+        removeSignatureBtn.addEventListener('click', function() {
+            document.getElementById('hide-submit-sig').classList.add('hidden');
+            sigCapturedImage = null;
+            signatureFilename.dataset.imageData = '';
+
+            ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+
+            signaturePreviewContainer.classList.add('hidden');
+
+            openSignature.classList.remove('hidden');
+            signatureContainer.classList.add('hidden');
+
+            console.log('✓ Signature removed');
+        });
+    })
+
+    window.AddSignature = function() {
+        const id = document.getElementById('off_id').value;
+        const fname = document.getElementById('fname').value;
+        const mname = document.getElementById('mname').value;
+        const lname = document.getElementById('lname').value;
+        const pob = document.getElementById('pob').value;
+        const dob = document.getElementById('dob').value;
+        const cs = document.getElementById('cs').value;
+        const email = document.getElementById('uemail').value;
+        const contact = document.getElementById('contact').value;
+        const signatureData = document.getElementById('signature-filename').dataset.imageData;
+        const oldSignature = document.getElementById('old_signature').value;
+        const oldProfile = document.getElementById('old_pp').value;
+
+        // console.log(id)
+        // if (!id || !signatureData) {
+        //     showToast('Please select official and draw signature first!');
+        //     return;
+        // }
+
+        const avatarFile = document.getElementById('avatarInput').files[0];
+
+        fetch(signatureData)
+            .then(res => res.blob())
+            .then(blob => {
+                const formData = new FormData();
+                formData.append('official_id', id);
+                formData.append('fname', fname);
+                formData.append('mname', mname);
+                formData.append('lname', lname);
+                formData.append('pob', pob);
+                formData.append('dob', dob);
+                formData.append('cs', cs);
+                formData.append('email', email);
+                formData.append('contact', contact);
+                formData.append('signature', blob, 'signature.png');
+
+                formData.append('old_signature', oldSignature);
+                formData.append('old_pp', oldProfile);
+
+                if (avatarFile) {
+                    formData.append('avatar', avatarFile);
+                }
+
+                return fetch('../../data/staff-add-signature.php', {
+                    method: 'POST',
+                    body: formData
+                });
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showToast(result.success);
+                    document.getElementById('signature-filename').dataset.imageData = '';
+                    document.getElementById('signature-preview-container').classList.add('hidden')
+                    document.getElementById('open-signature').classList.remove('hidden')
+                } else {
+                    showToast('Error: ' + (result.error || 'Upload failed'));
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                showToast('Upload failed: ' + error.message);
+            });
+    };
+</script>
+
+
+</main>
+</div>
+</body>
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    let isSidebarOpen = false;
+
+    function toggleSidebar() {
+        isSidebarOpen = !isSidebarOpen;
+        if (isSidebarOpen) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden', 'opacity-0');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
+
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        html.classList.add('dark');
+        themeIcon.setAttribute('icon', 'solar:moon-linear');
+    } else {
+        html.classList.remove('dark');
+        themeIcon.setAttribute('icon', 'solar:sun-2-linear');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        if (html.classList.contains('dark')) {
+            localStorage.theme = 'dark';
+            themeIcon.setAttribute('icon', 'solar:moon-linear');
+            updateCharts(true);
+        } else {
+            localStorage.theme = 'light';
+            themeIcon.setAttribute('icon', 'solar:sun-2-linear');
+            updateCharts(false);
+        }
+    });
+
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#94a3b8';
+
+    const usersPerMonth = <br />
+<b>Warning</b>:  Undefined variable $chartData in <b>/Applications/XAMPP/xamppfiles/htdocs/bais-documents/public/admin/footer.php</b> on line <b>49</b><br />
+null;
+
+    let revenueChartInstance;
+    let trafficChartInstance;
+
+    function initCharts() {
+        const isDark = html.classList.contains('dark');
+        const gridColor = isDark ? '#1E2536' : '#f1f5f9';
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+
+        let gradient = ctxRev.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(1, 6, 148, 0.2)');
+        gradient.addColorStop(1, 'rgba(1, 6, 148, 0)');
+
+        revenueChartInstance = new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Registered Users',
+                    data: usersPerMonth,
+                    borderColor: '#010694',
+                    backgroundColor: gradient,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#010694',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: gridColor,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                size: 11
+                            }
+                        },
+                        border: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                size: 11
+                            }
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+
+        const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
+        fetch('../../data/admin-barangay-data.php')
+            .then(res => res.json())
+            .then(result => {
+
+                if (result.error) {
+                    console.error("PHP ERROR:", result.error);
+                    return;
+                }
+
+                trafficChartInstance = new Chart(ctxTraffic, {
+                    type: 'doughnut',
+                    data: {
+                        labels: result.labels,
+                        datasets: [{
+                            data: result.data,
+                            backgroundColor: [
+                                '#010694',
+                                '#6d70fc',
+                                '#e2e8f0',
+                                '#22c55e',
+                                '#f59e0b',
+                                '#ef4444'
+                            ],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+
+                updateBarangayLegend(result.labels, result.data);
+            });
+    }
+
+    function updateCharts(isDark) {
+        const gridColor = isDark ? '#1E2536' : '#f1f5f9';
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+
+        revenueChartInstance.options.scales.y.grid.color = gridColor;
+        revenueChartInstance.options.scales.y.ticks.color = textColor;
+        revenueChartInstance.options.scales.x.ticks.color = textColor;
+        revenueChartInstance.update();
+
+        trafficChartInstance.data.datasets[0].backgroundColor = ['#010694', '#6d70fc', isDark ? '#334155' : '#e2e8f0'];
+        trafficChartInstance.update();
+    }
+
+    function updateBarangayLegend(labels, data) {
+        const container = document.getElementById('barangayLegend');
+        container.innerHTML = '';
+
+        const total = data.reduce((a, b) => a + b, 0);
+
+        labels.forEach((label, index) => {
+            const value = data[index];
+            const percent = total ? ((value / total) * 100).toFixed(0) : 0;
+
+            const colors = ['#010694', '#6d70fc', '#e2e8f0', '#22c55e', '#f59e0b', '#ef4444'];
+
+            container.innerHTML += `
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full" style="background:${colors[index % colors.length]}"></span>
+                    <span class="text-slate-600 dark:text-slate-400">${label}</span>
+                </div>
+                <span class="font-medium text-slate-900 dark:text-white">${percent}%</span>
+            </div>
+        `;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initCharts);
+</script>
+
+</html>
+<script src="../assets/js/flowbite.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="../assets/js/admin.js"></script>
+<script src="Api.js"></script>
+<script>
+    function showToast(msg) {
+        Toastify({
+            text: msg,
+            className: "info",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
+    }
+
+    $(document).ready(function() {
+        $('#add-post').on('click', function(e) {
+            const postModal = document.getElementById("add-activity-modal");
+            if (postModal) {
+                window.postInstance = new Modal(postModal);
+            }
+
+            e.preventDefault();
+
+            document.getElementById('add-post').innerText = "Posting....";
+
+            const brgy_id = $('#brgy_id').val().trim();
+            let title = $('#post-title').val().trim();
+            let description = $('#post-description').val().trim();
+            let files = $('#post-file')[0].files;
+
+            if (title === '') {
+                showToast('Title is required');
+                document.getElementById('add-post').innerText = "Post";
+                return;
+            }
+
+            if (files.length === 0) {
+                showToast('Please select at least one file');
+                document.getElementById('add-post').innerText = "Post";
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('brgy_id', brgy_id);
+            formData.append('title', title);
+            formData.append('description', description);
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files[]', files[i]);
+            }
+
+            $.ajax({
+                url: '../../data/admin-add-act.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(response) {
+                    window.postInstance.hide();
+                    showToast(response.message);
+                    // activities() 
+                },
+                error: function(xhr, status, error) {
+                    showToast('Something went wrong while uploading.');
+                }
+            });
+        });
+    });
+
+
+    function dashboard() {
+        $('#content-navigations').load('dashboard.php', function() {
+            initFlowbite();
+            initCharts();
+        });
+    }
+
+    function officials() {
+        $('#content-navigations').load('officials.php', function() {
+            initFlowbite();
+        });
+    }
+
+    function barangay() {
+        $('#content-navigations').load('barangay.php', function() {
+            initFlowbite();
+        });
+    }
+
+    function activities() {
+        $('#content-navigations').load('activities.php', function() {
+            initFlowbite();
+
+        });
+    }
+
+    function requests() {
+        $('#content-navigations').load('requests.php', function() {
+            initFlowbite();
+            if ($.fn.DataTable.isDataTable('#myTable')) {
+                $('#myTable').DataTable().destroy();
+            }
+            new DataTable('#myTable');
+
+
+            $('.view-requests').on('click', function(e) {
+                e.preventDefault();
+                var rid = $(this).data('rid');
+                var uid = $(this).data('uid');
+
+                console.log(rid, uid);
+
+                $.ajax({
+                    url: '../../data/staff-see-req.php',
+                    type: 'POST',
+                    data: {
+                        'view': true,
+                        req_id: rid,
+                        user_id: uid
+                    },
+                    dataType: "html",
+                    success: function(response) {
+                        $('.modal-body').html(response);
+
+                        if (window.requestsModal) {
+                            window.requestsModal.show();
+                        } else {
+                            console.error("Modal instance is not initialized");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('XHR:', xhr);
+                        console.error('Status:', status);
+                        console.error('Error:', error);
+                        console.error('Response:', xhr.responseText);
+                        alert('Error getting data: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    }
+
+    function users() {
+        $('#content-navigations').load('users.php', function() {
+            initFlowbite();
+
+            if ($.fn.DataTable.isDataTable('#myTable3')) {
+                $('#myTable3').DataTable().destroy();
+            }
+            new DataTable('#myTable3');
+
+            const detailsModal = document.getElementById("modal-see-user");
+            const confirmModal = document.getElementById("deactivate-modal");
+            if (detailsModal) {
+                window.detailsInstance = new Modal(detailsModal);
+            }
+            if (confirmModal) {
+                window.deactivateInstance = new Modal(confirmModal);
+            }
+        });
+    }
+    $('#change-password-data').on('click', function(e) {
+        e.preventDefault();
+
+        const u_id = $('#u_id').val();
+        const current = $('#cpass').val();
+        const newpass = $('#npass').val();
+        const confirm = $('#cnpass').val();
+
+        if (newpass !== confirm) {
+            showToast('Passwords do not match');
+            return;
+        }
+
+        $.ajax({
+            url: '../../data/admin-change-password.php',
+            method: 'POST',
+            data: {
+                u_id: u_id,
+                current: current,
+                newpass: newpass
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    showToast(res.message);
+                    setTimeout(() => {
+                        location.reload();
+                    })
+                } else {
+                    showToast(res.message);
+                }
+            },
+            error: function() {
+                showToast('Something went wrong');
+            }
+        });
+    });
+</script>
+
+</html>

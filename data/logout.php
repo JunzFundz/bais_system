@@ -1,15 +1,10 @@
 <?php
+session_start(); // 🔥 REQUIRED
 
-header("Content-Type: application/json");
-session_start();
-
-// Unset all session variables
 $_SESSION = [];
 
-// Destroy session
+session_unset();
 session_destroy();
 
-echo json_encode([
-    "status" => "success",
-    "redirect" => "../../index.php"
-]);
+header('Location: ../index.php');
+exit;

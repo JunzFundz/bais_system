@@ -166,8 +166,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="visitors" class="block mb-2 text-md font-medium text-heading">Burial Assistance of late:<span class="text-red-700 text-center">*</span></label>
-                        <input placeholder="Full name" id="purpose" type="text" class="h-10 block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
+                        <label for="visitors" class="block mb-2 text-md font-medium text-heading">Purpose of<span class="text-red-700 text-center">*</span></label>
+                        <input placeholder="Purpose of request" id="purpose" type="text" class="h-10 block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
                     </div>
 
                 </div>
@@ -354,7 +354,6 @@
                             </div>
                         </div>
                     </center>
-
 
                 </div>
             </div>
