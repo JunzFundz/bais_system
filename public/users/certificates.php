@@ -32,7 +32,7 @@
                                 <?= htmlspecialchars($cert['CERT_NAME']) ?>
                             </h1>
 
-                            <a href="verify?id=<?= htmlspecialchars($encryptedCertId) ?>"
+                            <a href="verify?id=<?= htmlspecialchars($cert['CERT_ID']) ?>"
                                 class="flex items-center -mx-1 text-sm text-blue-500 capitalize transition-colors duration-300 transform dark:text-blue-400 hover:underline hover:text-blue-600 dark:hover:text-blue-500">
                                 <span class="mx-1">Get</span>
                                 <svg class="w-4 h-4 mx-1 rtl:-scale-x-100" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

@@ -97,9 +97,9 @@ function addOfficial() {
         success: function (response) {
             // console.log(response);
             if (response.success) {
-                if(confirm(response.success+"Add another officials?")){
+                if (confirm(response.success + "Add another officials?")) {
                     $('#add-official-modal').find('input:not([type="hidden"]), textarea, select').val('');
-                }else{
+                } else {
                     $('#add-official-modal').classList.add('hidden')
                 }
                 hideLoader()
@@ -124,10 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalElement = document.getElementById("custom-modal");
     if (modalElement) {
         window.customModalInstance = new Modal(modalElement);
-    }
-    const reqModal = document.getElementById("modal-requests-certs");
-    if (reqModal) {
-        window.requestsModal = new Modal(reqModal);
     }
 });
 

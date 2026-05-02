@@ -14,11 +14,10 @@ function e($act)
     }
 </style>
 
-
 <div class="w-full p-5 sm:p-8 md:p-16 dark:bg-gray-900 bg-gray-200">
     <section class=" ">
         <div class="container mx-auto">
-            <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-12 xl:gap-12 md:grid-cols-1 xl:grid-cols-1">
+            <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-12 xl:gap-4 md:grid-cols-1 xl:grid-cols-1">
                 <?php if (!empty($act)): ?>
                     <?php foreach ($act as $row): ?>
 
@@ -116,6 +115,19 @@ function e($act)
     </section>
 
     <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show')
+                } else {
+                    entry.target.classList.remove('show')
+                }
+            })
+        }, {})
+
+        const elements = document.querySelectorAll('.blocks');
+        elements.forEach(el => observer.observe(el))
+
         function showToast(msg) {
             Toastify({
                 text: msg,
@@ -125,8 +137,6 @@ function e($act)
                 }
             }).showToast();
         }
-
-
 
         function openGallery(images) {
             if (!images || images.length === 0) return;
@@ -143,8 +153,7 @@ function e($act)
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
-        </div>
-    `;
+        </div>`;
 
             document.body.insertAdjacentHTML('beforeend', modal);
             renderGallery(images);

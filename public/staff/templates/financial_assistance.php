@@ -1,10 +1,9 @@
 <?php
-
+$offs = $admin->getOfficialInfo($off_id);
 $uid = $_SESSION['USER_ID'];
 $pid = $_SESSION['PI_ID'];
 $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
-
 
 $d = $admin->generate($uid, $pid, $rid, $cid);
 
@@ -14,6 +13,15 @@ $date = date('Y-m-d H:i:s');
 ?>
 
 <style>
+    .autoWidth {
+        min-width: 50px;
+        max-width: 100%;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 1.5;
+        padding: 0;
+    }
+
     .hide-for-export {
         display: none !important;
     }
@@ -61,7 +69,7 @@ $date = date('Y-m-d H:i:s');
 
 
 <div class="min-h-screen overflow-y-auto w-full">
-    <div id="certificate" class="p-10 mx-auto"
+    <div id="certificate" class="p-10 mx-auto bg-white"
         style="width:210mm; height:297mm; box-sizing:border-box; font-family:serif;">
         <div class="p-8 border-2 border-gray-800" style="width:100%; height:100%;">
             <div class="flex flex-row justify-between w-full text-center">
@@ -103,18 +111,32 @@ $date = date('Y-m-d H:i:s');
                 </p>
                 <br>
                 <p class="" style="font-style: italic;">
-                    This is to certify that <span class="font-bold underline"> <?= $d['FNAME'] . " " . $d['MNAME'] . " " . $d['LNAME'] ?>,<?= $d['AGE'] ?></span> years old, <span class="font-bold underline"><?= $d['SEX'] ?>, <?= $d['CIVIL'] ?>, <?= $d['CITIZEN'] ?></span> and Bonafide resident of <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> , Negros Oriental. Know to be a person of good community standing and has no pending case as to this date, as far as the Office of Punong Barangay is concerned.
+                    This is to certify that
+                    <span class="font-bold underline"> <?= $d['FNAME'] . " " . $d['MNAME'] . " " . $d['LNAME'] . ", " . $d['AGE'] ?></span> years old, <span class="font-bold underline"><?= $d['SEX'] ?>, <?= $d['CIVIL'] ?>, <?= $d['CITIZEN'] ?></span> and Bonafide resident of <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> , Negros Oriental.
                     <br><br><br><br>
-                    This certification is issued upon the request of the aboved-named person is connection with the requirements for <span class="font-bold underline"> <?= $d['PURPOSE'] ?></span>.
+
+                    This is to certify that
+                    <input type="text" class="autoWidth border-b border-gray-900 w-auto inline-block min-w-[50px]">
+                    and
+                    <input type="text" class="autoWidth border-b border-gray-900 w-auto inline-block min-w-[50px]">
+                    family are classified as INDIGENT resident of
+                    <input type="text" class="autoWidth border-b border-gray-900 w-auto inline-block min-w-[50px]" value="<?= $d['BARANGAY'] ?>, <?= $d['CITY'] ?> Negros Oriental.">
                     <br><br><br><br>
-                    Issued this <span class="font-bold underline"><?= date('d', strtotime($date)) ?></span> day of <span class="font-bold underline"><?= date('F', strtotime($date)) ?></span>, <span class="font-bold underline"><?= date('Y', strtotime($date)) ?></span> at <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> City, Negros Oriental, Philippines.
+                    This certification is being issued upon the request of the above-named person in connection with the requirement to seek Financial Assistance for his/her
+                    <input type="text" class="autoWidth border-b border-gray-900 w-auto inline-block min-w-[50px]" value="<?= $d['PURPOSE'] ?>"> at the
+                    <textarea
+                        class="autoWidth border-b border-gray-900 inline-block resize-none overflow-hidden align-middle"
+                        rows="1"></textarea>
+
+
+                    <span class="font-bold underline"><?= date('d', strtotime($date)) ?></span> day of <span class="font-bold underline"><?= date('F', strtotime($date)) ?></span>, <span class="font-bold underline"><?= date('Y', strtotime($date)) ?></span> at <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> City, Negros Oriental, Philippines.
 
                     <br><br><br><br><br>
                 </p>
 
                 <div id="container" class="relative">
                     <div id="resizable1" style="position:absolute; top:0; left:0; display:inline-block;">
-                        <img src="../../uploads/<?= $d['SIGNATURE'] ?>"
+                        <img src="../../uploads/signatures/<?= $d['SIGNATURE'] ?>"
                             id="signature-image"
                             style="height:200px; width:200px; cursor:move; display:block;">
 
@@ -131,7 +153,7 @@ $date = date('Y-m-d H:i:s');
 
                 <div id="container2" class="relative">
                     <div id="resizable2" style="position:absolute; top:0; left:0; display:inline-block;">
-                        <img src="../../uploads/<?= $offs['OFF_SIGNATURE'] ?>"
+                        <img src="../../uploads/signatures/<?= $offs['OFF_SIGNATURE'] ?>"
                             id="signature-image2"
                             style="height:200px; width:200px; cursor:move; display:block;">
 
@@ -161,6 +183,16 @@ $date = date('Y-m-d H:i:s');
 
 
 <script>
+    $('.autoWidth').on('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+
+    $('.autoWidth').on('input', function() {
+        let len = this.value.length;
+        $(this).css('width', Math.max(len + 1, 5) + 'ch');
+    }).trigger('input');
+
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('sidebar').classList.add('hidden');
         document.getElementById('top-navigation').classList.add('hidden');
@@ -226,6 +258,38 @@ $date = date('Y-m-d H:i:s');
         window.location.href = 'requests';
     }
 
+    function approveRequest() {
+        const id = <?= $_SESSION['REQ_ID'] ?>;
+
+        return fetch('../../data/staff-approved-requests.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+            .then(async (res) => {
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Invalid JSON:', text);
+                    throw new Error('Server returned invalid JSON');
+                }
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                return {
+                    success: false,
+                    message: 'Request failed'
+                };
+            });
+    }
 
     async function sendAsMail(email) {
         const btn = document.getElementById('btn-send-file');
@@ -278,7 +342,8 @@ $date = date('Y-m-d H:i:s');
             btn.innerText = "Send as mail";
 
             if (result.success) {
-                alert("Sent!");
+                approveRequest();
+
             } else {
                 alert("Failed");
             }

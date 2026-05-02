@@ -5,7 +5,6 @@ $pid = $_SESSION['PI_ID'];
 $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
 
-
 $d = $admin->generate($uid, $pid, $rid, $cid);
 
 
@@ -103,7 +102,7 @@ $date = date('Y-m-d H:i:s');
                 </p>
                 <br>
                 <p class="" style="font-style: italic;">
-                    This is to certify that <span class="font-bold underline"> <?= $d['FNAME'] . " " . $d['MNAME'] . " " . $d['LNAME'] ?>,<?= $d['AGE'] ?></span> years old, <span class="font-bold underline"><?= $d['SEX'] ?>, <?= $d['CIVIL'] ?>, <?= $d['CITIZEN'] ?></span> and Bonafide resident of <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> , Negros Oriental. Know to be a person of good community standing and has no pending case as to this date, as far as the Office of Punong Barangay is concerned.
+                    This is to certify that <span class="font-bold underline"> <?= $d['FNAME'] . " " . $d['MNAME'] . " " . $d['LNAME'] . ',' . $d['AGE'] ?></span> years old, <span class="font-bold underline"><?= $d['SEX'] ?>, <?= $d['CIVIL'] ?>, <?= $d['CITIZEN'] ?></span> and Bonafide resident of <span class="font-bold underline"><?= $d['BARANGAY'] ?>, <?= strtoupper($d['CITY']) ?></span> , Negros Oriental. Know to be a person of good community standing and has no pending case as to this date, as far as the Office of Punong Barangay is concerned.
                     <br><br><br><br>
                     This certification is issued upon the request of the aboved-named person is connection with the requirements for <span class="font-bold underline"> <?= $d['PURPOSE'] ?></span>.
                     <br><br><br><br>
@@ -114,7 +113,7 @@ $date = date('Y-m-d H:i:s');
 
                 <div id="container" class="relative">
                     <div id="resizable1" style="position:absolute; top:0; left:0; display:inline-block;">
-                        <img src="../../uploads/<?= $d['SIGNATURE'] ?>"
+                        <img src="../../uploads/signatures/<?= $d['SIGNATURE'] ?>"
                             id="signature-image"
                             style="height:200px; width:200px; cursor:move; display:block;">
 
@@ -131,7 +130,7 @@ $date = date('Y-m-d H:i:s');
 
                 <div id="container2" class="relative">
                     <div id="resizable2" style="position:absolute; top:0; left:0; display:inline-block;">
-                        <img src="../../uploads/<?= $offs['OFF_SIGNATURE'] ?>"
+                        <img src="../../uploads/signatures/<?= $offs['OFF_SIGNATURE'] ?>"
                             id="signature-image2"
                             style="height:200px; width:200px; cursor:move; display:block;">
 
@@ -227,7 +226,7 @@ $date = date('Y-m-d H:i:s');
     }
 
     function approveRequest() {
-        const id = <?= $_SESSION['u_id'] ?>;
+        const id = <?= $_SESSION['REQ_ID'] ?>;
 
         return fetch('../../data/staff-approved-requests.php', {
                 method: 'POST',

@@ -308,7 +308,7 @@ class Client extends Dbh
 
     public function searchStatus()
     {
-        $stmt = $this->mysqli->query("SELECT STATUS_NAME FROM tbl_status");
+        $stmt = $this->mysqli->query("SELECT STATUS_ID, STATUS_NAME FROM tbl_status");
         $rows = [];
         while ($row = $stmt->fetch_assoc()) {
             $rows[] = $row;
@@ -331,11 +331,9 @@ class Client extends Dbh
 
     public function activities()
     {
-        $result = $this->mysqli->query("
-        SELECT * 
+        $result = $this->mysqli->query("SELECT * 
         FROM tbl_posts 
-        WHERE STATUS != 3
-    ");
+        WHERE STATUS != 3");
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }

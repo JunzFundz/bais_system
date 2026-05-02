@@ -1,8 +1,4 @@
-<?php
-include("header.php");
-?>
-
-
+<?php include("header.php"); ?>
 
 <div id="contents">
     <?php include 'posts.php' ?>

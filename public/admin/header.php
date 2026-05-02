@@ -83,6 +83,7 @@
     include('modal-update-official.php');
     include('modal-mail.php');
     include('modal-requests.php');
+    include('modal-update-post.php');
     include('add-activity.php');
     include('change-password.php');
 
@@ -154,27 +155,30 @@
             <!-- Top Navigation -->
             <header id="top-navigation" class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/60 bg-white/80 px-4 glass-effect lg:px-8 dark:border-dark-border dark:bg-dark-bg/80">
                 <div class="flex items-center gap-4">
-                    <button onclick="window.location.href='home'" id="btn-home-nav" class="hidden px-5 py-1.5 tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                        <- Back to Home
-                            </button>
-                            <button onclick="toggleSidebar()" class="flex items-center justify-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden dark:text-slate-400 dark:hover:bg-white/5 border">
-                                <iconify-icon icon="solar:hamburger-menu-linear" width="24" stroke-width="1.5"></iconify-icon>
-                            </button>
-                            <div class="relative hidden md:flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 ring-1 ring-slate-200 focus-within:ring-brand-500 dark:bg-dark-card dark:ring-dark-border">
+                    <button onclick="window.location.href='home'" id="btn-home-nav" class="flex hidden px-3 py-1.5 tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="m6.921 12.5l5.793 5.792L12 19l-7-7l7-7l.714.708L6.92 11.5H19v1z" />
+                        </svg>
+                            Home
+                    </button>
+                    <button onclick="toggleSidebar()" class="flex items-center justify-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden dark:text-slate-400 dark:hover:bg-white/5 border">
+                        <iconify-icon icon="solar:hamburger-menu-linear" width="24" stroke-width="1.5"></iconify-icon>
+                    </button>
+                    <div class="relative hidden md:flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 ring-1 ring-slate-200 focus-within:ring-brand-500 dark:bg-dark-card dark:ring-dark-border">
 
-                                <iconify-icon icon="solar:magnifer-linear" class="text-slate-400"></iconify-icon>
+                        <iconify-icon icon="solar:magnifer-linear" class="text-slate-400"></iconify-icon>
 
-                                <input id="settingsSearch" type="text" placeholder="Search settings..."
-                                    class="w-64 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white">
+                        <input id="settingsSearch" type="text" placeholder="Search settings..."
+                            class="w-64 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white">
 
-                                <div class="flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 dark:border-dark-border">
-                                    <span class="text-xs text-slate-400">⌘K</span>
-                                </div>
+                        <div class="flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 dark:border-dark-border">
+                            <span class="text-xs text-slate-400">⌘K</span>
+                        </div>
 
-                                <div id="searchResults"
-                                    class="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto z-50">
-                                </div>
-                            </div>
+                        <div id="searchResults"
+                            class="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto z-50">
+                        </div>
+                    </div>
 
                 </div>
 

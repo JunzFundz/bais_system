@@ -253,12 +253,12 @@ class Staff extends Dbh
 
         return $data;
     }
-    public function getOfficialInfo($off_id)
+    public function getOfficialInfo(int $off_id)
     {
-        $stmt = $this->mysqli->prepare("SELECT * 
+        $stmt = $this->mysqli->prepare("SELECT o.*, s.*, p.* 
         FROM tbl_officials o 
-        INNER JOIN tbl_status s ON o.CIVIL_STATUS = s.STATUS_ID
-        INNER JOIN tbl_position p ON o.POSITION = p.POSITION_ID
+        LEFT JOIN tbl_status s ON o.CIVIL_STATUS = s.STATUS_ID
+        LEFT JOIN tbl_position p ON o.POSITION = p.POSITION_ID
         WHERE o.OFFICIAL_ID = ? AND o.STATUS = 'active'");
         $stmt->bind_param("i", $off_id);
         $stmt->execute();
@@ -266,6 +266,17 @@ class Staff extends Dbh
         $data = $result->fetch_assoc();
 
         return $data;
+    }
+
+    public function searchStatus()
+    {
+        $stmt = $this->mysqli->query("SELECT STATUS_ID, STATUS_NAME FROM tbl_status");
+        $rows = [];
+        while ($row = $stmt->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
     }
 
     public function activities($brgyID)
@@ -280,11 +291,23 @@ class Staff extends Dbh
         return $data;
     }
 
-    public function insertPost(int $id, $title, $description, $files = [])
+    public function activitiesArchived($brgyID)
+    {
+        $stmt = $this->mysqli->prepare("SELECT * 
+        FROM tbl_posts WHERE BRGY_ID = ? AND STATUS = 3");
+        $stmt->bind_param("i", $brgyID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+        return $data;
+    }
+
+    public function insertPost(int $id, $title, $type, $description, $files = [])
     {
         $files_json = json_encode($files);
-        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (BRGY_ID, TITLE, DESCRIPTION, FILES, DATE_CREATED, STATUS) VALUES (?, ?, ?, ?, NOW(), 1)");
-        $stmt->bind_param("isss", $id, $title, $description, $files_json);
+        $stmt = $this->mysqli->prepare("INSERT INTO tbl_posts (BRGY_ID, TITLE, DESCRIPTION, FILES, TYPE, DATE_CREATED, STATUS) VALUES (?, ?, ?, ?, ?, NOW(), 1)");
+        $stmt->bind_param("issss", $id, $title, $description, $files_json, $type);
 
         return $stmt->execute();
     }
@@ -320,6 +343,17 @@ class Staff extends Dbh
         }
 
         return 0;
+    }
+
+    public function getPost($id)
+    {
+        $stmt = $this->mysqli->prepare("SELECT * FROM tbl_posts WHERE ID = ?");
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc();
     }
 
     public function seeOfficialData($id)
@@ -399,7 +433,7 @@ class Staff extends Dbh
             $stmt1 = $this->mysqli->prepare("
             UPDATE tbl_requests 
             SET REQ_STATUS = 'approved' 
-            WHERE USER_ID = ?
+            WHERE REQ_ID = ?
         ");
             $stmt1->bind_param("i", $user_id);
             $stmt1->execute();
@@ -466,5 +500,12 @@ class Staff extends Dbh
         $result = $stmt->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function updateFiles($brgy_id, $filesJson)
+    {
+        $stmt = $this->mysqli->prepare("UPDATE tbl_posts SET FILES = ? WHERE ID = ?");
+        $stmt->bind_param("si", $filesJson, $brgy_id);
+        return $stmt->execute();
     }
 }

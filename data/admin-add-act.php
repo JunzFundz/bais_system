@@ -73,7 +73,7 @@ try {
         }
 
         $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
-        $newName = time() . '_' . $safeName;
+        $newName = time() . '_' . uniqid() . '.' . $safeName;
         $destination = $uploadDir . $newName;
 
         error_log("Attempting move: $tmpName -> $destination");

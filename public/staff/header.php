@@ -52,39 +52,40 @@
     </script>
 </head>
 
-<?php
-session_start();
-require_once __DIR__ . '/../../model/Staff.php';
-
-if ($_SESSION['user_role'] !== 2 || !isset($_SESSION['user_role']) || !isset($_SESSION['u_id']) || !isset($_SESSION['OFFICIAL_ID'])) {
-    session_unset();
-    session_destroy();
-    header('Location: ../../index.php');
-    exit;
-}
-
-$_SESSION['user_role'];
-$_SESSION['u_id'];
-$_SESSION['OFFICIALS_LOG_ID'];
-$off_id = $_SESSION['OFFICIAL_ID'];
-
-$brgyID = $_SESSION['BRGY_ID'];
-
-include('modal-update-official.php');
-include('modal-mail.php');
-include('modal-requests.php');
-include('add-activity.php');
-include('change-password.php');
-
-$admin = new Staff();
-
-$req = $admin->getAllReq();
-$viewbrgy = $admin->getAllBrgy($brgyID);
-$viewofficials = $admin->getOfficialsBrgy($brgyID);
-$offs = $admin->getOfficialInfo($off_id);
-?>
-
 <body class="bg-gray-200 text-slate-800 antialiased transition-colors duration-300 dark:bg-dark-bg dark:text-slate-300 selection:bg-brand-900 selection:text-white">
+
+    <?php
+    session_start();
+    if ($_SESSION['user_role'] !== 2 || !isset($_SESSION['user_role']) || !isset($_SESSION['u_id']) || !isset($_SESSION['OFFICIAL_ID'])) {
+        session_unset();
+        session_destroy();
+        header('Location: ../../index.php');
+        exit;
+    }
+
+    include __DIR__ . '/../../model/Staff.php';
+    $admin = new Staff();
+
+    $_SESSION['user_role'];
+    $_SESSION['u_id'];
+    $_SESSION['OFFICIALS_LOG_ID'];
+    $off_id = $_SESSION['OFFICIAL_ID'];
+
+    $brgyID = $_SESSION['BRGY_ID'];
+
+    include('modal-update-official.php');
+    include('modal-mail.php');
+    include('modal-requests.php');
+    include('add-activity.php');
+    include('change-password.php');
+    include('modal-update-post.php');
+
+    $req = $admin->getAllReq();
+    $viewbrgy = $admin->getAllBrgy($brgyID);
+    $viewofficials = $admin->getOfficialsBrgy($brgyID);
+    $offs = $admin->getOfficialInfo($off_id);
+    $status = $admin->searchStatus();
+    ?>
 
     <!-- Mobile Overlay -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm hidden lg:hidden transition-opacity opacity-0"></div>
@@ -123,6 +124,12 @@ $offs = $admin->getOfficialInfo($off_id);
                         <iconify-icon icon="solar:wallet-money-linear" width="20" stroke-width="1.5"></iconify-icon>
                         Activities
                     </a>
+                    <a onclick="community()" href="#" class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M12 4h8v6h-8zm0 17V11h8v10zm-9 0v-6h8v6zm0-7V4h8v10zm1-9v8h6V5zm9 0v4h6V5zm0 7v8h6v-8zm-9 4v4h6v-4z" />
+                        </svg>
+                        Community
+                    </a>
                 </nav>
             </div>
 
@@ -141,26 +148,30 @@ $offs = $admin->getOfficialInfo($off_id);
             <!-- Top Navigation -->
             <header id="top-navigation" class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/60 bg-white/80 px-4 glass-effect lg:px-8 dark:border-dark-border dark:bg-dark-bg/80">
                 <div class="flex items-center gap-4">
-                    <button onclick="window.location.href='home'" id="btn-home-nav" class="hidden px-5 py-1.5 tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80"> <- Back to Home </button>
-                            <button onclick="toggleSidebar()" class="flex items-center justify-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden dark:text-slate-400 dark:hover:bg-white/5 border">
-                                <iconify-icon icon="solar:hamburger-menu-linear" width="24" stroke-width="1.5"></iconify-icon>
-                            </button>
-                            <!-- Search -->
-                            <div class="relative hidden md:flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 ring-1 ring-slate-200 focus-within:ring-brand-500 dark:bg-dark-card dark:ring-dark-border">
+                    <button onclick="window.location.href='home'" id="btn-home-nav" class="hidden px-5 py-1.5 tracking-wide text-white capitalize transition-colors duration-300 transform ">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 50 50">
+                            <path d="M 24.960938 1.1015625 A 1.0001 1.0001 0 0 0 24.386719 1.3105469 L 1.3867188 19.210938 A 1.0001 1.0001 0 1 0 2.6132812 20.789062 L 4 19.708984 L 4 46 A 1.0001 1.0001 0 0 0 5 47 L 18.832031 47 A 1.0001 1.0001 0 0 0 19.158203 47 L 30.832031 47 A 1.0001 1.0001 0 0 0 31.158203 47 L 45 47 A 1.0001 1.0001 0 0 0 46 46 L 46 19.708984 L 47.386719 20.789062 A 1.0001 1.0001 0 1 0 48.613281 19.210938 L 40.96875 13.261719 A 1.0001 1.0001 0 0 0 41 13 L 41 7 A 1.0001 1.0001 0 0 0 40 6 L 36.099609 6 A 1.0001 1.0001 0 0 0 35.099609 7 L 35.099609 8.6933594 L 25.613281 1.3105469 A 1.0001 1.0001 0 0 0 24.960938 1.1015625 z M 25 3.3671875 L 44 18.154297 L 44 45 L 32 45 L 32 27 A 1.0001 1.0001 0 0 0 31 26 L 19 26 A 1.0001 1.0001 0 0 0 18 27.158203 L 18 45 L 6 45 L 6 18.154297 L 25 3.3671875 z M 37.099609 8 L 39 8 L 39 11.728516 L 37.099609 10.25 L 37.099609 8 z M 20 28 L 30 28 L 30 45 L 20 45 L 20 28 z"></path>
+                        </svg>
+                    </button>
+                    <button onclick="toggleSidebar()" class="flex items-center justify-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden dark:text-slate-400 dark:hover:bg-white/5 border">
+                        <iconify-icon icon="solar:hamburger-menu-linear" width="24" stroke-width="1.5"></iconify-icon>
+                    </button>
+                    <!-- Search -->
+                    <div class="relative hidden md:flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 ring-1 ring-slate-200 focus-within:ring-brand-500 dark:bg-dark-card dark:ring-dark-border">
 
-                                <iconify-icon icon="solar:magnifer-linear" class="text-slate-400"></iconify-icon>
+                        <iconify-icon icon="solar:magnifer-linear" class="text-slate-400"></iconify-icon>
 
-                                <input id="settingsSearch" type="text" placeholder="Search settings..."
-                                    class="w-64 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white">
+                        <input id="settingsSearch" type="text" placeholder="Search settings..."
+                            class="w-64 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white">
 
-                                <div class="flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 dark:border-dark-border">
-                                    <span class="text-xs text-slate-400">⌘K</span>
-                                </div>
+                        <div class="flex items-center gap-1 rounded border border-slate-200 px-1.5 py-0.5 dark:border-dark-border">
+                            <span class="text-xs text-slate-400">⌘K</span>
+                        </div>
 
-                                <div id="searchResults"
-                                    class="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto z-50">
-                                </div>
-                            </div>
+                        <div id="searchResults"
+                            class="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto z-50">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -175,7 +186,7 @@ $offs = $admin->getOfficialInfo($off_id);
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs font-semibold text-slate-900 dark:text-white"><?= $_SESSION['u_email'] ?></span>
-                            <span class="text-xxs text-slate-500">Admin Workspace</span>
+                            <span class="text-xxs text-slate-500">Staff Workspace</span>
                         </div>
                     </div>
 

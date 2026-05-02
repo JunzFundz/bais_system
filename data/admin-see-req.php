@@ -1,6 +1,6 @@
 <?php
 include(__DIR__ . '/../model/Staff.php');
-$admin = new AdminModel();
+$admin = new Staff();
 session_start();
 if (isset($_POST['view'])) {
     $rid = $_POST['req_id'];
@@ -44,17 +44,6 @@ if (isset($_POST['view'])) {
                             </figure>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <a href="../staff/verify"
-                        target="_blank"
-                        id="accept-req"
-                        type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Proceed
-                        </a>
-                        <button type="button" class="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                            Decline
-                        </button>
-                    </div>
                 </form>
             </div>
         </section>
@@ -63,3 +52,78 @@ if (isset($_POST['view'])) {
 <?php }
 }
 ?>
+<script>
+    function showToast(msg) {
+        Toastify({
+            text: msg,
+            className: "info",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
+    }
+
+    const requestModal = document.getElementById("modal-requests-certs");
+    if (requestModal) {
+        window.requestModalInstance = new Modal(requestModal);
+    }
+
+    $(document).ready(function() {
+        $('.decline-request').on('click', function() {
+            const data = $(this).data('cntrl');
+
+            $.ajax({
+                url: '../../data/staff-decline-req.php',
+                method: 'post',
+                data: {
+                    id: data
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        showToast(res.success)
+                        window.requestModalInstance.hide()
+                        requests()
+                    } else if (res.error) {
+                        showToast(res.error)
+                        requests()
+                    } else {
+                        showToast("error")
+                        requests()
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    showToast("AJAX error occurred");
+                }
+            })
+        });
+        $('.archive-request').on('click', function() {
+            const data = $(this).data('cntrl');
+
+            $.ajax({
+                url: '../../data/staff-archive-req.php',
+                method: 'post',
+                data: {
+                    id: data
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        showToast(res.success)
+                        requests()
+                        window.requestModalInstance.hide()
+                    } else if (res.error) {
+                        showToast(res.error)
+                    } else {
+                        showToast("error")
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    showToast("AJAX error occurred");
+                }
+            })
+        });
+    })
+</script>

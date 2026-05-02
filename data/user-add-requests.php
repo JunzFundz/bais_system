@@ -26,7 +26,7 @@ if (!$data || !is_array($data)) {
 }
 
 // Sanitize and validate inputs
-$keyUnencrypted = trim($data['key'] ?? '');
+$keyId = trim($data['cert_id'] ?? '');
 $purpose = trim($data['purpose'] ?? '');
 $fname = trim($data['fname'] ?? '');
 $mname = trim($data['mname'] ?? '');
@@ -46,16 +46,7 @@ $signature = $data['signature'] ?? '';
 $letter = $data['letter'] ?? '';
 $userid = $data['userId'] ?? '';
 $pid = $data['pid'] ?? '';
-
-// Decrypt key ID
-$key = 'certificate-id';
-$method = 'AES-256-CBC';
-$decoded = base64_decode($keyUnencrypted);
-$iv_length = openssl_cipher_iv_length($method);
-$iv = substr($decoded, 0, $iv_length);
-$encrypted = substr($decoded, $iv_length);
-$keyId = openssl_decrypt($encrypted, $method, $key, 0, $iv);
-
+$old_signature = $data['old_signature'] ?? '';
 
 if (empty($keyId)) {
     $response = ['error' => 'Invalid key'];
@@ -94,7 +85,67 @@ if (!is_dir($uploadDir)) {
     error_log("Created uploads directory");
 }
 
-// SAVE IMAGE FUNCTION (Fixed)
+$sigImageDir = __DIR__ . '/../uploads/signatures/';
+
+if (!is_dir($sigImageDir)) {
+    if (!mkdir($sigImageDir, 0755, true)) {
+        error_log("Failed to create uploads directory");
+        $response = ['error' => 'Failed to create upload directory'];
+        echo json_encode($response);
+        exit;
+    }
+    error_log("Created uploads directory");
+}
+
+function imgsave($base64Data, $prefix, $sigImageDir, $oldFile = '')
+{
+    // ❗ If no new image → keep old
+    if (empty($base64Data)) {
+        error_log("No image data for $prefix");
+        return $oldFile;
+    }
+
+    // Validate base64
+    if (!preg_match('/^data:image\/(\w+);base64,/', $base64Data, $matches)) {
+        error_log("Invalid base64 format for $prefix");
+        return $oldFile;
+    }
+
+    // ✅ DELETE OLD FILE FIRST
+    if (!empty($oldFile)) {
+        $oldPath = $sigImageDir . basename($oldFile);
+
+        if (file_exists($oldPath)) {
+            unlink($oldPath);
+            error_log("Deleted old file: $oldPath");
+        }
+    }
+
+    $imageType = $matches[1];
+    $extension = ($imageType === 'jpeg') ? 'jpg' : $imageType;
+
+    $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $base64Data);
+    $imageData = str_replace(' ', '+', $imageData);
+
+    $filename = $prefix . '_users_' . time() . '_' . uniqid() . '.' . $extension;
+    $fullPath = $sigImageDir . $filename;
+
+    error_log("📸 Saving $prefix → $filename");
+
+    $decodedData = base64_decode($imageData);
+    if ($decodedData === false) {
+        error_log("Base64 decode failed");
+        return $oldFile;
+    }
+
+    if (file_put_contents($fullPath, $decodedData) === false) {
+        error_log("File write failed");
+        return $oldFile;
+    }
+
+    return $filename;
+}
+
 function saveImage($base64Data, $prefix, $uploadDir)
 {
     if (empty($base64Data)) {
@@ -102,7 +153,6 @@ function saveImage($base64Data, $prefix, $uploadDir)
         return '';
     }
 
-    // Extract image type and data
     if (!preg_match('/^data:image\/(\w+);base64,/', $base64Data, $matches)) {
         error_log("Invalid base64 format for $prefix");
         return '';
@@ -114,7 +164,7 @@ function saveImage($base64Data, $prefix, $uploadDir)
     $imageData = str_replace(' ', '+', $imageData);
 
     // Generate unique filename
-    $filename = $prefix . '_' . time() . '_' . uniqid() . '.' . $extension;
+    $filename = $prefix . '_users_' . time() . '_' . uniqid() . '.' . $extension;
     $fullPath = $uploadDir . $filename;
 
     error_log("📸 Saving $prefix → $filename");
@@ -145,12 +195,18 @@ function saveImage($base64Data, $prefix, $uploadDir)
 
 // Save images
 $photoFilename = saveImage($photo, 'photo', $uploadDir);
-$signatureFilename = saveImage($signature, 'signature', $uploadDir);
 $letterFilename = saveImage($letter, 'letter', $uploadDir);
+
+$signatureFilename = imgsave(
+    $signature,
+    'signature',
+    $sigImageDir,
+    $old_signature
+);
 
 if ($type == "2" && empty($letterFilename)) {
     echo json_encode([
-         'error' => 'Authorization letter upload failed'
+        'error' => 'Authorization letter upload failed'
     ]);
     exit;
 }

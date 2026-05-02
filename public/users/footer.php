@@ -15,7 +15,7 @@
             loader.classList.add('hidden');
         }
     }
-    hideLoader()
+        hideLoader()
 
     document.addEventListener("DOMContentLoaded", function() {
         const modalElement = document.getElementById("custom-modal");
@@ -86,6 +86,8 @@
         const res = await fetch('certificates.php');
         certs.innerHTML = await res.text();
     }
+
+    
 </script>
 
 </html>

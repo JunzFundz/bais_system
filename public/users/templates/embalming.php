@@ -30,10 +30,10 @@
     }
 </style>
 
-<?php $_SESSION['encryptedCertId'] = $encryptedCertId; ?>
 <input type="hidden" name="" id="user-id" value="<?php echo $_SESSION['u_id']; ?>">
 <input type="hidden" name="" id="cert-id" value="<?php echo $_SESSION['certId'] ?? '' ?>">
 <input type="hidden" name="" id="pi-id" value="<?php echo $_SESSION['PI_ID'] = $users['PI_ID'] ?>">
+<input type="hidden" name="" id="old_signature" value="<?php echo $users['SIGNATURE'] ?? ''?>">
 
 <div class="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
     <div class="lg:w-lg sm:w-9/12 w-full border-2 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-400 shadow-lg rounded-lg p-8">
@@ -166,8 +166,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="visitors" class="block mb-2 text-md font-medium text-heading">Burial Assistance of late:<span class="text-red-700 text-center">*</span></label>
-                        <input placeholder="Full name" id="purpose" type="text" class="h-10 block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
+                        <label for="visitors" class="block mb-2 text-md font-medium text-heading">Purpose of<span class="text-red-700 text-center">*</span></label>
+                        <input placeholder="Purpose of request" id="purpose" type="text" class="h-10 block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-100 border border-gray-400 rounded-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring" placeholder="+63">
                     </div>
 
                 </div>
@@ -210,7 +210,7 @@
                         </button>
                     </div>
 
-                    <button id="open-signature" class="px-4 py-2 bg-blue-500 text-white">
+                    <button id="open-signature" class="px-4 py-2 bg-blue-500 text-white hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h2l2-3h10l2 3h2a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2z" />
                         </svg>
@@ -354,7 +354,6 @@
                             </div>
                         </div>
                     </center>
-
 
                 </div>
             </div>

@@ -1,20 +1,10 @@
 <?php include 'header.php' ?>
 
 <?php if (isset($_GET['id'])) {
-    $key = 'certificate-id';
-    $method = 'AES-256-CBC';
 
-    $encryptedCertId = $_GET['id'];
-    $decoded = base64_decode($encryptedCertId);
+    $id = $_GET['id'];
 
-    $iv_length = openssl_cipher_iv_length($method);
-    $iv = substr($decoded, 0, $iv_length);
-    $encrypted = substr($decoded, $iv_length);
-
-    $certId = openssl_decrypt($encrypted, $method, $key, 0, $iv);
-
-    $_SESSION['encryptedCertId'] = $encryptedCertId;
-    $_SESSION['certId'] = $certId;
+    $_SESSION['certId'] =  $id;
 }
 ?>
 
@@ -22,7 +12,7 @@
 <?php
 require_once 'confirm.php';
 require_once 'alert.php';
-switch ($certId) {
+switch ($id) {
     case 1:
         require_once 'templates/financial_assistance.php';
         break;

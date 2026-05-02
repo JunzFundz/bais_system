@@ -305,6 +305,86 @@
         $('#content-navigations').load('activities.php', function() {
             initFlowbite();
 
+            const updatePostModal = document.getElementById("modal-update-posts");
+            if (updatePostModal) {
+                window.updatePostModalInstance = new Modal(updatePostModal);
+            }
+
+            $('.see-post').on('click', function() {
+                const id = $(this).data('id_post');
+
+                $.ajax({
+                    url: '../../data/staff-see-post.php',
+                    method: 'post',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'html',
+                    success: function(res) {
+                        $('.modal-body-posts').html(res)
+                        window.updatePostModalInstance.show()
+                    },
+                    error: function(res, xhr) {
+                        showToast(xhr.error)
+                    }
+                })
+            });
+
+            $('.delete-post').on('click', function() {
+                const id = $(this).data('post');
+                $.ajax({
+                    url: '../../data/admin-archive-post.php',
+                    method: 'post',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.success) {
+                            showToast(res.success)
+                            activities()
+                        } else {
+                            showToast(res.error)
+                        }
+                    },
+                    error: function() {
+
+                    }
+                })
+            });
+
+            $('.status-toggle').on('change', function() {
+                const $toggle = $(this);
+                const postId = $toggle.data('post-id');
+                const isActive = $toggle.is(':checked');
+                const status = isActive ? 1 : 2;
+
+                $toggle.closest('label').addClass('transition-all duration-300');
+
+                $.ajax({
+                    url: '../../data/admin-post-status.php',
+                    type: 'POST',
+                    data: {
+                        post_id: postId,
+                        status: status
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (!data.success) {
+                            $toggle.prop('checked', !isActive);
+                            showToast('Error updating status', 'error');
+                        } else {
+                            showToast(`Post ${isActive ? 'activated' : 'deactivated'}`, 'success');
+                            activities();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        $toggle.prop('checked', !isActive);
+                        showToast('Network error', 'error');
+                    }
+                });
+            });
         });
     }
 
@@ -316,6 +396,11 @@
             }
             new DataTable('#myTable');
 
+            const reqModal = document.getElementById("modal-requests-certs");
+            if (reqModal) {
+                window.requestsModal = new Modal(reqModal);
+            }
+
 
             $('.view-requests').on('click', function(e) {
                 e.preventDefault();
@@ -325,7 +410,7 @@
                 console.log(rid, uid);
 
                 $.ajax({
-                    url: '../../data/staff-see-req.php',
+                    url: '../../data/admin-see-req.php',
                     type: 'POST',
                     data: {
                         'view': true,

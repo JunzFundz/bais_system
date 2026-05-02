@@ -20,8 +20,8 @@ include('modal-requests.php');
         <table id="myTable" class="w-full text-left border-collapse">
             <thead class="">
                 <tr class="bg-slate-50/50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-400 font-semibold">
-                    <th class="px-6 py-4">Order ID</th>
-                    <th class="px-6 py-4">Customer</th>
+                    <th class="px-6 py-4">Ctrl No.</th>
+                    <th class="px-6 py-4">Name</th>
                     <th class="px-6 py-4">Product</th>
                     <th class="px-6 py-4">Date</th>
                     <th class="px-6 py-4">Status</th>
@@ -35,7 +35,6 @@ include('modal-requests.php');
                             <td class="px-6 py-4 font-mono text-slate-500"><?= htmlspecialchars($rows['CTRL_NUM']) ?></td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <!-- <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">JD</div> -->
                                     <span class="font-medium text-dark">
                                         <?= htmlspecialchars($rows['FNAME'] . " " . $rows['MNAME'] . " " . $rows['LNAME']) ?>
                                     </span>
@@ -80,8 +79,6 @@ include('modal-requests.php');
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right text-2xl">
-                                <i class="fa-solid fa-delete-left text-red-500"></i>
-
                                 <i
                                     data-rid="<?= htmlspecialchars($rows['REQ_ID']) ?>"
                                     data-uid="<?= htmlspecialchars($rows['USER_ID']) ?>"
@@ -103,10 +100,4 @@ include('modal-requests.php');
 
 <script>
     let table = new DataTable('#myTable');
-
-
-
-
-
-
 </script>

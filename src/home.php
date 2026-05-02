@@ -1,12 +1,11 @@
 <?php
-
 include 'header.php';
 ?>
 
-<section class=" bg-amber-50/70 grid place-items-center sm:h-dvh lg:h-5/6" id="--bg">
+<section class=" bg-amber-50/70 grid place-items-center sm:h-dvh h-[80dvh]" id="--bg">
     <div class="container px-6 py-16 mx-auto text-center">
         <div class="max-w-lg mx-auto">
-            <h1 class="text-3xl font-semibold text-white dark:text-white lg:text-4xl">Building Your Next App with our Awesome components</h1>
+            <h1 class="text-3xl font-semibold text-white dark:text-white lg:text-4xl">Bais City Information Hub: An Integrated Local Services</h1>
             <p class="mt-6 text-white">Make documents request easy and fast</p>
             <br>
 
@@ -21,10 +20,6 @@ include 'header.php';
         </div>
     </div>
 </section>
-
-
-
-
 
 <?php include 'posts.php'; ?>
 <?php include 'footer.php' ?>

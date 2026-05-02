@@ -1,10 +1,9 @@
 <?php
-
+$offs = $admin->getOfficialInfo($off_id);
 $uid = $_SESSION['USER_ID'];
 $pid = $_SESSION['PI_ID'];
 $rid = $_SESSION['REQ_ID'];
 $cid = $_SESSION['CERT_ID'];
-
 
 $d = $admin->generate($uid, $pid, $rid, $cid);
 
@@ -114,7 +113,7 @@ $date = date('Y-m-d H:i:s');
 
                 <div id="container" class="relative">
                     <div id="resizable1" style="position:absolute; top:0; left:0; display:inline-block;">
-                        <img src="../../uploads/<?= $d['SIGNATURE'] ?>"
+                        <img src="../../uploads/signatures/<?= $d['SIGNATURE'] ?>"
                             id="signature-image"
                             style="height:200px; width:200px; cursor:move; display:block;">
 
@@ -131,7 +130,7 @@ $date = date('Y-m-d H:i:s');
 
                 <div id="container2" class="relative">
                     <div id="resizable2" style="position:absolute; top:0; left:0; display:inline-block;">
-                        <img src="../../uploads/<?= $offs['OFF_SIGNATURE'] ?>"
+                        <img src="../../uploads/signatures/<?= $offs['OFF_SIGNATURE'] ?>"
                             id="signature-image2"
                             style="height:200px; width:200px; cursor:move; display:block;">
 
@@ -226,6 +225,38 @@ $date = date('Y-m-d H:i:s');
         window.location.href = 'requests';
     }
 
+    function approveRequest() {
+        const id = <?= $_SESSION['REQ_ID'] ?>;
+
+        return fetch('../../data/staff-approved-requests.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+            .then(async (res) => {
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Invalid JSON:', text);
+                    throw new Error('Server returned invalid JSON');
+                }
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                return {
+                    success: false,
+                    message: 'Request failed'
+                };
+            });
+    }
 
     async function sendAsMail(email) {
         const btn = document.getElementById('btn-send-file');
@@ -278,7 +309,8 @@ $date = date('Y-m-d H:i:s');
             btn.innerText = "Send as mail";
 
             if (result.success) {
-                alert("Sent!");
+                approveRequest();
+
             } else {
                 alert("Failed");
             }

@@ -90,6 +90,20 @@
 <script defer type="module" src="includes/firebaseGoogleAuth.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show')
+            } else {
+                entry.target.classList.remove('show')
+            }
+        })
+    }, {})
+
+    const elements = document.querySelectorAll('.blocks');
+    elements.forEach(el => observer.observe(el))
+
+
     function showToast(msg) {
         Toastify({
             text: msg,
@@ -195,8 +209,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         hideLoader()
-        // const resetOtpInputs = document.querySelectorAll('.otp-input');
-        //Log in
         const otpInputs = document.querySelectorAll('.otp-input');
         const otpForm = document.getElementById('otpForm');
 

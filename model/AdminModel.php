@@ -63,7 +63,7 @@ class AdminModel extends Dbh
         $stmt = $this->mysqli->prepare("SELECT o.*, p.POSITION_NAME 
         FROM tbl_officials o 
         LEFT JOIN tbl_position p ON o.POSITION = p.POSITION_ID 
-        WHERE o.BRGY_ID = ? AND o.STATUS != ''");
+        WHERE o.BRGY_ID = ? AND o.STATUS != 'ended'");
         $stmt->bind_param("i", $brgy);
         $stmt->execute();
         $result = $stmt->get_result();

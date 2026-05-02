@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (updateModal) {
         window.updateModalInstance = new Modal(updateModal);
     }
+
+    const PostModal = document.getElementById("adtivity-modal");
+    if (PostModal) {
+        window.PostModalInstance = new Modal(PostModal);
+    }
 });
 
 function showToast(msg) {
@@ -19,57 +24,6 @@ function showToast(msg) {
         }
     }).showToast();
 }
-
-$(document).ready(function () {
-    $('#add-post').on('click', function (e) {
-        e.preventDefault();
-
-        document.getElementById('add-post').innerText = "Posting....";
-
-        const brgy_id = $('#brgy_id').val().trim();
-        let title = $('#post-title').val().trim();
-        let description = $('#post-description').val().trim();
-        let files = $('#post-file')[0].files;
-
-        if (title === '') {
-            showToast('Title is required');
-            document.getElementById('add-post').innerText = "Post";
-            return;
-        }
-
-        if (files.length === 0) {
-            showToast('Please select at least one file');
-            document.getElementById('add-post').innerText = "Post";
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append('brgy_id', brgy_id);
-        formData.append('title', title);
-        formData.append('description', description);
-
-        for (let i = 0; i < files.length; i++) {
-            formData.append('files[]', files[i]);
-        }
-
-        $.ajax({
-            url: '../../data/staff-add-act.php',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: 'json',
-            success: function (response) {
-                window.updateModalInstance.hide();
-                showToast(response.message);
-                // activities() 
-            },
-            error: function (xhr, status, error) {
-                showToast('Something went wrong while uploading.');
-            }
-        });
-    });
-});
 
 $('#change-password-data').on('click', function (e) {
     e.preventDefault();
@@ -109,8 +63,8 @@ $('#change-password-data').on('click', function (e) {
     });
 });
 
-function settings() {
-    $('#content-navigations').load('settings.php', function () {
+function community() {
+    $('#content-navigations').load('community.php', function () {
         initFlowbite();
     });
 }
@@ -124,7 +78,7 @@ function officials() {
 function dashboard() {
     $('#content-navigations').load('dashboard.php', function () {
         initFlowbite();
-        initCharts() 
+        initCharts()
     });
 }
 
@@ -166,6 +120,11 @@ function activities() {
     $('#content-navigations').load('activities.php', function () {
         initFlowbite();
 
+        const updatePostModal = document.getElementById("modal-update-post");
+        if (updatePostModal) {
+            window.updatePostModalInstance = new Modal(updatePostModal);
+        }
+
         $('.delete-post').on('click', function () {
             const id = $(this).data('post');
 
@@ -184,12 +143,81 @@ function activities() {
                         showToast(res.error)
                     }
                 },
-                error: function () {
-
+                error: function (res, xhr) {
+                    showToast(xhr.error)
                 }
             })
         });
 
+        $('.see-post').on('click', function () {
+            const id = $(this).data('id_post');
+
+            $.ajax({
+                url: '../../data/staff-see-post.php',
+                method: 'post',
+                data: {
+                    id: id
+                },
+                dataType: 'html',
+                success: function (res) {
+                    $('.modal-body-post').html(res)
+                    window.updatePostModalInstance.show()
+                },
+                error: function (res, xhr) {
+                    showToast(xhr.error)
+                }
+            })
+        });
+
+        $('#add-post').on('click', function (e) {
+            e.preventDefault();
+
+            document.getElementById('add-post').innerText = "Posting....";
+
+            const brgy_id = $('#brgy_id').val().trim();
+            let title = $('#post-title').val().trim();
+            let type = $('#type-posts').val().trim();
+            let description = $('#post-description').val().trim();
+            let files = $('#post-file')[0].files;
+
+            if (title === '') {
+                showToast('Title is required');
+                document.getElementById('add-post').innerText = "Post";
+                return;
+            }
+
+            if (files.length === 0) {
+                showToast('Please select at least one file');
+                document.getElementById('add-post').innerText = "Post";
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('brgy_id', brgy_id);
+            formData.append('type', type);
+            formData.append('title', title);
+            formData.append('description', description);
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files[]', files[i]);
+            }
+
+            $.ajax({
+                url: '../../data/staff-add-act.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (response) {
+                    window.PostModalInstance.hide();
+                    showToast(response.message);
+                },
+                error: function (xhr, status, error) {
+                    showToast('Something went wrong while uploading.');
+                }
+            });
+        });
     });
 }
 
@@ -239,14 +267,6 @@ function users() {
         initFlowbite();
     });
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    const updateModal = document.getElementById("modal-update-official");
-    if (updateModal) {
-        window.updateModalInstance = new Modal(updateModal);
-    }
-});
-
 
 function addBrgy(e) {
     e.preventDefault();

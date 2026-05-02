@@ -1,8 +1,8 @@
 <?php include('header.php');
 $user_id = (int) $_SESSION['u_id'];
 $info = $client->seeYourInfo($user_id);
-?>
 
+?>
 
 <input type="hidden" name="" id="user_id" value="<?= $_SESSION['u_id'] ?>">
 
@@ -24,9 +24,7 @@ $info = $client->seeYourInfo($user_id);
 
             <!-- Profile Setup Form Container -->
             <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-200/50 dark:border-gray-700/50">
-
                 <!-- Profile Setup Form -->
-
                 <div class="space-y-8">
                     <!-- Avatar Section -->
                     <div class="text-center">
@@ -35,7 +33,7 @@ $info = $client->seeYourInfo($user_id);
 
                                 <!-- Profile Image -->
                                 <img id="profilePreview"
-                                    src="../../profiles/<?= $info['PP'] ?>"
+                                    src="../<?= $info['PP'] ?>"
                                     alt="Profile Picture"
                                     class="rounded-full w-56 h-32 mx-auto border-4 border-indigo-800 dark:border-blue-900 transition-transform duration-300 hover:scale-105">
 
@@ -241,7 +239,7 @@ $info = $client->seeYourInfo($user_id);
                                         </div>
                                     </div>
                                 </center>
-                                <input type="hidden" id="old_signature" value="<?= $info['SIGNATURE'] ?>">
+                                <input type="text" id="old_signature" value="<?= $info['SIGNATURE'] ?>">
                                 <button class="mt-5 hidden  py-2  rounded-xl h-9 items-center gap-2 bg-brand-900 px-4 text-sm font-medium text-white shadow-lg shadow-brand-900/20 hover:bg-brand-800 transition-colors">
                                     Upload Signature
                                 </button>
@@ -264,6 +262,21 @@ $info = $client->seeYourInfo($user_id);
     <br><br>
 </div>
 <script>
+    function showLoader() {
+        const loader = document.getElementById('preloader');
+        if (loader) {
+            loader.classList.remove('hidden');
+        }
+    }
+
+    function hideLoader() {
+        const loader = document.getElementById('preloader');
+        if (loader) {
+            loader.classList.add('hidden');
+        }
+    }
+    hideLoader()
+
     function showToast(msg) {
         Toastify({
             text: msg,
@@ -276,18 +289,15 @@ $info = $client->seeYourInfo($user_id);
 
     $('#avatarInput').on('change', function(e) {
         const file = e.target.files[0];
-
         if (file) {
             const previewURL = URL.createObjectURL(file);
             $('#profilePreview').attr('src', previewURL);
         }
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('second-nav').classList.add('hidden')
-        document.getElementById('sidebar').classList.add('hidden')
-        document.getElementById('btn-home-nav').classList.remove('hidden')
 
         // Forms
         const openSignature = document.getElementById('open-signature');
@@ -450,76 +460,51 @@ $info = $client->seeYourInfo($user_id);
     })
 
     window.AddSignature = function() {
-        const user_id = document.getElementById('user_id').value;
-        const fname = document.getElementById('fname').value;
-        const mname = document.getElementById('mname').value;
-        const lname = document.getElementById('lname').value;
-        const dob = document.getElementById('dob').value;
-        const pob = document.getElementById('pob').value;
-        const cs = document.getElementById('cs').value;
-        const gender = document.getElementById('gender').value;
-        const uemail = document.getElementById('uemail').value;
-        const contact = document.getElementById('contact').value;
-        const brgy = document.getElementById('brgy').value;
-        const street = document.getElementById('street').value;
-        const city = document.getElementById('city').value;
+
+        const formData = new FormData();
 
         const signatureData = document.getElementById('signature-filename').dataset.imageData;
-        const oldSignature = document.getElementById('old_signature').value;
-        const oldProfile = document.getElementById('old_pp').value;
+
+        formData.append('user_id', document.getElementById('user_id').value);
+        formData.append('fname', document.getElementById('fname').value);
+        formData.append('mname', document.getElementById('mname').value);
+        formData.append('lname', document.getElementById('lname').value);
+
+        formData.append('dob', document.getElementById('dob').value);
+        formData.append('pob', document.getElementById('pob').value);
+        formData.append('cs', document.getElementById('cs').value);
+        formData.append('gender', document.getElementById('gender').value);
+        formData.append('uemail', document.getElementById('uemail').value);
+        formData.append('contact', document.getElementById('contact').value);
+        formData.append('brgy', document.getElementById('brgy').value);
+        formData.append('street', document.getElementById('street').value);
+        formData.append('city', document.getElementById('city').value);
+
+        formData.append('signature', signatureData);
+
+        formData.append('old_signature', document.getElementById('old_signature').value);
+        formData.append('old_pp', document.getElementById('old_pp').value);
 
         const avatarFile = document.getElementById('avatarInput').files[0];
+        if (avatarFile) {
+            formData.append('avatar', avatarFile);
+        }
 
-        
-        fetch(signatureData)
-            .then(res => res.blob())
-            .then(blob => {
-                const formData = new FormData();
-
-                formData.append('user_id', user_id);
-                formData.append('fname', fname);
-                formData.append('mname', mname);
-                formData.append('lname', lname);
-                formData.append('dob', dob);
-                formData.append('pob', pob);
-                formData.append('cs', cs);
-                formData.append('gender', gender);
-                formData.append('uemail', uemail);
-                formData.append('contact', contact);
-                formData.append('brgy', brgy);
-                formData.append('street', street);
-                formData.append('city', city);
-
-                formData.append('signature', blob, 'signature.png');
-                formData.append('old_signature', oldSignature);
-                formData.append('old_pp', oldProfile);
-
-                if (avatarFile) {
-                    formData.append('avatar', avatarFile);
-                }
-
-                return fetch('../../data/user-update-info.php', {
-                    method: 'POST',
-                    body: formData
-                });
+        fetch('../../data/user-update-info.php', {
+                method: 'POST',
+                body: formData
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(result => {
                 if (result.success) {
                     showToast(result.success);
-                    document.getElementById('signature-filename').dataset.imageData = '';
-                    document.getElementById('signature-preview-container').classList.add('hidden')
-                    document.getElementById('open-signature').classList.remove('hidden')
                 } else {
-                    showToast('Error: ' + (result.error || 'Upload failed'));
+                    showToast('Error: ' + result.error);
                 }
             })
-            .catch(error => {
-                console.error('Upload error:', error);
-                showToast('Upload failed: ' + error.message);
+            .catch(err => {
+                console.error(err);
+                showToast('Upload failed');
             });
     };
 </script>
-
-
-<?php include('footer.php') ?>

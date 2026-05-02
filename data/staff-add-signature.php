@@ -25,10 +25,8 @@ try {
         exit;
     }
 
-
     $signaturePath = $old_signature;
     $avatarPath    = $old_pp;
-
 
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
 
@@ -57,7 +55,7 @@ try {
 
     if (isset($_FILES['signature']) && $_FILES['signature']['error'] === UPLOAD_ERR_OK) {
 
-        $uploadDir = __DIR__ . '/../uploads/';
+        $uploadDir = __DIR__ . '/../uploads/signatures/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
@@ -70,12 +68,11 @@ try {
 
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
 
-            // ✅ delete old signature (optional)
             if (!empty($old_signature) && file_exists(__DIR__ . '/' . $old_signature)) {
                 unlink(__DIR__ . '/' . $old_signature);
             }
 
-            $signaturePath = '../uploads/' . $newFilename;
+            $signaturePath = $newFilename;
 
         } else {
             echo json_encode(['success' => false, 'error' => 'Signature upload failed']);

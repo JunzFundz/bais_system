@@ -20,6 +20,7 @@ try {
     $brgy    = $_POST['brgy'] ?? '';
     $street  = trim($_POST['street'] ?? '');
     $city    = trim($_POST['city'] ?? '');
+    $signature = $_POST['signature'] ?? '';
 
     $old_signature = $_POST['old_signature'] ?? null;
     $old_pp        = $_POST['old_pp'] ?? null;
@@ -29,10 +30,8 @@ try {
         exit;
     }
 
-
-    $signaturePath = $old_signature;
+    // $signaturePath = $old_signature;
     $avatarPath    = $old_pp;
-
 
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
 
@@ -58,46 +57,82 @@ try {
         }
     }
 
+    $imgDir = __DIR__ . '/../uploads/signatures/';
 
-    if (isset($_FILES['signature']) && $_FILES['signature']['error'] === UPLOAD_ERR_OK) {
-
-        $uploadDir = __DIR__ . '/../uploads/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        $file = $_FILES['signature'];
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-        $newFilename = 'official_' . $id . '_' . time() . '.' . $ext;
-        $uploadPath = $uploadDir . $newFilename;
-
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-
-            // ✅ delete old signature (optional)
-            if (!empty($old_signature) && file_exists(__DIR__ . '/' . $old_signature)) {
-                unlink(__DIR__ . '/' . $old_signature);
-            }
-
-            $signaturePath = '../uploads/' . $newFilename;
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Signature upload failed']);
+    if (!is_dir($imgDir)) {
+        if (!mkdir($imgDir, 0755, true)) {
+            error_log("Failed to create uploads directory");
+            $response = ['error' => 'Failed to create upload directory'];
+            echo json_encode($response);
             exit;
         }
+        error_log("Created uploads directory");
     }
+
+    function signature($base64Data, $prefix, $imgDir, $oldFile = '')
+    {
+        if (empty($base64Data)) {
+            error_log("No image data for $prefix");
+            return $oldFile; // keep old if no new
+        }
+
+        // Extract image type
+        if (!preg_match('/^data:image\/(\w+);base64,/', $base64Data, $matches)) {
+            error_log("Invalid base64 format for $prefix");
+            return $oldFile;
+        }
+
+        // ✅ DELETE OLD FILE FIRST
+        if (!empty($oldFile)) {
+            $oldPath = $imgDir . basename($oldFile);
+
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+                error_log("Deleted old signature: $oldPath");
+            }
+        }
+
+        $imageType = $matches[1];
+        $extension = ($imageType === 'jpeg') ? 'jpg' : $imageType;
+
+        $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $base64Data);
+        $imageData = str_replace(' ', '+', $imageData);
+
+        $filename = $prefix . '_users_' . time() . '_' . uniqid() . '.' . $extension;
+        $fullPath = $imgDir . $filename;
+
+        $decodedData = base64_decode($imageData);
+        if ($decodedData === false) {
+            error_log("Base64 decode failed");
+            return $oldFile;
+        }
+
+        if (file_put_contents($fullPath, $decodedData) === false) {
+            error_log("File write failed");
+            return $oldFile;
+        }
+
+        return $filename;
+    }
+
+    $signaturePath = signature(
+        $signature,
+        'signature',
+        $imgDir,
+        $old_signature
+    );
 
     $saved = $staff->updateInfo($id, $fname, $mname, $lname, $dob, $pob, $cs, $gender, $email, $contact, $brgy, $street, $city, $signaturePath, $avatarPath);
 
     if ($saved) {
         echo json_encode([
-            'success' => true,
-            'message' => 'Saved successfully!',
+            'success' => 'Saved successfully!',
             'signature' => $signaturePath,
             'avatar' => $avatarPath
         ]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Database insert failed']);
+        echo json_encode(['success' => 'Database insert failed']);
     }
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    echo json_encode(['success' => $e->getMessage()]);
 }

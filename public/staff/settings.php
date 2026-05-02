@@ -1,7 +1,8 @@
-<?php include('header.php');
-$status = $admin->getStatus();
-?>
+<?php
+include('header.php');
 
+
+?>
 
 <input type="hidden" name="" id="off_id" value="<?= $_SESSION['OFFICIAL_ID'] ?>">
 
@@ -34,7 +35,7 @@ $status = $admin->getStatus();
 
                                 <!-- Profile Image -->
                                 <img id="profilePreview"
-                                    src="../../profiles/<?= $offs['PHOTO'] ?>"
+                                    src="../../profiles/<?php $offs['PHOTO'] ?>"
                                     alt="Profile Picture"
                                     class="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 dark:border-blue-900 transition-transform duration-300 hover:scale-105">
 
@@ -49,7 +50,7 @@ $status = $admin->getStatus();
                                 <!-- Hidden File Input -->
                                 <input type="file" id="avatarInput" accept="image/*"
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full">
-                                    <input type="hidden" id="old_pp" value="<?= $offs['PHOTO'] ?>">
+                                <input type="hidden" id="old_pp" value="<?= $offs['PHOTO'] ?>">
                             </div>
                         </div>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Click on the avatar to upload a profile picture</p>
@@ -447,7 +448,7 @@ $status = $admin->getStatus();
                 formData.append('email', email);
                 formData.append('contact', contact);
                 formData.append('signature', blob, 'signature.png');
-                
+
                 formData.append('old_signature', oldSignature);
                 formData.append('old_pp', oldProfile);
 

@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let letterFile = null;
 
-
     // SELECT FILE
     letterInput.addEventListener("change", function () {
         const file = this.files[0];
@@ -235,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('✓ Signature removed');
     });
 });
-
 
 let video = document.getElementById('camera');
 let canvas = document.getElementById('canvas');
@@ -527,6 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const signatureFilename = document.getElementById('signature-filename');
         const letter = document.getElementById('letter-filename');
         const type = document.getElementById('select-type').value;
+        const old_signature = document.getElementById('old_signature').value;
 
         const purpose = document.getElementById('purpose').value.trim()
 
@@ -547,9 +546,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 errors.push('Please add your photo');
             }
 
-            if (!signatureFilename ||
+            if ((!signatureFilename ||
                 !signatureFilename.dataset.imageData ||
-                signatureFilename.dataset.imageData.trim() === "") {
+                signatureFilename.dataset.imageData.trim() === "")
+                && old_signature === ''
+            ) {
                 errors.push('Please add your signature');
             }
 
@@ -640,7 +641,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return {
             key: keys.getAttribute('data-getKey'),
+            cert_id: document.getElementById('cert-id').value.trim(),
             fname: document.getElementById('fname').value.trim(),
+            old_signature: document.getElementById('old_signature').value,
             userId: document.getElementById('user-id').value.trim(),
             mname: document.getElementById('mname').value.trim(),
             purpose: document.getElementById('purpose').value.trim(),

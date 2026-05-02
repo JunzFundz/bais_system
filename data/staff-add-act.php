@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json');
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 0);
+// ini_set('log_errors', 1);
+// error_reporting(E_ALL);
 
 require_once __DIR__ . '/../model/Staff.php';
 $model = new Staff();
@@ -16,13 +16,13 @@ try {
 
     $id = (int)($_POST['brgy_id'] ?? 0);
     $title = trim($_POST['title'] ?? '');
+    $type = trim($_POST['type'] ?? '');
     $description = trim($_POST['description'] ?? '');
     
     if (empty($title)) {
         throw new Exception('Title required');
     }
 
-    // 🔍 DEBUG: Log $_FILES structure
     error_log('FILES: ' . print_r($_FILES, true));
     
     if (!isset($_FILES['files']) || empty($_FILES['files']['name'][0])) {
@@ -73,7 +73,7 @@ try {
         }
 
         $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
-        $newName = time() . '_' . $safeName;
+        $newName = time() . '_' . uniqid() . '.' . $safeName;
         $destination = $uploadDir . $newName;
 
         error_log("Attempting move: $tmpName -> $destination");
@@ -93,7 +93,7 @@ try {
         throw new Exception('No valid files processed. Check error log.');
     }
 
-    $inserted = $model->insertPost($id, $title, $description, $savedFiles);
+    $inserted = $model->insertPost($id, $title, $type, $description, $savedFiles);
     
     if ($inserted) {
         $response['success'] = true;
