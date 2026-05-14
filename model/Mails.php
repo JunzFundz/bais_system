@@ -18,7 +18,7 @@ class Mails
         $mail->Port = 587;
 
         $mail->Username   = 'crestinemaemendezromano0217@gmail.com';
-        $mail->Password   = 'zutggtbanddnzquy';
+        $mail->Password   = 'none';
 
         $mail->setFrom('crestinemaemendezromano0217@gmail.com');
         $mail->addAddress($email);
@@ -48,7 +48,7 @@ class Mails
 
             // ✅ Your Gmail credentials
             $mail->Username = 'crestinemaemendezromano0217@gmail.com';
-            $mail->Password = 'zutggtbanddnzquy'; // Use App Password!
+            $mail->Password = 'none'; // Use App Password!
             $mail->setFrom('crestinemaemendezromano0217@gmail.com', 'Bais City Barangay');
             $mail->addAddress($email);
 
@@ -93,7 +93,7 @@ class Mails
             $mail->CharSet = 'UTF-8';
 
             $mail->Username = 'crestinemaemendezromano0217@gmail.com';
-            $mail->Password = 'zutggtbanddnzquy';
+            $mail->Password = 'none';
             $mail->setFrom('crestinemaemendezromano0217@gmail.com', 'Bais City Barangay');
             $mail->addAddress($email);
 
