@@ -143,7 +143,7 @@ class Signup extends Dbh
         $mail->Port = 587;
 
         $mail->Username   = 'crestinemaemendezromano0217@gmail.com';
-        $mail->Password   = 'zutggtbanddnzquy';
+        $mail->Password   = 'none';
 
         $mail->setFrom('crestinemaemendezromano0217@gmail.com');
         $mail->addAddress($email);
@@ -335,7 +335,7 @@ class Signup extends Dbh
         $mail->Port = 587;
 
         $mail->Username   = 'crestinemaemendezromano0217@gmail.com';
-        $mail->Password   = 'zutggtbanddnzquy';
+        $mail->Password   = 'none';
 
         $mail->setFrom('crestinemaemendezromano0217@gmail.com');
         $mail->addAddress($email);
@@ -360,7 +360,7 @@ class Signup extends Dbh
             $mail->Port = 587;
 
             $mail->Username   = 'crestinemaemendezromano0217@gmail.com';
-            $mail->Password   = 'zutggtbanddnzquy';
+            $mail->Password   = 'none';
 
             $mail->setFrom('crestinemaemendezromano0217@gmail.com');
             $mail->addAddress($email);
